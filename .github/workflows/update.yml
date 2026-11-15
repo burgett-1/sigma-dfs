@@ -1,0 +1,104 @@
+name: Update projections
+
+# Every 15 minutes from 8am to ~1am Eastern (cron is UTC). The pipeline itself
+# freezes each game at tip-off and becomes a no-op once every game has locked.
+on:
+  schedule:
+    - cron: "*/15 13-23 * * *"
+    - cron: "*/15 0-5 * * *"
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Run even if every game has locked"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: projections
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      # Generated data lives on its own `data` branch (one rolling commit) so
+      # main stays clean and the repository doesn't grow every 15 minutes.
+      - name: Check out data branch
+        run: |
+          git config --global user.name "sigma-dfs-bot"
+          git config --global user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git ls-remote --exit-code --heads origin data >/dev/null; then
+            git fetch --depth=1 origin data
+            git worktree add -B data data FETCH_HEAD
+          else
+            git worktree add --detach data
+            git -C data checkout --orphan data
+            git -C data rm -rfq . || true
+          fi
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Build projections
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          NTFY_TOKEN: ${{ secrets.NTFY_TOKEN }}
+          NTFY_SERVER: ${{ vars.NTFY_SERVER }}
+          SITE_URL: ${{ vars.SITE_URL }}
+        run: python -m pipeline.run ${{ inputs.force && '--force' || '' }}
+
+      - name: Save data
+        id: save
+        run: |
+          cd data
+          git add -A
+          if git rev-parse -q --verify HEAD >/dev/null && git diff --cached --quiet; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          # one rolling, parentless commit keeps the branch small
+          commit=$(git commit-tree "$(git write-tree)" -m "data $(date -u +%Y-%m-%dT%H:%MZ)")
+          for i in 1 2 3 4; do git push -f origin "$commit:refs/heads/data" && break || sleep $((i*5)); done
+          git reset -q --soft "$commit"
+
+      - uses: actions/setup-node@v4
+        if: steps.save.outputs.changed == 'true'
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build app
+        if: steps.save.outputs.changed == 'true'
+        run: |
+          cd web
+          npm ci --no-audit --no-fund
+          npm run build
+          mkdir -p dist/data
+          cp -r ../data/slates ../data/*.json ../data/projections.csv dist/data/ 2>/dev/null || true
+          touch dist/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.save.outputs.changed == 'true'
+        with:
+          path: web/dist
+
+      - id: deploy
+        if: steps.save.outputs.changed == 'true'
+        uses: actions/deploy-pages@v4
