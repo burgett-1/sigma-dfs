@@ -105,7 +105,20 @@ def run(now: datetime, do_notify: bool = True, force: bool = False) -> int:
     today = draftkings.dfs_day(now)
     today_iso = today.isoformat()
 
-    # 1) slates
+    # 1) history (new box scores since the last run)
+    logs = history.load()
+    season = nba_cdn.season_start_year(today)
+    try:
+        have_prev = (not logs.empty) and (logs["date"].astype(str) < f"{season}-08-01").any()
+        if not have_prev and state.get("backfilled") != season - 1:
+            state["backfilled"] = season - 1  # attempt once; rerun with --backfill if needed
+            logs = history.backfill_season(logs, season - 1)
+        logs = history.update_current_season(logs, now)
+        history.save(logs)
+    except Exception as e:  # noqa: BLE001
+        log.warning("history update failed, using stored logs: %s", e)
+
+    # 2) slates
     try:
         slates = draftkings.list_classic_draft_groups(now)
     except Exception as e:  # noqa: BLE001
@@ -121,7 +134,10 @@ def run(now: datetime, do_notify: bool = True, force: bool = False) -> int:
     if not slates:
         log.info("no DraftKings classic NBA slate for %s", today_iso)
         _write_json(DATA_DIR / "meta.json", {"updated_at": _iso(now), "date": today_iso,
-                                             "slates": [], "message": "No NBA slate today"})
+                                             "slates": [], "message": "No NBA slate open on DraftKings",
+                                             "dk_groups_seen": draftkings.seen[:40],
+                                             "history_games": int(logs["game_id"].nunique()) if not logs.empty else 0})
+        _write_json(state_path, state)
         return 0
 
     players: dict[int, dict] = {}
@@ -134,19 +150,6 @@ def run(now: datetime, do_notify: bool = True, force: bool = False) -> int:
     if starts and max(starts) <= now and not force and state.get("final_run_for") == today_iso:
         log.info("every game has locked and the final projections are saved; nothing to do")
         return 0
-
-    # 2) history (new box scores since the last run)
-    logs = history.load()
-    season = nba_cdn.season_start_year(today)
-    try:
-        have_prev = (not logs.empty) and (logs["date"].astype(str) < f"{season}-08-01").any()
-        if not have_prev and state.get("backfilled") != season - 1:
-            state["backfilled"] = season - 1  # attempt once; rerun with --backfill if needed
-            logs = history.backfill_season(logs, season - 1)
-        logs = history.update_current_season(logs, now)
-        history.save(logs)
-    except Exception as e:  # noqa: BLE001
-        log.warning("history update failed, using stored logs: %s", e)
 
     # 3) injuries, odds, positions
     src = injuries.fetch_sources(now, state)

@@ -14,6 +14,7 @@ log = logging.getLogger(__name__)
 LOBBY_URL = "https://www.draftkings.com/lobby/getcontests?sport=NBA"
 DRAFTABLES_URL = "https://api.draftkings.com/draftgroups/v1/draftgroups/{dg}/draftables"
 
+seen: list[dict] = []  # draft groups the lobby listed on the last call (for meta.json)
 _SKIP_WORDS = ("showdown", "tiers", "snake", "pick6", "single game", "captain", "in-game")
 
 
@@ -60,13 +61,17 @@ def list_classic_draft_groups(now: datetime) -> list[Slate]:
     start_win = datetime.combine(day, datetime.min.time(), ET) + timedelta(hours=6)
     end_win = start_win + timedelta(hours=24)
     out: list[Slate] = []
+    seen.clear()
     for g in groups:
+        seen.append({k: g.get(k) for k in ("DraftGroupId", "ContestTypeId", "GameTypeId", "GameCount",
+                                           "DraftGroupTag", "ContestStartTimeSuffix", "StartDate")})
         tag = " ".join(str(g.get(k) or "") for k in (
             "DraftGroupTag", "ContestStartTimeSuffix", "GameType", "ContestTypeName")).lower()
         if any(w in tag for w in _SKIP_WORDS):
             continue
-        ctype = g.get("ContestTypeId") or g.get("GameTypeId")
-        if ctype not in (None, 70):
+        # Showdown/Tiers are single-game or salary-less; classic needs 2+ games.
+        # (Showdown groups are also rejected later: every player is listed twice.)
+        if g.get("GameCount") is not None and int(g.get("GameCount") or 0) < 2:
             continue
         start = parse_dt(g.get("StartDate") or g.get("StartDateEst") or g.get("MinStartTime"))
         if not start or not (start_win <= start < end_win):
