@@ -268,3 +268,14 @@ def test_live_progress():
     assert nba_cdn.live_progress({"game": {"gameStatus": 3, "period": 4}})[0] == 1.0
     assert nba_cdn.live_progress({"game": {"gameStatus": 1, "period": 0}})[0] == 0.0
     assert nba_cdn.live_progress({"game": {"gameStatus": 2, "period": 5, "gameClock": "PT03M00.00S"}})[0] == 1.0
+
+
+def test_only_classic_and_showdown_contest_types(monkeypatch):
+    now = syn.utc(2026, 11, 15, 18)
+    lobby = syn.lobby(TIP)
+    start = lobby["DraftGroups"][0]["StartDate"]
+    for dg, ct, suffix in ((600, 73, " (NBA Tiers)"), (601, 343, " (Points)"), (602, 112, " (2H BOS @ LAL)"), (603, 188, None)):
+        lobby["DraftGroups"].append({"DraftGroupId": dg, "ContestTypeId": ct, "DraftGroupTag": "Featured",
+                                     "StartDate": start, "GameCount": 2, "ContestStartTimeSuffix": suffix})
+    monkeypatch.setattr(draftkings, "get_json", lambda url: lobby)
+    assert [s.draft_group_id for s in draftkings.list_draft_groups(now)] == [555, 556]

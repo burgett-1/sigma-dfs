@@ -19,7 +19,7 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 
-from . import factors, history, injuries, model, notify, ownership, patterns, sim, spotlight
+from . import factors, health, history, injuries, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
 from .sources import draftkings, espn, nba_cdn, referees
@@ -136,8 +136,10 @@ def _load_logs(state: dict, now: datetime, today, force_refresh: bool):
             logs = history.update_current_season(logs, now)
             history.save(logs)
             state["history_at"] = now.isoformat()
+            health.ok("NBA.com box scores", f"{logs['game_id'].nunique() if not logs.empty else 0} games stored")
         except Exception as e:  # noqa: BLE001
             log.warning("history update failed, using stored logs: %s", e)
+            health.fail("NBA.com box scores", e)
     _MEM["logs"] = logs
     return logs
 
@@ -285,7 +287,12 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         if not (DATA_DIR / "injury_log.json").exists():
             _write_json(DATA_DIR / "injury_log.json", [])
         _write_json(state_path, state)
+        msg["sources"] = health.snapshot()
+        _write_json(DATA_DIR / "meta.json", msg)
         changed = json.loads(before or "{}").get("message") != msg["message"] or _due(state, "published_at", now, 60)
+        if changed:
+            state["published_at"] = now.isoformat()
+        _write_json(state_path, state)
         return {"status": 0, "changed": changed}
 
     players: dict[int, dict] = {}
@@ -311,22 +318,28 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         try:
             odds = espn.odds_for_date(today) or odds
             state["odds_at"] = now.isoformat()
+            health.ok("ESPN odds", f"{len(odds) // 2} games")
         except Exception as e:  # noqa: BLE001
             log.warning("odds unavailable: %s", e)
+            health.fail("ESPN odds", e)
     state["odds"] = {today_iso: odds}
     nba_lineups = (state.get("nba_lineups") or {}).get(today_iso, {})
     try:
         nba_lineups = lineups_src.fetch(today) or nba_lineups
         state["lineups_ok_at"] = now.isoformat()
+        health.ok("NBA.com starting lineups", f"{len(nba_lineups)} teams posted")
     except Exception as e:  # noqa: BLE001
         log.info("NBA lineups feed unavailable: %s", e)
+        health.fail("NBA.com starting lineups", e)
     state["nba_lineups"] = {today_iso: nba_lineups}
     refs_today = (state.get("refs") or {}).get(today_iso, {})
     if not refs_today and _due(state, "refs_at", now, 30):
         try:
             refs_today = referees.fetch()
+            health.ok("NBA referee assignments", f"{len(refs_today) // 2} games")
         except Exception as e:  # noqa: BLE001
             log.info("referee assignments unavailable: %s", e)
+            health.fail("NBA referee assignments", e)
         state["refs_at"] = now.isoformat()
     state["refs"] = {today_iso: refs_today}
 
@@ -567,12 +580,15 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         "changes_this_run": len(changes),
         "lineup_events_this_run": len(lu_events),
         "sims_this_run": sims_ran,
+        "sources": health.snapshot(),
     })
     if not unlocked:
         state["final_run_for"] = today_iso
     content = _slate_hash(rows) + json.dumps(sorted(nba_lineups.items()), default=str)
     changed = bool(changes or lu_events or sims_ran or state.get("content") != content
-                   or _due(state, "published_at", now, 15))
+                   or _due(state, "published_at", now, 10))
+    if changed:
+        state["published_at"] = now.isoformat()
     state["content"] = content
     state["last_run"] = _iso(now)
     _write_json(state_path, state)

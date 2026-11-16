@@ -40,6 +40,35 @@ GitHub Actions (every 15 min)          GitHub Pages
 You can still upload your own projections CSV at any time; it overrides the live numbers
 until you press **Use live**.
 
+## Live updates run on your Mac
+
+DraftKings' player/salary API and NBA.com's data servers refuse requests from cloud
+servers such as GitHub's (HTTP 403), but they serve normal home connections. So the
+live updater runs on your Mac and publishes to the `data` branch; the website reads it
+from there as before.
+
+One-time setup (Terminal):
+
+```bash
+git clone https://github.com/burgett-1/sigma-dfs.git ~/sigma-dfs
+```
+
+```bash
+cd ~/sigma-dfs && bash mac/setup.sh
+```
+
+The script creates a private Python environment, checks out the data folder, checks
+that your Mac can push to GitHub (sign in once with GitHub Desktop or `gh auth login`
+if it can't), asks for your ntfy topic, and installs a background job. The job runs from
+8am to 2am Eastern: it polls every 60 seconds and fully refreshes at least every 10
+minutes. It keeps the Mac awake while running and restarts on its own after a reboot or
+login.
+
+- Watch it: `tail -f ~/Library/Logs/sigma-dfs.log`
+- Stop it: `bash mac/uninstall.sh`
+- The app's Live Projections card and `meta.json` → `sources` show whether each data
+  source is responding.
+
 ## How it works
 
 **Live loop.** GitHub starts a run every 15 minutes (8am to 1am Eastern). Each run polls every

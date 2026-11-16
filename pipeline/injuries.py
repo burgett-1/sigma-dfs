@@ -9,6 +9,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 
+from . import health
 from .names import norm_name, player_key, team_code
 from .sources import espn, injury_report
 
@@ -27,16 +28,22 @@ def fetch_sources(now: datetime, state: dict) -> dict:
                 src["nba_url"] = url
                 src["nba_rows"] = rows
                 src["nba_fetched"] = now.isoformat()
+                health.ok("NBA injury report", url.rsplit("/", 1)[-1])
+        else:
+            health.fail("NBA injury report", "no report found")
     except Exception as e:  # noqa: BLE001
         log.warning("official injury report failed: %s", e)
+        health.fail("NBA injury report", e)
     # ESPN
     try:
         rows = espn.injuries()
         if rows:
             src["espn_rows"] = rows
             src["espn_fetched"] = now.isoformat()
+            health.ok("ESPN injuries", f"{len(rows)} listed")
     except Exception as e:  # noqa: BLE001
         log.warning("ESPN injuries failed: %s", e)
+        health.fail("ESPN injuries", e)
     return src
 
 

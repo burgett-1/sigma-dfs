@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from ..config import ET
+from .. import health
 from ..http import get_json
 from ..names import team_code
 
@@ -13,6 +14,9 @@ log = logging.getLogger(__name__)
 
 LOBBY_URL = "https://www.draftkings.com/lobby/getcontests?sport=NBA"
 DRAFTABLES_URL = "https://api.draftkings.com/draftgroups/v1/draftgroups/{dg}/draftables"
+# DraftKings contest types we build for. Others in the NBA lobby (Tiers, "Points"
+# scoring, second-half, in-game, pick'em…) use different rules and are skipped.
+CONTEST_TYPES = {70: "classic", 81: "showdown"}
 
 seen: list[dict] = []  # draft groups the lobby listed on the last call (for meta.json)
 # contest styles we don't build for (showdown IS supported; it's detected from the draftables)
@@ -64,7 +68,12 @@ def list_draft_groups(now: datetime) -> list[Slate]:
     """NBA draft groups (classic + showdown) whose first game is on the current ET 'DFS day'.
     Note: DraftKings removes a group from the lobby once it locks; run.py remembers the
     groups it has seen today so late swap keeps working after lock."""
-    data = get_json(LOBBY_URL)
+    try:
+        data = get_json(LOBBY_URL)
+        health.ok("DraftKings lobby")
+    except Exception as e:  # noqa: BLE001
+        health.fail("DraftKings lobby", e)
+        raise
     groups = data.get("DraftGroups") or data.get("draftGroups") or []
     day = dfs_day(now)
     start_win = datetime.combine(day, datetime.min.time(), ET) + timedelta(hours=6)
@@ -77,6 +86,9 @@ def list_draft_groups(now: datetime) -> list[Slate]:
         tag = " ".join(str(g.get(k) or "") for k in (
             "DraftGroupTag", "ContestStartTimeSuffix", "GameType", "ContestTypeName")).lower()
         if any(w in tag for w in _SKIP_WORDS):
+            continue
+        ctype = g.get("ContestTypeId") or g.get("GameTypeId")
+        if ctype is not None and int(ctype) not in CONTEST_TYPES:
             continue
         start = parse_dt(g.get("StartDate") or g.get("StartDateEst") or g.get("MinStartTime"))
         if not start or not (start_win <= start < end_win):
@@ -121,7 +133,12 @@ def dfs_day(now: datetime):
 
 
 def load_draftables(slate: Slate) -> Slate:
-    data = get_json(DRAFTABLES_URL.format(dg=slate.draft_group_id))
+    try:
+        data = get_json(DRAFTABLES_URL.format(dg=slate.draft_group_id))
+        health.ok("DraftKings players")
+    except Exception as e:  # noqa: BLE001
+        health.fail("DraftKings players", e)
+        raise
     comps = {}
     for c in data.get("competitions") or []:
         cid = c.get("competitionId")

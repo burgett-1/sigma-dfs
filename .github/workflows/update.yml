@@ -1,13 +1,9 @@
 name: Update projections
 
-# A run starts every 15 minutes (cron is UTC: 8am-1am Eastern) and, inside the
-# run, polls every 60 seconds for ~14 minutes, so injury news and starting
-# lineups are picked up within about a minute. Results go to the `data`
-# branch, which the app reads directly.
+# DraftKings and NBA.com refuse requests from GitHub's servers, so the live
+# updater runs on your Mac (see mac/setup.sh). The schedule is off so these
+# blocked runs can't overwrite the Mac's data; you can still start one by hand.
 on:
-  schedule:
-    - cron: "*/15 13-23 * * *"
-    - cron: "*/15 0-5 * * *"
   workflow_dispatch:
     inputs:
       force:
