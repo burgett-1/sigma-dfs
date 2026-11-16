@@ -908,6 +908,7 @@ export default function App(){
       var changed=!metaRef.current||metaRef.current.updated_at!==m.updated_at;
       metaRef.current=m;setMeta(m);setAutoErr("");
       if(!changed&&!initial)return;
+      if(!m.slates||!m.slates.length){setSlates([]);return;}   // no slate open right now
       return Promise.all([fetchJson("slates.json"),fetchJson("injury_log.json").catch(function(){return[];})]).then(function(res){
         var sl=res[0]||[];setSlates(sl);setInjLog(res[1]||[]);
         if(sourceRef.current==="manual")return;           // user uploaded their own CSV
@@ -1095,7 +1096,7 @@ export default function App(){
 
   var poolContent;
   if(players.length===0){
-    poolContent=<div style={{textAlign:"center",padding:"48px 0"}}><div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{fontWeight:700,marginBottom:6}}>{"No data loaded"}</div><div style={{color:MU,fontSize:13}}>{autoErr?"Upload your Projections CSV to get started.":"Loading live projections…"}</div></div>;
+    poolContent=<div style={{textAlign:"center",padding:"48px 0"}}><div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{fontWeight:700,marginBottom:6}}>{"No data loaded"}</div><div style={{color:MU,fontSize:13}}>{autoErr?"Upload your Projections CSV to get started.":(meta&&meta.slates&&!meta.slates.length)?"No DraftKings slate is open right now. Projections appear automatically once the next slate is posted (usually by morning).":"Loading live projections…"}</div></div>;
   } else {
     var posButtons=posList.map(function(p){return <button key={p} style={tabSt(filterPos===p)} onClick={function(){setFilterPos(p);}}>{p}</button>;});
     var colHeaders=cols.map(function(cv){return <th key={cv[0]} style={S.tblH} onClick={function(){if(sortCol===cv[0])setSortDir(function(d){return -d;});else{setSortCol(cv[0]);setSortDir(-1);}}}>{cv[1]}{sortCol===cv[0]?(sortDir===-1?" ↓":" ↑"):""}</th>;});

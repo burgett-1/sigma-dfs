@@ -137,6 +137,9 @@ def run(now: datetime, do_notify: bool = True, force: bool = False) -> int:
                                              "slates": [], "message": "No NBA slate open on DraftKings",
                                              "dk_groups_seen": draftkings.seen[:40],
                                              "history_games": int(logs["game_id"].nunique()) if not logs.empty else 0})
+        _write_json(DATA_DIR / "slates.json", [])
+        if not (DATA_DIR / "injury_log.json").exists():
+            _write_json(DATA_DIR / "injury_log.json", [])
         _write_json(state_path, state)
         return 0
 
