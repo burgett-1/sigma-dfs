@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 
 from .config import MODEL, NOT_PLAYING
+from . import factors
 from .names import norm_name
 
 log = logging.getLogger(__name__)
@@ -48,6 +49,9 @@ class Context:
     odds: dict[str, dict] = field(default_factory=dict)       # team -> {spread, total, implied}
     positions: dict[str, str] = field(default_factory=dict)   # norm name -> DK position
     teams_played_yesterday: set[str] = field(default_factory=set)
+    lineups: dict[str, dict] = field(default_factory=dict)    # team -> {status, starters}
+    factors: dict = field(default_factory=dict)               # fitted adjustments (factors.py)
+    game_context: dict[str, dict] = field(default_factory=dict)  # team -> rest/travel/ref features
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -188,9 +192,21 @@ def player_baseline(plogs: pd.DataFrame, team_games: list[str], season: int,
         cv = cv_prior
     cv = min(max(cv, MODEL["cv_min"]), MODEL["cv_max"])
 
+    # minutes as a starter vs off the bench (role changes move minutes a lot)
+    role = pd.concat([cur.head(25), prev.head(25)])
+    w_role = np.concatenate([_decay_weights(len(cur.head(25)), 6.0), 0.5 * _decay_weights(len(prev.head(25)), 6.0)])
+    st_mask = role["starter"].astype(bool).to_numpy()
+    mins_role = role["minutes"].to_numpy()
+    n_start = float(w_role[st_mask].sum())
+    n_bench = float(w_role[~st_mask].sum())
+    m_start = float((mins_role[st_mask] * w_role[st_mask]).sum() / n_start) if n_start > 0 else None
+    m_bench = float((mins_role[~st_mask] * w_role[~st_mask]).sum() / n_bench) if n_bench > 0 else None
+
     # role and availability
-    last5 = plogs[plogs["season"] == season].head(5)
-    start_rate = float(last5["starter"].astype(bool).mean()) if len(last5) else 0.0
+    last10 = plogs[(plogs["season"] == season) & plogs["counts"]].head(10)
+    if len(last10) < 3:
+        last10 = plogs[plogs["counts"]].head(10)
+    start_rate = float(last10["starter"].astype(bool).mean()) if len(last10) else 0.0
     played_ids = set(plogs.loc[plogs["played"], "game_id"])
     recent_team = team_games[:5]
     fresh = (sum(1 for g in recent_team if g in played_ids) / len(recent_team)) if recent_team else 1.0
@@ -204,7 +220,24 @@ def player_baseline(plogs: pd.DataFrame, team_games: list[str], season: int,
         "start_rate": start_rate, "fresh": fresh, "absence_streak": streak,
         "games_cur": n_cur, "games_prev": len(mp), "has_history": len(plogs) > 0,
         "max_recent_min": float(mc.max()) if n_cur else float(minutes),
+        "m_start": m_start, "n_start": n_start, "m_bench": m_bench, "n_bench": n_bench,
     }
+
+
+def role_minutes(r: dict, is_starter: bool) -> float:
+    """Minutes given today's role, shrunk toward the overall average when the
+    player has little history in that role."""
+    m = r["minutes"]
+    k = 3.0
+    if is_starter:
+        prior = max(m, 0.5 * m + 14.0)          # a bench player promoted to the five
+        n, mr = r.get("n_start") or 0.0, r.get("m_start")
+    else:
+        prior = min(m, 0.75 * m + 2.0)          # a usual starter coming off the bench
+        n, mr = r.get("n_bench") or 0.0, r.get("m_bench")
+    if mr is None or n <= 0:
+        return prior
+    return (n * mr + k * prior) / (n + k)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -280,13 +313,40 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
                      "status_source": st.get("source", "")})
 
     # team-level adjustments
+    from .sources.lineups import project_starters
     for team in sorted({r["team"] for r in rows}):
         tr = [r for r in rows if r["team"] == team]
         out = [r for r in tr if r["status"] in NOT_PLAYING]
         avail = [r for r in tr if r["status"] not in NOT_PLAYING]
+
+        # starting five: team-announced (NBA.com) or Sigma's projection
+        info = ctx.lineups.get(team)
+        if info and info.get("starters"):
+            five = {norm_name(n) for n in info["starters"]}
+            lu_status = info.get("status", "expected")
+        else:
+            five = {norm_name(n) for n in project_starters(tr)}
+            lu_status = "projected"
+        for r in tr:
+            nk = norm_name(r["name"])
+            r["is_starter"] = nk in five
+            r["starter_status"] = lu_status if r["is_starter"] else ""
+            usual = r["start_rate"] >= 0.6
+            r["unexpected"] = ""
+            if lu_status in ("confirmed", "expected") and r["status"] not in NOT_PLAYING:
+                if r["is_starter"] and r["start_rate"] < 0.3 and r["has_history"]:
+                    r["unexpected"] = "starting"
+                elif not r["is_starter"] and usual:
+                    r["unexpected"] = "benched"
+            if r["status"] not in NOT_PLAYING and r["has_history"]:
+                r["minutes"] = role_minutes(r, r["is_starter"])
         for r in avail:
+            r["restricted"] = False
             if r["absence_streak"] >= MODEL["return_absence_games"] and r["has_history"]:
                 r["minutes"] *= MODEL["return_minutes_mult"]
+            if factors.minutes_limited(r.get("reason", "")):
+                r["minutes"] *= MODEL["restricted_minutes_mult"]
+                r["restricted"] = True
         # vacated minutes go preferentially to the same position group
         missing_grp: dict[str, float] = {}
         for r in out:
@@ -294,7 +354,8 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
         miss_total = sum(missing_grp.values()) or 1.0
         affinity = {r["key"]: 1.0 + 1.5 * missing_grp.get(r["grp"], 0.0) / miss_total for r in avail}
         mins = {r["key"]: r["minutes"] for r in avail}
-        caps = {r["key"]: min(MODEL["max_player_minutes"], max(r["max_recent_min"] + 8.0, r["minutes"] + 6.0))
+        caps = {r["key"]: (r["minutes"] if r["restricted"] else
+                           min(MODEL["max_player_minutes"], max(r["max_recent_min"] + 8.0, r["minutes"] + 6.0)))
                 for r in avail}
         target = MODEL["team_minutes"]
         if sum(caps.values()) < target:
@@ -319,7 +380,8 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             bw = sum(new_mins[r["key"]] for r in bench)
             for r in bench:
                 new_mins[r["key"]] += cut * new_mins[r["key"]] / bw if bw else 0
-        if team in ctx.teams_played_yesterday:
+        fit = ctx.factors or {}
+        if team in ctx.teams_played_yesterday and not fit.get("used"):
             for r in avail:
                 if new_mins.get(r["key"], 0) >= 30:
                     new_mins[r["key"]] *= MODEL["back_to_back_mult"]
@@ -330,6 +392,11 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
         u_out = vol_out / vol_all if vol_all > 0 else 0.0
         rates = [r["rate"] for r in avail if r["minutes"] >= 10] or [1.0]
         r_mean = float(np.mean(rates))
+        # how each teammate actually produced when these players sat
+        fresh_out = [r["person_id"] for r in out if r["fresh"] > 0 and r["person_id"] is not None]
+        ww = factors.with_without(hist, team, {r["key"]: r["person_id"] for r in avail}, fresh_out,
+                                  season) if fresh_out and not hist.empty else {}
+        situ = factors.situational_multiplier(ctx.game_context.get(team, {}), fit)
 
         # game environment
         implied = o.get("implied")
@@ -354,12 +421,21 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             m = new_mins.get(r["key"], r["minutes"])
             bump = min(MODEL["usage_bump_cap"],
                        MODEL["usage_bump_beta"] * u_out * math.sqrt(max(r["rate"], 0.1) / r_mean))
+            r["ww_evidence"] = 0.0
+            if r["key"] in ww and ww[r["key"]][1] >= 3:
+                spec, ev = ww[r["key"]]
+                bump = 0.5 * bump + 0.5 * (spec - 1.0)
+                r["ww_evidence"] = ev
             dvp = opp_pos.get((r["opp"], r["grp"]), 1.0)
-            home = 1.0 + (MODEL["home_edge"] if r["home"] else -MODEL["home_edge"])
+            if fit.get("used"):
+                home = 1.0   # home court is one of the fitted situational factors
+            else:
+                home = 1.0 + (MODEL["home_edge"] if r["home"] else -MODEL["home_edge"])
             r["proj_minutes"] = m
             r["bump"] = bump
             r["dvp"] = dvp
-            r["proj"] = m * r["rate"] * (1 + bump) * env * dvp * home
+            r["situational"] = situ
+            r["proj"] = m * r["rate"] * (1 + bump) * env * dvp * home * situ
 
     for r in rows:
         finish(r)
@@ -391,7 +467,7 @@ def finish(r: dict) -> None:
     else:
         r["boom"] = 0.0
         r["bust"] = 100.0 if proj < MODEL["bust_multiple"] * k else 0.0
-    r["starting"] = r["start_rate"] >= 0.5 and proj > 0
+    r["starting"] = bool(r.get("is_starter", r["start_rate"] >= 0.5)) and proj > 0
 
 
 def yesterday(d: date) -> date:

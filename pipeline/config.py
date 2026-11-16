@@ -57,6 +57,8 @@ MODEL = {
     # returning from an absence of N+ straight team games -> minutes restriction
     "return_absence_games": 5,
     "return_minutes_mult": 0.85,
+    # injury report mentions reconditioning / a minutes restriction
+    "restricted_minutes_mult": 0.75,
     # usage bump when rotation teammates are out
     "usage_bump_beta": 0.30,
     "usage_bump_cap": 0.20,
@@ -94,3 +96,17 @@ USER_AGENT = (
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 )
+
+# ── contest simulation (pipeline/sim.py) ────────────────────────────────────
+SIM = {
+    "lineups": 10_000,          # lineups built for every slate
+    "sims": 1_000_000,          # simulated contests the lineups play
+    "field_lineups": 10_000,    # simulated opponents drafted from projected ownership
+    "field_min_salary": 48_500,
+    "min_proj": 4.0,            # players projected under this are left out of the pool
+    "generate_time_limit": 240,
+    # chance a player actually plays, by injury status (OUT/DOUBTFUL are projected 0)
+    "play_prob": {"QUESTIONABLE": 0.70, "PROBABLE": 0.97, "": 1.0},
+    # used until the box-score history is large enough to measure them
+    "default_corr": {"team": 0.02, "opp": 0.05},
+}

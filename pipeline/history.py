@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 COLUMNS = [
     "game_id", "date", "team", "opp", "home", "person_id", "name", "position", "starter",
     "status", "not_playing_reason", "minutes", "pts", "reb", "ast", "stl", "blk", "tov",
-    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp",
+    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp", "officials", "arena_team",
 ]
 
 
@@ -40,7 +40,22 @@ def load() -> pd.DataFrame:
                    ignore_index=True)
     for c in ("not_playing_reason", "position", "status"):
         df[c] = df[c].fillna("")
+    # columns added later: older days are re-downloaded once to fill them
+    if "officials" not in df.columns:
+        df["officials"] = ""
+    if "arena_team" not in df.columns:
+        df["arena_team"] = ""
+    df["officials"] = df["officials"].fillna("")
+    df["arena_team"] = df["arena_team"].fillna("")
     return df
+
+
+def complete_game_ids(df: pd.DataFrame) -> set[str]:
+    """Games stored with every column (older rows lack referee data)."""
+    if df.empty:
+        return set()
+    ok = df[df["officials"].astype(str) != ""]
+    return set(ok["game_id"].astype(str))
 
 
 def save(df: pd.DataFrame) -> None:
@@ -51,7 +66,9 @@ def save(df: pd.DataFrame) -> None:
         path = _day_path(str(day))
         if path.exists():
             try:
-                if len(pd.read_csv(path, usecols=["game_id"])) == len(g):
+                old = pd.read_csv(path, nrows=1)
+                if "officials" in old.columns and len(pd.read_csv(path, usecols=["game_id"])) == len(g) \
+                        and not (g["officials"].astype(str) == "").any():
                     continue
             except (OSError, ValueError):
                 pass
@@ -81,7 +98,7 @@ def _append(df: pd.DataFrame, rows: list[dict]) -> pd.DataFrame:
 def update_current_season(df: pd.DataFrame, now: datetime) -> pd.DataFrame:
     """Download box scores for any finished games not yet stored."""
     sched = nba_cdn.schedule()
-    have = set(df["game_id"].astype(str)) if not df.empty else set()
+    have = complete_game_ids(df)
     todo = [g["game_id"] for g in sched if g["status"] == 3 and g["game_id"] not in have
             and g["start_utc"] and g["start_utc"] < now]
     if not todo:
@@ -96,7 +113,7 @@ def update_current_season(df: pd.DataFrame, now: datetime) -> pd.DataFrame:
 
 def backfill_season(df: pd.DataFrame, start_year: int) -> pd.DataFrame:
     """One-off: pull a full prior regular season by enumerating game ids."""
-    have = set(df["game_id"].astype(str)) if not df.empty else set()
+    have = complete_game_ids(df)
     ids = [g for g in nba_cdn.game_ids_for_season(start_year) if g not in have]
     log.info("backfilling %d games for %d-%02d", len(ids), start_year, (start_year + 1) % 100)
     rows: list[dict] = []

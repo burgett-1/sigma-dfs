@@ -77,6 +77,7 @@ def parse_boxscore(data: dict) -> list[dict]:
     g = data.get("game") or {}
     start = parse_dt(g.get("gameTimeUTC") or g.get("gameEt"))
     date = start.astimezone(ET).date().isoformat() if start else ""
+    officials = "|".join(sorted(o.get("name") or "" for o in (g.get("officials") or []) if o.get("name"))) or "-"
     rows = []
     for side, other in (("homeTeam", "awayTeam"), ("awayTeam", "homeTeam")):
         team = g.get(side) or {}
@@ -108,6 +109,8 @@ def parse_boxscore(data: dict) -> list[dict]:
                 "fta": int(st.get("freeThrowsAttempted") or 0),
                 "team_score": int(team.get("score") or 0),
                 "opp_score": int(opp.get("score") or 0),
+                "officials": officials,
+                "arena_team": (g.get("homeTeam") or {}).get("teamTricode"),
             })
     return rows
 

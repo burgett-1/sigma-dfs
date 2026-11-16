@@ -86,3 +86,56 @@ def send_all(msgs: list[dict], click: str | None = None) -> int:
             sent += 1
         time.sleep(0.5)
     return sent
+
+
+def lineup_changes(old: dict[str, dict], new: dict[str, dict], locked_teams: set[str]) -> list[dict]:
+    """Starting-lineup events: first posted, confirmed, or any change."""
+    events = []
+    for team, cur in new.items():
+        if team in locked_teams:
+            continue
+        prev = old.get(team) or {}
+        before, after = list(prev.get("starters") or []), list(cur.get("starters") or [])
+        if not after:
+            continue
+        if not before:
+            kind = "confirmed" if cur["status"] == "confirmed" else "expected"
+        elif set(before) != set(after):
+            kind = "changed"
+        elif prev.get("status") != "confirmed" and cur["status"] == "confirmed":
+            kind = "confirmed"
+        else:
+            continue
+        events.append({"team": team, "kind": kind, "status": cur["status"], "starters": after,
+                       "in": [n for n in after if n not in before] if before else [],
+                       "out": [n for n in before if n not in after]})
+    return events
+
+
+def lineup_messages(events: list[dict], unexpected: dict[str, list[str]],
+                    impacts: dict[str, list[tuple[str, float, float]]]) -> list[dict]:
+    msgs = []
+    for e in events:
+        team = e["team"]
+        if e["kind"] == "changed":
+            title = f"🔁 {team} starting lineup CHANGED"
+            lines = [f"In: {', '.join(e['in'])}", f"Out: {', '.join(e['out'])}",
+                     f"Now ({e['status']}): {', '.join(e['starters'])}"]
+            prio = 5
+        elif e["kind"] == "confirmed":
+            title = f"✅ {team} starters confirmed"
+            lines = [", ".join(e["starters"])]
+            prio = 4
+        else:
+            title = f"📋 {team} expected starters posted"
+            lines = [", ".join(e["starters"])]
+            prio = 3
+        for note in unexpected.get(team, []):
+            lines.append(f"⚠️ {note}")
+            prio = max(prio, 5)
+        imp = impacts.get(team) or []
+        if imp:
+            lines.append("Proj moves: " + ", ".join(f"{n} {a:.1f}→{b:.1f}" for n, a, b in imp[:4]))
+        msgs.append({"title": title, "message": "\n".join(lines), "priority": prio,
+                     "tags": ["basketball", "clipboard"]})
+    return msgs

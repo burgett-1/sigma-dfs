@@ -55,6 +55,8 @@ def season_logs(today: date, n_games: int = 18, seed: int = 1) -> pd.DataFrame:
                         "minutes": round(m, 2), "pts": pts, "reb": reb, "ast": ast,
                         "stl": 1, "blk": 0, "tov": 2, "fg3m": 1, "fga": 10, "fta": 3,
                         "team_score": 112, "opp_score": 110,
+                        "officials": "Ref A|Ref B|Ref C" if gid % 2 else "Ref D|Ref E|Ref F",
+                        "arena_team": TEAMS[a],
                     })
     df = pd.DataFrame(rows)
     df["dk_fp"] = dk_points(df)

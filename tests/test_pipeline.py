@@ -202,3 +202,56 @@ def test_notification_text():
     assert msgs[0]["title"] == "🏀 A B (BOS) → OUT"
     assert "Questionable → OUT (Knee)" in msgs[0]["message"]
     assert "C D 30.0→36.5" in msgs[0]["message"] and msgs[0]["priority"] == 5
+
+
+# ── starting lineups ─────────────────────────────────────────────────────────
+def test_lineups_feed_parsing():
+    from pipeline.sources import lineups
+    def team(abbr, status, names):
+        ps = [{"playerName": n, "position": p, "lineupStatus": status, "rosterStatus": "Active"}
+              for n, p in zip(names, ["PG", "SG", "SF", "PF", "C"])]
+        ps.append({"playerName": "Bench Guy", "position": "", "lineupStatus": status, "rosterStatus": "Active"})
+        return {"teamAbbreviation": abbr, "players": ps}
+    data = {"games": [{"gameId": "1", "homeTeam": team("LAL", "Confirmed", list("ABCDE")),
+                       "awayTeam": team("GS", "Expected", list("FGHIJ"))}]}
+    out = lineups.parse(data)
+    assert out["LAL"]["status"] == "confirmed" and out["LAL"]["starters"] == list("ABCDE")
+    assert out["GSW"]["status"] == "expected"
+
+
+def test_projected_starters_and_unexpected_starter(monkeypatch):
+    players = _slate_players(monkeypatch)
+    logs = syn.season_logs(TODAY)
+    base = {r["name"]: r for r in model.project(players, logs, model.Context(today=TODAY))}
+    # with no announcement Sigma projects the usual five
+    assert {n for n, r in base.items() if r["team"] == "BOS" and r["is_starter"]} == {syn.name("BOS", i) for i in range(5)}
+    assert base[syn.name("BOS", 0)]["starter_status"] == "projected"
+    # star out -> his same-position backup is projected to start
+    star = next(p for p in players if p["name"] == syn.name("BOS", 0))
+    out = {r["name"]: r for r in model.project(players, logs, model.Context(
+        today=TODAY, statuses={star["key"]: {"status": "OUT"}}))}
+    assert out[syn.name("BOS", 5)]["is_starter"]
+    # confirmed lineup with a surprise: bench player J starts over D
+    five = [syn.name("BOS", i) for i in (0, 1, 2, 4, 8)]
+    conf = {r["name"]: r for r in model.project(players, logs, model.Context(
+        today=TODAY, lineups={"BOS": {"status": "confirmed", "starters": five}}))}
+    j, d = syn.name("BOS", 8), syn.name("BOS", 3)
+    assert conf[j]["unexpected"] == "starting" and conf[d]["unexpected"] == "benched"
+    assert conf[j]["proj_minutes"] > base[j]["proj_minutes"] + 4
+    assert conf[d]["proj_minutes"] < base[d]["proj_minutes"] - 4
+    assert conf[j]["starter_status"] == "confirmed"
+
+
+def test_lineup_change_events():
+    old = {"BOS": {"status": "expected", "starters": list("ABCDE")},
+           "LAL": {"status": "confirmed", "starters": list("FGHIJ")}}
+    new = {"BOS": {"status": "confirmed", "starters": list("ABCDE")},
+           "LAL": {"status": "confirmed", "starters": list("FGHIK")},
+           "NYK": {"status": "expected", "starters": list("LMNOP")},
+           "GSW": {"status": "confirmed", "starters": list("QRSTU")}}
+    ev = {e["team"]: e for e in notify.lineup_changes(old, new, locked_teams={"GSW"})}
+    assert ev["BOS"]["kind"] == "confirmed"
+    assert ev["LAL"]["kind"] == "changed" and ev["LAL"]["in"] == ["K"] and ev["LAL"]["out"] == ["J"]
+    assert ev["NYK"]["kind"] == "expected" and "GSW" not in ev
+    msgs = notify.lineup_messages([ev["LAL"]], {"LAL": ["K starting (rarely starts)"]}, {})
+    assert "CHANGED" in msgs[0]["title"] and "In: K" in msgs[0]["message"] and msgs[0]["priority"] == 5
