@@ -16,7 +16,7 @@ def _z(x: np.ndarray) -> np.ndarray:
     return (x - x.mean()) / sd if sd > 0 else np.zeros_like(x)
 
 
-def estimate_ownership(rows: list[dict]) -> None:
+def estimate_ownership(rows: list[dict], roster_size: int = 8) -> None:
     live = [r for r in rows if r["proj"] > 0]
     for r in rows:
         r["own"] = 0.0
@@ -28,7 +28,8 @@ def estimate_ownership(rows: list[dict]) -> None:
     bump = np.array([r.get("bump", 0.0) for r in live])
     logit = 1.55 * _z(value) + 0.85 * _z(proj) + 2.0 * bump - 0.5 * q
     w = np.exp(logit)
-    own = w / w.sum() * 800.0
+    total = 100.0 * roster_size          # each roster spot adds 100% of ownership
+    own = w / w.sum() * total
     # a single player cannot exceed ~80% and a few rounds of capping keep the total at 800
     for _ in range(5):
         over = own > 80.0

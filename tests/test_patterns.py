@@ -35,7 +35,12 @@ def test_rotoguru_parse_verify_and_optimal():
     base = factors.baseline_predictions(prep)
     ctx = patterns.night_context(day, prep, base)
     res = patterns.analyse_night(day, joined, ctx)
-    lus = res["lineups"]
+    full = res["slates"][0]
+    assert full["type"] == "all" and full["games"] == 2
+    lus = full["lineups"]
+    exps = [p["exp"] for p in full["players"]]
+    assert abs(sum(exps) - 8.0) < 1e-6        # 8 roster spots: exposures sum to 8 per lineup
+    assert all(0 <= e <= 1 for e in exps)
     assert len(lus) == patterns.TOP_K
     scores = [l["score"] for l in lus]
     assert scores == sorted(scores, reverse=True)          # exact top-K in order
@@ -47,16 +52,37 @@ def test_rotoguru_parse_verify_and_optimal():
     assert abs(df.loc[best, "dk_fp"].sum() - scores[0]) < 1e-6
 
 
-def test_summary_and_rules():
+def test_summary_buckets_rules_and_exposure_model():
     lineup = {"score": 300, "salary": 49800, "studs": 2, "mid": 3, "value": 3, "punts": 1, "max_team": 3,
               "games": 4, "max_game": 4, "bring_back": True,
               "players": [{"teammate_out": i < 3, "surprise_start": i == 0, "minutes_spike": i < 2,
                            "overtime": False, "blowout": False, "high_total": i < 4, "beat_proj": 1.3,
                            "proj_value_rank": 10 + 5 * i} for i in range(8)]}
-    s = patterns.summarise([{"date": "2025-01-01", "lineups": [lineup] * 10}], [])
-    assert s["structure"]["salary_used_median"] == 49800
+    players = ([{"value_rank": 1, "teammate_out": True, "exp": 0.8, "salary": 5000, "proj_rank": 3, "starter": True}] * 40
+               + [{"value_rank": 30, "teammate_out": False, "exp": 0.0, "salary": 4000, "proj_rank": 60, "starter": False}] * 400)
+    nights = [{"date": f"2025-01-{d:02d}", "slates": [
+        {"type": "all", "games": 9, "lineups": [lineup] * 10, "players": players},
+        {"type": "late", "games": 3, "lineups": [dict(lineup, salary=48000)] * 10, "players": players}]}
+        for d in range(1, 11)]
+    s = patterns.summarise(nights, [])
+    assert s["structure"]["salary_used_median"] == 49800           # full-night view
+    assert s["buckets"]["small"]["structure"]["salary_used_median"] == 48000
+    assert s["buckets"]["large"]["slates"] == 10 and "medium" not in s["buckets"]
     assert s["why_players_hit"]["teammate_out_pct"] == 37.5
-    assert s["rules"]["max_per_team"] >= 3 and s["rules"]["min_salary"] <= 49800
+    m = s["exposure_model"]
+    hot = patterns.suggested_exposure(m, 9, 1, True)
+    cold = patterns.suggested_exposure(m, 9, 30, False)
+    assert hot > 60 and cold < 2                                    # shrunk toward the average
+    patterns.OUT.parent.mkdir(parents=True, exist_ok=True)
+
+
+def test_sub_slates():
+    df = pd.DataFrame({"game_id": ["a", "a", "b", "c", "d"],
+                       "start_utc": ["2025-01-02T00:00:00+00:00", "2025-01-02T00:00:00+00:00",
+                                     "2025-01-02T03:00:00+00:00", "2025-01-02T03:00:00+00:00",
+                                     "2025-01-01T20:00:00+00:00"]})
+    kinds = {k: g["game_id"].nunique() for k, g in patterns.sub_slates(df)}
+    assert kinds == {"all": 4, "main": 3, "late": 2}       # 3pm game out of main; 10pm games = late
 
 
 def test_contest_standings_import():

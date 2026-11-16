@@ -57,6 +57,7 @@ def season_logs(today: date, n_games: int = 18, seed: int = 1) -> pd.DataFrame:
                         "team_score": 112, "opp_score": 110,
                         "officials": "Ref A|Ref B|Ref C" if gid % 2 else "Ref D|Ref E|Ref F",
                         "arena_team": TEAMS[a],
+                        "start_utc": f"{(d + timedelta(days=1)).isoformat()}T{'00:30' if a == 0 else '03:00'}:00+00:00",
                     })
     df = pd.DataFrame(rows)
     df["dk_fp"] = dk_points(df)
@@ -99,3 +100,19 @@ def lobby(start: datetime) -> dict:
 
 def utc(y, m, d, h, mi=0):
     return datetime(y, m, d, h, mi, tzinfo=timezone.utc)
+
+
+def showdown_draftables(start: datetime) -> dict:
+    """DraftKings showdown draftables for BOS @ LAL: each player twice (UTIL + 1.5x CPT)."""
+    classic = draftables(start)
+    comp = classic["competitions"][0]
+    d = []
+    for p in classic["draftables"]:
+        if p["competition"]["competitionId"] != 1:
+            continue
+        d.append(dict(p))
+        cpt = dict(p)
+        cpt["draftableId"] = p["draftableId"] + 500000
+        cpt["salary"] = int(p["salary"] * 1.5)
+        d.append(cpt)
+    return {"draftables": d, "competitions": [comp]}

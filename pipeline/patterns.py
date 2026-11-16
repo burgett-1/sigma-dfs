@@ -193,49 +193,100 @@ def night_context(day: date, hist_prepared: pd.DataFrame, base: pd.DataFrame) ->
     return tonight
 
 
+VERSION = 2
+SIZE_BUCKETS = (("small", 1, 3), ("medium", 4, 6), ("large", 7, 99))
+RANK_BUCKETS = ((1, 3), (4, 6), (7, 10), (11, 15), (16, 25), (26, 40), (41, 999))
+
+
+def size_bucket(n_games: int) -> str:
+    for name, lo, hi in SIZE_BUCKETS:
+        if lo <= n_games <= hi:
+            return name
+    return "large"
+
+
+def rank_bucket(rank: float) -> str:
+    for lo, hi in RANK_BUCKETS:
+        if lo <= rank <= hi:
+            return f"{lo}-{hi}" if hi < 999 else f"{lo}+"
+    return "41+"
+
+
+def sub_slates(df: pd.DataFrame) -> list[tuple[str, pd.DataFrame]]:
+    """The night as DraftKings would slice it: all games, the main slate (7pm ET+)
+    and a late slate (9:30pm ET+), when those differ and have 2+ games."""
+    out = [("all", df)]
+    if "start_utc" not in df.columns or df["start_utc"].astype(str).str.len().eq(0).all():
+        return out
+    st = pd.to_datetime(df["start_utc"], utc=True, errors="coerce").dt.tz_convert("America/New_York")
+    mins = st.dt.hour * 60 + st.dt.minute
+    mins = mins.where(st.dt.hour >= 6, mins + 24 * 60)     # after-midnight tips belong to the night
+    n_all = df["game_id"].nunique()
+    for name, cutoff in (("main", 19 * 60), ("late", 21 * 60 + 30)):
+        sub = df[mins >= cutoff]
+        g = sub["game_id"].nunique()
+        if 2 <= g < n_all and all(o[1]["game_id"].nunique() != g for o in out):
+            out.append((name, sub))
+    return out
+
+
+def _lineup_record(sub: pd.DataFrame) -> dict:
+    team_counts = sub["team"].value_counts()
+    game_key = sub.apply(lambda r: "|".join(sorted([r["team"], r["opp"]])), axis=1)
+    game_counts = game_key.value_counts()
+    both_sides = any(sub.loc[game_key == g, "team"].nunique() == 2 for g in game_counts.index)
+    return {
+        "score": round(float(sub["dk_fp"].sum()), 2),
+        "salary": int(sub["salary"].sum()),
+        "studs": int((sub["salary"] >= 9000).sum()),
+        "mid": int(((sub["salary"] >= 5000) & (sub["salary"] < 9000)).sum()),
+        "value": int((sub["salary"] < 5000).sum()),
+        "punts": int((sub["salary"] <= 3500).sum()),
+        "max_team": int(team_counts.max()),
+        "games": int(game_counts.size),
+        "max_game": int(game_counts.max()),
+        "bring_back": bool(both_sides),
+        "players": [{
+            "name": r["name"], "salary": int(r["salary"]), "pts": round(float(r["dk_fp"]), 1),
+            "teammate_out": bool(r.get("teammate_out")), "surprise_start": bool(r.get("surprise_start")),
+            "minutes_spike": bool(r.get("minutes_spike")), "overtime": bool(r.get("overtime")),
+            "blowout": bool(r.get("blowout")), "high_total": bool(r.get("high_total")),
+            "beat_proj": None if pd.isna(r.get("beat_proj")) else round(float(r["beat_proj"]), 2),
+            "proj_value_rank": None if pd.isna(r.get("proj_value_rank")) else int(r["proj_value_rank"]),
+        } for _, r in sub.iterrows()],
+    }
+
+
 def analyse_night(day: date, joined: pd.DataFrame, ctx: pd.DataFrame) -> dict | None:
-    df = joined.merge(ctx[["person_id", "game_id", "teammate_out", "surprise_start", "minutes_spike",
-                           "overtime", "blowout", "high_total", "beat_proj", "pred"]],
-                      on=["person_id", "game_id"], how="left").reset_index(drop=True)
+    cols = ["person_id", "game_id", "teammate_out", "surprise_start", "minutes_spike", "overtime",
+            "blowout", "high_total", "beat_proj", "pred"]
+    df = joined.merge(ctx[cols], on=["person_id", "game_id"], how="left").reset_index(drop=True)
     df = df[df["dk_fp"] > 0].reset_index(drop=True)
-    lus = top_lineups(df)
-    if not lus:
+    slates = []
+    for kind, part in sub_slates(df):
+        part = part.reset_index(drop=True).copy()
+        lus = top_lineups(part)
+        if not lus:
+            continue
+        # what was knowable before the games: projection, value and their ranks
+        part["proj_value"] = part["pred"].fillna(0) / (part["salary"] / 1000)
+        part["proj_value_rank"] = part["proj_value"].rank(ascending=False, method="first")
+        part["proj_rank"] = part["pred"].fillna(0).rank(ascending=False, method="first")
+        counts = np.zeros(len(part))
+        for lu in lus:
+            counts[lu] += 1
+        players = [{
+            "salary": int(r.salary), "value_rank": int(r.proj_value_rank), "proj_rank": int(r.proj_rank),
+            "teammate_out": bool(r.teammate_out) if not pd.isna(r.teammate_out) else False,
+            "starter": bool(r.starter), "exp": round(float(c / len(lus)), 3),
+        } for r, c in zip(part.itertuples(index=False), counts)]
+        slates.append({"type": kind, "games": int(part["game_id"].nunique()),
+                       "lineups": [_lineup_record(part.iloc[lu]) for lu in lus], "players": players})
+    if not slates:
         return None
-    # projected value rank: was the player an obvious play before the game?
-    df["proj_value"] = df["pred"].fillna(0) / (df["salary"] / 1000)
-    df["proj_value_rank"] = df["proj_value"].rank(ascending=False)
-    lineups = []
-    for lu in lus:
-        sub = df.iloc[lu]
-        team_counts = sub["team"].value_counts()
-        game_key = sub.apply(lambda r: "|".join(sorted([r["team"], r["opp"]])), axis=1)
-        game_counts = game_key.value_counts()
-        both_sides = any(sub.loc[game_key == g, "team"].nunique() == 2 for g in game_counts.index)
-        lineups.append({
-            "score": round(float(sub["dk_fp"].sum()), 2),
-            "salary": int(sub["salary"].sum()),
-            "studs": int((sub["salary"] >= 9000).sum()),
-            "mid": int(((sub["salary"] >= 5000) & (sub["salary"] < 9000)).sum()),
-            "value": int((sub["salary"] < 5000).sum()),
-            "punts": int((sub["salary"] <= 3500).sum()),
-            "max_team": int(team_counts.max()),
-            "games": int(game_counts.size),
-            "max_game": int(game_counts.max()),
-            "bring_back": bool(both_sides),
-            "players": [{
-                "name": r["name"], "salary": int(r["salary"]), "pts": round(float(r["dk_fp"]), 1),
-                "teammate_out": bool(r.get("teammate_out")), "surprise_start": bool(r.get("surprise_start")),
-                "minutes_spike": bool(r.get("minutes_spike")), "overtime": bool(r.get("overtime")),
-                "blowout": bool(r.get("blowout")), "high_total": bool(r.get("high_total")),
-                "beat_proj": None if pd.isna(r.get("beat_proj")) else round(float(r["beat_proj"]), 2),
-                "proj_value_rank": None if pd.isna(r.get("proj_value_rank")) else int(r["proj_value_rank"]),
-            } for _, r in sub.iterrows()],
-        })
-    return {"date": day.isoformat(), "players": int(len(df)), "games": int(df["game_id"].nunique()),
-            "lineups": lineups}
+    return {"version": VERSION, "date": day.isoformat(), "slates": slates}
 
 
-# ── your real contest results ────────────────────────────────────────────────
 def parse_contest_standings(text: str) -> dict | None:
     """DraftKings contest standings CSV -> winners with real ownership."""
     rows = list(csv.reader(io.StringIO(text)))
@@ -279,25 +330,16 @@ def parse_contest_standings(text: str) -> dict | None:
 
 
 # ── summary + generator rules ────────────────────────────────────────────────
-def summarise(nights: list[dict], contests: list[dict]) -> dict:
-    lus = [lu for n in nights for lu in n["lineups"]]
-    players = [p for lu in lus for p in lu["players"]]
-    if not lus:
-        return {"nights": 0, "rules": default_rules(),
-                "note": "No verified historical nights yet; using default rules."}
-
+def _structure(lus: list[dict]) -> dict:
     def pct(x):
         return round(100.0 * float(np.mean(x)), 1)
-
     sal = np.array([lu["salary"] for lu in lus])
     max_team = np.array([lu["max_team"] for lu in lus])
     max_game = np.array([lu["max_game"] for lu in lus])
+    players = [p for lu in lus for p in lu["players"]]
     beat = [p["beat_proj"] for p in players if p["beat_proj"]]
     rank = [p["proj_value_rank"] for p in players if p["proj_value_rank"]]
-    summary = {
-        "nights": len(nights),
-        "lineups_analysed": len(lus),
-        "date_range": [nights[0]["date"], nights[-1]["date"]],
+    return {
         "structure": {
             "salary_used_median": int(np.median(sal)),
             "salary_used_p5": int(np.percentile(sal, 5)),
@@ -321,25 +363,96 @@ def summarise(nights: list[dict], contests: list[dict]) -> dict:
             "median_points_vs_projection": round(float(np.median(beat)), 2) if beat else None,
             "pct_outside_top20_projected_value": pct([r > 20 for r in rank]) if rank else None,
         },
+        "rules": {
+            "min_salary": int(max(45000, (np.percentile(sal, 5) // 100) * 100)),
+            "max_per_team": int(max(3, np.percentile(max_team, 99))),
+            "max_per_game": int(max(4, np.percentile(max_game, 99))),
+        },
+    }
+
+
+def exposure_model(slates: list[dict], shrink: float = 30.0) -> dict:
+    """Average share of the top lineups that included players of each type: by
+    slate size, pre-game value rank and whether a rotation teammate was out.
+    This is the data-driven target exposure for a lineup portfolio."""
+    out: dict = {}
+    for name, _, _ in SIZE_BUCKETS:
+        rows = [p for s in slates if size_bucket(s["games"]) == name for p in s["players"]]
+        if not rows:
+            continue
+        base = float(np.mean([p["exp"] for p in rows]))
+        table = {}
+        for lo, hi in RANK_BUCKETS:
+            rb = rank_bucket(lo)
+            for tm in (False, True):
+                cell = [p["exp"] for p in rows if lo <= p["value_rank"] <= hi and p["teammate_out"] == tm]
+                n = len(cell)
+                raw = float(np.mean(cell)) if n else base
+                table[f"{rb}|{int(tm)}"] = {"exp": round((n * raw + shrink * base) / (n + shrink) * 100, 2), "n": n}
+        out[name] = {"table": table, "players": len(rows),
+                     "slates": sum(1 for s in slates if size_bucket(s["games"]) == name)}
+    return out
+
+
+def suggested_exposure(model_: dict, n_games: int, value_rank: int, teammate_out: bool) -> float | None:
+    m = model_.get(size_bucket(n_games)) or next(iter(model_.values()), None)
+    if not m:
+        return None
+    cell = m["table"].get(f"{rank_bucket(value_rank)}|{int(bool(teammate_out))}")
+    return cell["exp"] if cell else None
+
+
+def summarise(nights: list[dict], contests: list[dict]) -> dict:
+    slates = [dict(s, date=n["date"]) for n in nights for s in n.get("slates", [])]
+    if not slates:
+        return {"nights": 0, "rules": default_rules(), "buckets": {},
+                "note": "No verified historical nights yet; using default rules."}
+    buckets = {}
+    for name, lo, hi in SIZE_BUCKETS:
+        mine = [s for s in slates if size_bucket(s["games"]) == name]
+        lus = [lu for s in mine for lu in s["lineups"]]
+        if not lus:
+            continue
+        buckets[name] = {"label": f"{lo}-{hi if hi < 99 else '15'} games", "slates": len(mine),
+                         "lineups_analysed": len(lus), **_structure(lus)}
+    all_lus = [lu for s in slates if s["type"] == "all" for lu in s["lineups"]] or \
+              [lu for s in slates for lu in s["lineups"]]
+    overall = _structure(all_lus)
+    return {
+        "version": VERSION,
+        "nights": len(nights),
+        "slates_analysed": len(slates),
+        "lineups_analysed": sum(len(s["lineups"]) for s in slates),
+        "date_range": [nights[0]["date"], nights[-1]["date"]],
+        **overall,
+        "buckets": buckets,
+        "exposure_model": exposure_model(slates),
         "real_contests": {"count": len(contests), "contests": contests[-20:]},
     }
-    summary["rules"] = {
-        "min_salary": int(max(45000, (np.percentile(sal, 5) // 100) * 100)),
-        "max_per_team": int(max(3, np.percentile(max_team, 99))),
-        "max_per_game": int(max(4, np.percentile(max_game, 99))),
-    }
-    return summary
 
 
 def default_rules() -> dict:
     return {"min_salary": 48500, "max_per_team": 4, "max_per_game": 6}
 
 
-def load_rules() -> dict:
+def _load() -> dict:
     try:
-        return json.loads(OUT.read_text()).get("rules") or default_rules()
+        return json.loads(OUT.read_text())
     except (OSError, ValueError):
-        return default_rules()
+        return {}
+
+
+def load_rules(n_games: int | None = None) -> dict:
+    doc = _load()
+    if n_games is not None:
+        b = (doc.get("buckets") or {}).get(size_bucket(n_games))
+        if b and b.get("rules"):
+            return b["rules"]
+    return doc.get("rules") or default_rules()
+
+
+def load_exposure_model() -> dict:
+    return _load().get("exposure_model") or {}
 
 
 def run(max_new_nights: int = 400) -> dict:
@@ -353,7 +466,14 @@ def run(max_new_nights: int = 400) -> dict:
     base = baseline_predictions(prep)
     NIGHTS.mkdir(parents=True, exist_ok=True)
     days = sorted(set(prep["d"]))
-    done = {p.stem for p in NIGHTS.glob("*.json")}
+    done = set()
+    for p in NIGHTS.glob("*.json"):
+        try:
+            rec = json.loads(p.read_text())
+        except ValueError:
+            continue
+        if not rec.get("verified") or rec.get("version") == VERSION:
+            done.add(p.stem)
     new = 0
     for day in days:
         if day.isoformat() in done or new >= max_new_nights:
@@ -366,7 +486,8 @@ def run(max_new_nights: int = 400) -> dict:
             continue
         tonight = prep[prep["d"] == day]
         joined, rate = verify_night(sal, tonight)
-        rec = {"date": day.isoformat(), "verified": rate >= 0.95, "agreement": round(rate, 3)}
+        rec = {"date": day.isoformat(), "verified": rate >= 0.95, "agreement": round(rate, 3),
+               "version": VERSION}
         if rec["verified"]:
             ctx = night_context(day, prep, base)
             res = analyse_night(day, joined, ctx)
@@ -379,7 +500,7 @@ def run(max_new_nights: int = 400) -> dict:
             n = json.loads(p.read_text())
         except ValueError:
             continue
-        if n.get("verified") and n.get("lineups"):
+        if n.get("verified") and n.get("slates"):
             nights.append(n)
     contests = []
     if CONTESTS.exists():

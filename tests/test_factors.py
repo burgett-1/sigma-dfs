@@ -36,7 +36,7 @@ def league(n_days=170, seed=4, b2b_effect=-0.06, alt_effect=-0.05, ww_boost=0.25
                                          person_id=hash((team, i)) % 10**6, name=f"{team} P{i}", position="",
                                          starter=True, status="INACTIVE", not_playing_reason="INACTIVE_INJURY",
                                          minutes=0, pts=0, reb=0, ast=0, stl=0, blk=0, tov=0, fg3m=0, fga=0, fta=0,
-                                         team_score=0, opp_score=0, officials=ref, arena_team=home))
+                                         team_score=0, opp_score=0, officials=ref, arena_team=home, start_utc=f"{d}T23:00:00+00:00"))
                         continue
                     eff = 1.0
                     if b2b:
@@ -54,7 +54,8 @@ def league(n_days=170, seed=4, b2b_effect=-0.06, alt_effect=-0.05, ww_boost=0.25
                                      starter=i < 5, status="ACTIVE", not_playing_reason="", minutes=round(m, 1),
                                      pts=int(fp * 0.5), reb=int(fp * 0.2), ast=int(fp * 0.12), stl=1, blk=0, tov=2,
                                      fg3m=1, fga=10, fta=3, team_score=110 + (6 if ref == "Ref Fast" else 0),
-                                     opp_score=108 + (6 if ref == "Ref Fast" else 0), officials=ref, arena_team=home))
+                                     opp_score=108 + (6 if ref == "Ref Fast" else 0), officials=ref, arena_team=home,
+                                     start_utc=f"{d}T23:00:00+00:00"))
                 last_played[team] = d
     df = pd.DataFrame(rows)
     df["dk_fp"] = dk_points(df)

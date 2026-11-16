@@ -70,3 +70,33 @@ def test_full_build_ranks_by_win_probability():
     assert abs(sum(wins) + out["field_win_pct"] - 100) < 0.01
     assert len({tuple(sorted(l["ids"])) for l in lus}) == len(lus)
     assert all(len(l["ids"]) == 8 and l["salary"] <= DK_SALARY_CAP for l in lus)
+
+
+def test_showdown_lineups():
+    rows = [r for r in _rows(n_games=1)]
+    for r in rows:
+        r["cpt_id"] = r["draftable_id"] + 9000
+        r["cpt_salary"] = int(r["salary"] * 1.5)
+    pool = sim.build_pool(rows, "showdown")
+    x = sim.sample_scores(pool, 1, np.random.default_rng(3), {"team": 0.02, "opp": 0.05})[0].astype(float)
+    lu = sim.showdown_lineup(x, pool, {})
+    cpt, utils = lu[0], lu[1:]
+    assert len(utils) == 5 and cpt not in utils
+    assert pool.cpt_sal[cpt] + pool.sal[list(utils)].sum() <= DK_SALARY_CAP
+    assert len(set(pool.team[list(lu)].tolist())) == 2
+    # brute force the optimum to prove it is exact
+    best = 0
+    idx = range(len(x))
+    for c in idx:
+        for u in itertools.combinations([i for i in idx if i != c], 5):
+            if pool.cpt_sal[c] + pool.sal[list(u)].sum() > DK_SALARY_CAP:
+                continue
+            if len(set(pool.team[[c, *u]].tolist())) < 2:
+                continue
+            best = max(best, 1.5 * x[c] + x[list(u)].sum())
+    assert abs(best - (1.5 * x[cpt] + x[list(utils)].sum())) < 1e-6
+    out = sim.build_slate_lineups(rows, {}, {"team": 0.02, "opp": 0.05}, n_lineups=200, sims=5000,
+                                  field_size=200, kind="showdown")
+    assert out["kind"] == "showdown" and out["slots"][0] == "CPT" and len(out["lineups"]) > 50
+    first = out["lineups"][0]
+    assert len(first["ids"]) == 6 and first["ids"][0] > 9000 and first["salary"] <= DK_SALARY_CAP

@@ -226,9 +226,16 @@ def with_without(hist: pd.DataFrame, team: str, player_ids: dict[str, object], a
                 continue
             r_with = with_g["dk_fp"].sum() / with_g["minutes"].sum()
             r_wo = wo_g["dk_fp"].sum() / wo_g["minutes"].sum()
-            w = len(wo_g) / (len(wo_g) + shrink)
+            # weight the split by how clearly it stands out from game-to-game noise
+            # (positive-part James-Stein: w = 1 - 4/z^2, so z <= 2 counts for nothing)
+            g_wo = wo_g["dk_fp"] / wo_g["minutes"]
+            g_w = with_g["dk_fp"] / with_g["minutes"]
+            se = math.sqrt(g_wo.var(ddof=1) / len(g_wo) + g_w.var(ddof=1) / len(g_w)) if len(g_wo) > 1 else 0.0
+            z = (g_wo.mean() - g_w.mean()) / se if se > 0 else 0.0
+            w = max(0.0, 1.0 - 4.0 / z ** 2) if z else 0.0
+            w *= len(wo_g) / (len(wo_g) + shrink)
             mult *= 1.0 + w * (r_wo / r_with - 1.0)
-            ev += len(wo_g)
+            ev += len(wo_g) * (1 if w > 0 else 0)
         if ev:
             out[key] = (min(max(mult, 0.85), 1.30), ev)
     return out

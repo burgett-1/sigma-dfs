@@ -1,0 +1,518 @@
+// Sigma DFS tools that live beside the full-slate contest simulation:
+// slate picker, quick filters, winning patterns, Late Swap, Single Lineup Simulator.
+import { Component, useState, useRef, useEffect, useMemo } from "react";
+import { slotsFor, slotSalary, buildSim, bestFill, SALARY_CAP } from "./engine.js";
+import { parseEntries, exportEntries } from "./lateswap.js";
+
+const OH = "#ff6b00", CARD = "#1a1a24", BR = "#2a2a3a", MU = "#7a7a9a", GR = "#00c97a", RE = "#ff4466", YE = "#f5b942";
+const card = { background: CARD, border: "1px solid " + BR, borderRadius: 10, padding: 16 };
+const sl = { fontSize: 11, fontWeight: 700, color: OH, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 };
+const inp = { background: "#111118", border: "1px solid " + BR, borderRadius: 6, color: "#e8e8f0", padding: "7px 9px", fontSize: 13, boxSizing: "border-box" };
+const btn = (bg, fg) => ({ padding: "7px 13px", background: bg, color: fg || "#fff", border: "1px solid " + (fg || bg) + "55", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer" });
+const pill = (c) => ({ display: "inline-block", padding: "2px 7px", borderRadius: 4, fontSize: 11, fontWeight: 700, background: c + "22", color: c });
+const fmt = (x, d = 1) => (x == null || isNaN(x) ? "—" : Number(x).toFixed(d));
+const money = (x) => "$" + Number(x || 0).toLocaleString();
+const roiCol = (x) => (x >= 0 ? GR : RE);
+
+// a tool that fails shows its error instead of taking the whole app down
+export class ToolBoundary extends Component {
+  constructor(props) { super(props); this.state = { error: null }; }
+  static getDerivedStateFromError(error) { return { error }; }
+  render() {
+    if (this.state.error) {
+      return <div style={card}><div style={sl}>{"Something went wrong in this tool"}</div>
+        <div style={{ fontSize: 12, color: MU }}>{String(this.state.error.message || this.state.error)}</div>
+        <button style={{ ...btn(OH), marginTop: 10 }} onClick={() => this.setState({ error: null })}>{"Try again"}</button></div>;
+    }
+    return this.props.children;
+  }
+}
+
+// ── starter / lock icons ────────────────────────────────────────────────────
+export function StarterIcon({ p }) {
+  const st = p.starterStatus || "";
+  if (!st) return null;
+  const confirmed = st === "confirmed";
+  const tip = confirmed ? "Confirmed starter" : st === "expected" ? "Expected starter (NBA.com)" : "Projected starter (Sigma)";
+  return (
+    <span title={tip + (p.unexpected === "starting" ? " — unexpected start" : "")}
+      style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 15, height: 15, borderRadius: 3,
+        marginLeft: 5, fontSize: 10, fontWeight: 900, color: "#0f0f13", background: confirmed ? GR : YE, verticalAlign: "middle" }}>
+      {"S"}
+    </span>
+  );
+}
+export function LockIcon({ title }) {
+  return <span title={title || "Game has started: locked"} style={{ marginLeft: 4, fontSize: 11 }}>{"🔒"}</span>;
+}
+
+// ── background simulation worker ────────────────────────────────────────────
+export function useSimWorker() {
+  const ref = useRef(null), jobs = useRef({}), nextId = useRef(1);
+  useEffect(() => {
+    const w = new Worker(new URL("./simWorker.js", import.meta.url), { type: "module" });
+    w.onmessage = (ev) => {
+      const { id, progress, result, error } = ev.data, j = jobs.current[id];
+      if (!j) return;
+      if (progress != null) { j.onProgress && j.onProgress(progress); return; }
+      delete jobs.current[id];
+      error ? j.reject(new Error(error)) : j.resolve(result);
+    };
+    ref.current = w;
+    return () => w.terminate();
+  }, []);
+  return (type, payload, onProgress) => new Promise((resolve, reject) => {
+    const id = nextId.current++;
+    jobs.current[id] = { resolve, reject, onProgress };
+    ref.current.postMessage({ id, type, payload });
+  });
+}
+
+// ── slate picker ────────────────────────────────────────────────────────────
+export function SlatePicker({ slates, current, onPick, fmtClock }) {
+  if (!slates.length) return <div style={card}><div style={{ color: MU }}>{"No DraftKings NBA slates are open right now."}</div></div>;
+  return (
+    <div>
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Choose your slate"}</div>
+        <div style={{ fontSize: 13, color: MU }}>{"Pulled directly from DraftKings. Projections, lineups, simulations, patterns, late swap and the lineup simulator all follow the slate you pick."}</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 12 }}>
+        {slates.map((s) => (
+          <div key={s.id} onClick={() => onPick(s)} style={{ ...card, cursor: "pointer", borderColor: s.id === current ? OH : BR }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+              <b style={{ fontSize: 16 }}>{s.name}</b>
+              <span style={pill(s.kind === "showdown" ? "#a78bfa" : "#4a9eff")}>{s.kind === "showdown" ? "SHOWDOWN" : "CLASSIC"}</span>
+            </div>
+            <div style={{ fontSize: 12, color: MU, marginBottom: 8 }}>
+              {s.game_count + " game" + (s.game_count !== 1 ? "s" : "") + " · first lock " + fmtClock(s.games[0] && s.games[0].start_utc)}
+              {s.contest_locked ? <span style={{ ...pill(YE), marginLeft: 6 }}>{s.locked ? "ALL LOCKED" : "LOCKED · late swap open"}</span> : null}
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+              {s.games.map((g) => <span key={g.name} style={pill(g.locked ? MU : "#4a9eff")}>{(g.locked ? "🔒 " : "") + g.away + " @ " + g.home + " " + (g.start_et || "")}</span>)}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ── quick filters: player search + teams ────────────────────────────────────
+export function QuickFilters({ search, setSearch, teams, selTeams, setSelTeams, extra }) {
+  return (
+    <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap", marginBottom: 10 }}>
+      <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="🔍 Search player…" style={{ ...inp, width: 200 }} />
+      <span style={{ fontSize: 11, color: MU }}>{"Teams:"}</span>
+      {teams.map((t) => {
+        const on = selTeams.includes(t);
+        return <button key={t} onClick={() => setSelTeams(on ? selTeams.filter((x) => x !== t) : selTeams.concat([t]))}
+          style={{ ...pill(on ? OH : MU), border: "1px solid " + (on ? OH : BR), cursor: "pointer" }}>{t}</button>;
+      })}
+      {selTeams.length || search ? <button onClick={() => { setSearch(""); setSelTeams([]); }} style={btn(BR, MU)}>{"Clear"}</button> : null}
+      {extra}
+    </div>
+  );
+}
+export function matchesQuick(names, teams, search, selTeams) {
+  if (search) { const q = search.toLowerCase(); if (!names.some((n) => n.toLowerCase().includes(q))) return false; }
+  if (selTeams.length && !teams.some((t) => selTeams.includes((t || "").toUpperCase()))) return false;
+  return true;
+}
+
+// ── contest settings used by the two tools ──────────────────────────────────
+function ContestSettings({ cfg, setCfg, showFee = true }) {
+  const field = (label, key, step) => (
+    <label style={{ fontSize: 11, color: MU }}>{label}
+      <input type="number" step={step || 1} value={cfg[key]} onChange={(e) => setCfg({ ...cfg, [key]: e.target.value })} style={{ ...inp, width: 110, display: "block", marginTop: 3 }} />
+    </label>
+  );
+  return (
+    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", alignItems: "flex-end" }}>
+      {field("Contest size", "fieldSize")}
+      {showFee ? field("Entry fee ($)", "entryFee", 0.25) : null}
+      {field("Payout to 1st (%)", "firstPct", 0.5)}
+      {field("Simulations", "sims", 1000)}
+    </div>
+  );
+}
+
+// ── winning patterns (slate-tailored) ───────────────────────────────────────
+export function PatternsView({ patterns, spotlight, slate, players, likedExposure }) {
+  const kind = slate ? slate.kind : "classic";
+  const bucketName = slate ? slate.size_bucket : null;
+  const b = (patterns && patterns.buckets && bucketName && patterns.buckets[bucketName]) || patterns || {};
+  const st = b.structure || {}, why = b.why_players_hit || {};
+  const cards = (spotlight && spotlight.cards) || [];
+  const strong = cards.filter((c) => c.strong), other = cards.filter((c) => !c.strong);
+  const guide = players.filter((p) => p.proj > 0 && p.optExp != null).sort((a, c) => c.optExp - a.optExp).slice(0, 40);
+  const Tile = ({ big, label, sub }) => (
+    <div style={{ background: "#111118", borderRadius: 8, padding: "12px 14px" }}>
+      <div style={{ fontSize: 22, fontWeight: 800, color: OH }}>{big}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{label}</div>
+      {sub ? <div style={{ fontSize: 11, color: MU, marginTop: 2 }}>{sub}</div> : null}
+    </div>
+  );
+  const Card = ({ c }) => (
+    <div style={{ ...card, borderColor: c.strong ? OH : BR, background: c.strong ? "#2a1a0e" : CARD, marginBottom: 10 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
+        <b style={{ fontSize: c.strong ? 15 : 13 }}>{c.headline}</b>
+        {c.strong ? <span style={pill(OH)}>{"STRONG MATCH"}</span> : <span style={pill(MU)}>{c.type === "same_situation" ? "SAME SITUATION" : c.type === "winning_profile" ? "PROFILE" : "SURPRISE START"}</span>}
+      </div>
+      <div style={{ fontSize: 13, color: "#c8c8d8", marginTop: 6 }}>{c.detail}</div>
+      <div style={{ fontSize: 11, color: MU, marginTop: 6 }}>{c.team + " · " + money(c.salary) + " · proj " + fmt(c.proj) + " · own " + fmt(c.own) + "%"}</div>
+    </div>
+  );
+  return (
+    <div>
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Tonight's spotlight" + (slate ? " · " + slate.name : "")}</div>
+        <div style={{ fontSize: 12, color: MU, marginBottom: 10 }}>{"Where tonight's slate matches what has won before. Same-situation cards only appear when the history clears a statistical test (not just a hot streak)."}</div>
+        {cards.length ? <div>{strong.map((c) => <Card key={c.player} c={c} />)}{other.map((c) => <Card key={c.player} c={c} />)}</div>
+          : <div style={{ color: MU, fontSize: 13 }}>{"No strong historical matches on this slate yet. Cards appear as injuries and lineups are announced."}</div>}
+      </div>
+      {kind === "showdown" ? <div style={{ ...card, marginBottom: 12, color: MU, fontSize: 13 }}>{"Historical winning-lineup analysis covers classic slates. Showdown uses the same projections and contest simulation."}</div> : null}
+      {kind !== "showdown" && (patterns && patterns.nights) ? (
+        <div style={{ ...card, marginBottom: 12 }}>
+          <div style={sl}>{"What wins on slates like this" + (bucketName ? " (" + (b.label || bucketName) + ")" : "")}</div>
+          <div style={{ fontSize: 12, color: MU, marginBottom: 10 }}>{"From " + (b.slates || patterns.slates_analysed || 0) + " verified historical slates of this size: the 20 best possible lineups of each."}</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(190px,1fr))", gap: 10 }}>
+            <Tile big={money(st.salary_used_median)} label="Salary used (typical)" sub={fmt(st.pct_using_49k_plus, 0) + "% used $49K or more"} />
+            <Tile big={fmt(st.avg_studs_9k_plus)} label="Studs ($9K+)" sub={"plus " + fmt(st.avg_value_under_5k) + " players under $5K"} />
+            <Tile big={fmt(st.pct_3plus_from_one_team, 0) + "%"} label="Stacked 3+ from one team" sub={fmt(st.pct_with_bring_back, 0) + "% included both sides of a game"} />
+            <Tile big={fmt(why.teammate_out_pct, 0) + "%"} label="Players with a teammate out" sub="of all players in winning lineups" />
+            <Tile big={fmt(why.minutes_spike_pct, 0) + "%"} label="Got a minutes spike" sub="6+ more minutes than usual" />
+            <Tile big={fmt(why.pct_outside_top20_projected_value, 0) + "%"} label="Weren't obvious values" sub="outside the top-20 projected values" />
+          </div>
+        </div>) : null}
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Exposure guide"}</div>
+        <div style={{ fontSize: 12, color: MU, marginBottom: 10 }}>{"Suggested = share of historical winning lineups that contained players with the same pre-game profile (slate size, value rank, teammate out). Compare it with your exposure in the lineups you've liked."}</div>
+        {guide.length ? (
+          <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead><tr>{["Player", "Salary", "Proj", "Own%", "Suggested", "Yours", ""].map((h) => <th key={h} style={{ textAlign: "left", color: MU, fontSize: 10, padding: "6px 8px", borderBottom: "1px solid " + BR }}>{h}</th>)}</tr></thead>
+            <tbody>{guide.map((p) => {
+              const mine = likedExposure[p.name] || 0, diff = mine - p.optExp;
+              return (<tr key={p.name}>
+                <td style={{ padding: "5px 8px" }}><b>{p.name}</b><StarterIcon p={p} /></td>
+                <td style={{ padding: "5px 8px", color: OH }}>{money(p.salary)}</td>
+                <td style={{ padding: "5px 8px" }}>{fmt(p.proj)}</td>
+                <td style={{ padding: "5px 8px" }}>{fmt(p.own)}</td>
+                <td style={{ padding: "5px 8px", fontWeight: 800 }}>{fmt(p.optExp, 0) + "%"}</td>
+                <td style={{ padding: "5px 8px", color: Math.abs(diff) < 8 ? GR : YE }}>{likedExposure.__count ? fmt(mine, 0) + "%" : "—"}</td>
+                <td style={{ padding: "5px 8px", fontSize: 11, color: MU }}>{likedExposure.__count ? (diff > 8 ? "over" : diff < -8 ? "under" : "on target") : ""}</td>
+              </tr>);
+            })}</tbody></table></div>
+        ) : <div style={{ color: MU, fontSize: 13 }}>{"The exposure guide appears once the historical analysis has finished its first nights."}</div>}
+      </div>
+    </div>
+  );
+}
+
+// ── Late Swap tool ──────────────────────────────────────────────────────────
+export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
+  const [doc, setDoc] = useState(null), [err, setErr] = useState("");
+  const [cfg, setCfg] = useState({ fieldSize: defaults.fieldSize || 10000, entryFee: defaults.entryFee || 15, firstPct: defaults.firstPct || 20, sims: 20000 });
+  const [res, setRes] = useState(null), [busy, setBusy] = useState(0), [chosen, setChosen] = useState(new Set());
+  const [search, setSearch] = useState(""), [selTeams, setSelTeams] = useState([]);
+  const [exclude, setExclude] = useState([]), [include, setInclude] = useState([]), [onlyChanged, setOnlyChanged] = useState(false);
+  const [page, setPage] = useState(0);
+  const fileRef = useRef(null), dlRef = useRef(null);
+  const idx = useMemo(() => { const m = {}; players.forEach((p, i) => { m[p.name] = i; }); return m; }, [players]);
+  const now = Date.now();
+  const teams = useMemo(() => Array.from(new Set(players.map((p) => (p.team || "").toUpperCase()))).sort(), [players]);
+  function onFile(e) {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = (ev) => {
+      const d = parseEntries(ev.target.result);
+      if (!d || !d.entries.length) { setErr("Couldn't find entries. Use DraftKings → My Contests → Upcoming/Live → Edit Entries → Download."); return; }
+      if (slate && d.kind !== slate.kind) { setErr("These entries are " + d.kind + " but the selected slate is " + slate.kind + ". Pick the matching slate first."); }
+      else setErr("");
+      const fee = d.entries[0].fee;
+      setDoc(d); setRes(null); setChosen(new Set());
+      if (fee) setCfg((c) => ({ ...c, entryFee: fee }));
+    };
+    r.readAsText(f); e.target.value = "";
+  }
+  function run() {
+    if (!doc) return;
+    setBusy(0.01); setRes(null);
+    const opts = { now: Date.now(), sims: Number(cfg.sims) || 20000, fieldSize: Number(cfg.fieldSize) || 10000,
+      entryFee: Number(cfg.entryFee) || 0, firstPct: Number(cfg.firstPct) || 20, corr,
+      exclude: exclude.map((n) => idx[n]).filter((x) => x != null), include: include.map((n) => idx[n]).filter((x) => x != null) };
+    runSim("lateswap", { players, doc, opts }, (f) => setBusy(Math.max(0.01, f))).then((r) => {
+      setRes(r); setBusy(0); setPage(0);
+      setChosen(new Set(r.entries.filter((e) => e.changed && e.after.roi > e.before.roi).map((e) => e.entryId)));
+    }).catch((e) => { setErr(e.message); setBusy(0); });
+  }
+  function download() {
+    const csv = exportEntries(doc, res.entries, chosen, players);
+    const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8;" }));
+    dlRef.current.href = url; dlRef.current.download = "DK_late_swap_" + chosen.size + "_entries.csv"; dlRef.current.click();
+    setTimeout(() => URL.revokeObjectURL(url), 2000);
+  }
+  const unlocked = players.filter((p) => !(p.gameStart && now >= Date.parse(p.gameStart)));
+  const shown = res ? res.entries.filter((e) => {
+    if (onlyChanged && !e.changed) return false;
+    const lu = (e.after || e.before || { players: [] }).players.filter((p) => p >= 0);
+    return matchesQuick(lu.map((p) => players[p].name), lu.map((p) => players[p].team), search, selTeams);
+  }) : [];
+  const PER = 25, pages = Math.max(1, Math.ceil(shown.length / PER)), pg = Math.min(page, pages - 1);
+  const chosenRes = res ? res.entries.filter((e) => chosen.has(e.entryId)) : [];
+  const avgSel = res ? (res.entries.reduce((s, e) => s + (chosen.has(e.entryId) && e.after ? e.after.roi : e.before ? e.before.roi : 0), 0) / Math.max(1, res.entries.filter((e) => e.before).length)) : 0;
+  return (
+    <div>
+      <a ref={dlRef} style={{ display: "none" }} aria-hidden="true">{"dl"}</a>
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Late Swap"}</div>
+        <div style={{ fontSize: 12, color: MU, marginBottom: 10 }}>{"Upload your DraftKings entries after lock. Players whose games have started (🔒) never move; every other slot is re-optimised with the same simulation model, using live scoring for games in progress. Then download and upload the file back to DraftKings."}</div>
+        <input ref={fileRef} type="file" accept=".csv,.txt" style={{ display: "none" }} onChange={onFile} />
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center", marginBottom: 10 }}>
+          <button onClick={() => fileRef.current.click()} style={btn(OH)}>{doc ? "✅ " + doc.entries.length + " entries loaded · replace" : "⬆ Upload DraftKings entries CSV"}</button>
+          <span style={{ fontSize: 12, color: MU }}>{unlocked.length + " players still swappable on " + (slate ? slate.name : "this slate")}</span>
+        </div>
+        {err ? <div style={{ color: RE, fontSize: 12, marginBottom: 8 }}>{err}</div> : null}
+        <ContestSettings cfg={cfg} setCfg={setCfg} />
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 10, alignItems: "center" }}>
+          <PlayerPicker label="Never swap in" players={unlocked} value={exclude} onChange={setExclude} />
+          <PlayerPicker label="Must swap in" players={unlocked} value={include} onChange={setInclude} />
+        </div>
+        <button disabled={!doc || busy > 0} onClick={run} style={{ ...btn(GR), marginTop: 12, width: "100%", padding: "11px 0", fontSize: 14, opacity: !doc || busy ? 0.6 : 1 }}>
+          {busy ? "Simulating… " + Math.round(busy * 100) + "%" : "Run late swap"}
+        </button>
+      </div>
+      {res ? (
+        <div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(170px,1fr))", gap: 10, marginBottom: 12 }}>
+            <Stat big={fmt(res.preROI) + "%"} label="Avg ROI before swap" col={roiCol(res.preROI)} />
+            <Stat big={fmt(res.postROI) + "%"} label="Avg ROI with all best swaps" col={roiCol(res.postROI)} />
+            <Stat big={fmt(avgSel) + "%"} label={"Avg ROI with selected swaps (" + chosen.size + ")"} col={roiCol(avgSel)} />
+            <Stat big={res.entries.filter((e) => e.changed).length + " / " + res.entries.length} label="Entries with a better lineup" col={OH} />
+          </div>
+          <div style={{ ...card, marginBottom: 12 }}>
+            <QuickFilters search={search} setSearch={setSearch} teams={teams} selTeams={selTeams} setSelTeams={setSelTeams}
+              extra={<label style={{ fontSize: 12, color: MU }}><input type="checkbox" checked={onlyChanged} onChange={(e) => setOnlyChanged(e.target.checked)} />{" only changed"}</label>} />
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              <button onClick={() => setChosen(new Set(shown.filter((e) => e.changed && e.after.roi > e.before.roi).map((e) => e.entryId).concat(Array.from(chosen))))} style={btn(GR + "22", GR)}>{"👍 Select all improving (shown)"}</button>
+              <button onClick={() => setChosen(new Set())} style={btn(RE + "11", RE)}>{"Clear selection"}</button>
+              <button disabled={!chosen.size} onClick={download} style={{ ...btn(OH), opacity: chosen.size ? 1 : 0.5 }}>{"⬇ Download DK upload file (" + chosen.size + " swaps)"}</button>
+            </div>
+          </div>
+          <Pager pg={pg} pages={pages} setPage={setPage} total={shown.length} />
+          {shown.slice(pg * PER, pg * PER + PER).map((e) => <SwapCard key={e.entryId} e={e} players={players} chosen={chosen.has(e.entryId)}
+            onToggle={() => { const n = new Set(chosen); n.has(e.entryId) ? n.delete(e.entryId) : n.add(e.entryId); setChosen(n); }} />)}
+          {shown.length > 10 ? <Pager pg={pg} pages={pages} setPage={setPage} total={shown.length} /> : null}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
+function Stat({ big, label, col }) {
+  return <div style={{ ...card, padding: 12, textAlign: "center" }}><div style={{ fontSize: 22, fontWeight: 800, color: col }}>{big}</div><div style={{ fontSize: 11, color: MU, marginTop: 3 }}>{label}</div></div>;
+}
+function Pager({ pg, pages, setPage, total }) {
+  if (pages <= 1) return null;
+  return (
+    <div style={{ display: "flex", gap: 6, justifyContent: "center", alignItems: "center", margin: "8px 0" }}>
+      <button style={btn(BR, MU)} disabled={pg === 0} onClick={() => setPage(pg - 1)}>{"‹ Prev"}</button>
+      <span style={{ fontSize: 12, color: MU }}>{"Page " + (pg + 1) + " of " + pages + " · " + total}</span>
+      <button style={btn(BR, MU)} disabled={pg >= pages - 1} onClick={() => setPage(pg + 1)}>{"Next ›"}</button>
+    </div>
+  );
+}
+function PlayerPicker({ label, players, value, onChange }) {
+  const [q, setQ] = useState("");
+  const sugg = q ? players.filter((p) => p.name.toLowerCase().includes(q.toLowerCase()) && !value.includes(p.name)).slice(0, 6) : [];
+  return (
+    <div style={{ position: "relative" }}>
+      <div style={{ fontSize: 11, color: MU, marginBottom: 3 }}>{label}</div>
+      <div style={{ display: "flex", gap: 4, flexWrap: "wrap", alignItems: "center" }}>
+        {value.map((n) => <span key={n} style={{ ...pill(OH), cursor: "pointer" }} onClick={() => onChange(value.filter((x) => x !== n))}>{n + " ×"}</span>)}
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="player…" style={{ ...inp, width: 130, padding: "4px 7px" }} />
+      </div>
+      {sugg.length ? <div style={{ position: "absolute", zIndex: 20, background: CARD, border: "1px solid " + BR, borderRadius: 6, marginTop: 2 }}>
+        {sugg.map((p) => <div key={p.name} onClick={() => { onChange(value.concat([p.name])); setQ(""); }} style={{ padding: "5px 9px", cursor: "pointer", fontSize: 12 }}>{p.name}</div>)}
+      </div> : null}
+    </div>
+  );
+}
+function SwapCard({ e, players, chosen, onToggle }) {
+  const before = e.before ? e.before.players : [], after = e.after ? e.after.players : before;
+  return (
+    <div style={{ ...card, marginBottom: 8, borderColor: chosen ? GR + "88" : BR }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
+        <div style={{ fontSize: 12, color: MU }}>{"Entry " + e.entryId + " · " + (e.contest || "")}</div>
+        <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 13 }}>
+          {e.unknown ? <span style={pill(YE)}>{"players not on this slate: pick the matching slate"}</span> : null}
+          {e.before ? <span>{"ROI "}<b style={{ color: roiCol(e.before.roi) }}>{fmt(e.before.roi)}%</b>{" → "}<b style={{ color: roiCol(e.after.roi) }}>{fmt(e.after.roi)}%</b></span> : null}
+          {e.changed ? <button onClick={onToggle} style={btn(chosen ? GR + "22" : "transparent", chosen ? GR : MU)}>{chosen ? "👍 Swap selected" : "Select swap"}</button>
+            : <span style={pill(MU)}>{e.openSlots ? "already optimal" : "fully locked"}</span>}
+        </div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 6 }}>
+        {e.slots.map((s, k) => {
+          const b = before[k], a = after[k], changed = b !== a;
+          const pb = b != null && b >= 0 ? players[b] : null, pa = a != null && a >= 0 ? players[a] : null;
+          return (
+            <div key={k} style={{ background: changed ? "#0e2a1c" : "#111118", borderRadius: 6, padding: "6px 8px", fontSize: 12 }}>
+              <div style={{ color: MU, fontSize: 10, fontWeight: 700 }}>{s.label}{s.locked ? <LockIcon /> : null}</div>
+              {changed && pb ? <div style={{ color: MU, textDecoration: "line-through" }}>{pb.name}</div> : null}
+              <div style={{ fontWeight: 700, color: changed ? GR : "#e8e8f0" }}>{pa ? pa.name : s.cell || "—"}{pa ? <StarterIcon p={pa} /> : null}</div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+// seat each player in a distinct slot (fewer players than slots is fine);
+// specific slots (PG, SG…) are offered before flex slots (G, F, UTIL)
+function seatPlayers(ps, masks, sim) {
+  const order = masks.map((m, k) => k).sort((a, b) => bits(masks[a]) - bits(masks[b]));
+  const slotOf = new Array(ps.length).fill(-1), owner = new Array(masks.length).fill(-1);
+  const tryP = (j, seen) => {
+    for (const k of order) {
+      if (seen[k] || !(sim.code[ps[j]] & masks[k])) continue;
+      seen[k] = 1;
+      if (owner[k] < 0 || tryP(owner[k], seen)) { owner[k] = j; slotOf[j] = k; return true; }
+    }
+    return false;
+  };
+  for (let j = 0; j < ps.length; j++) if (!tryP(j, new Array(masks.length).fill(0))) return null;
+  return slotOf;
+}
+function bits(x) { let c = 0; while (x) { c += x & 1; x >>= 1; } return c; }
+
+// ── Single Lineup Simulator ─────────────────────────────────────────────────
+export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
+  const kind = slate ? slate.kind : "classic";
+  const slots = slotsFor(kind);
+  const [roster, setRoster] = useState(() => slots.map(() => ({ p: null, locked: false })));
+  const [q, setQ] = useState(""), [res, setRes] = useState(null), [busy, setBusy] = useState(0), [msg, setMsg] = useState("");
+  const [cfg, setCfg] = useState({ fieldSize: defaults.fieldSize || 10000, entryFee: defaults.entryFee || 15, firstPct: defaults.firstPct || 20, sims: 20000 });
+  useEffect(() => { setRoster(slotsFor(kind).map(() => ({ p: null, locked: false }))); setRes(null); }, [kind, slate && slate.id]);
+  const now = Date.now();
+  const sim = useMemo(() => buildSim(players, 0), [players]);   // position codes / teams only
+  const used = new Set(roster.map((r) => r.p).filter((p) => p != null));
+  const salary = roster.reduce((s, r, k) => s + (r.p != null ? slotSalary(players[r.p], slots[k]) : 0), 0);
+  const proj = roster.reduce((s, r, k) => s + (r.p != null ? players[r.p].proj * (slots[k].mult || 1) : 0), 0);
+  const full = roster.every((r) => r.p != null);
+  const list = players.map((p, i) => i).filter((i) => players[i].proj > 0 && !used.has(i) && (!q || players[i].name.toLowerCase().includes(q.toLowerCase())))
+    .sort((a, b) => players[b].proj - players[a].proj);
+  function place(i) {
+    setRes(null); setMsg("");
+    const next = roster.map((r) => ({ ...r }));
+    const empty = next.map((r, k) => k).filter((k) => next[k].p == null);
+    if (!empty.length) { setMsg("Lineup is full: remove a player first."); return; }
+    if (kind === "showdown") { const k = empty[0]; next[k].p = i; setRoster(next); return; }
+    // re-seat every unlocked player so the new one fits wherever positions allow
+    const keep = next.map((r, k) => ({ r, k })).filter((x) => x.r.p != null && x.r.locked);
+    const movable = next.filter((r) => r.p != null && !r.locked).map((r) => r.p).concat([i]);
+    const openSlots = slots.filter((_, k) => !keep.some((x) => x.k === k));
+    const openK = slots.map((_, k) => k).filter((k) => !keep.some((x) => x.k === k));
+    const seat = seatPlayers(movable, openK.map((k) => slots[k].mask), sim);
+    if (!seat) { setMsg(players[i].name + " doesn't fit any open slot."); return; }
+    const out = slots.map((_, k) => { const kept = keep.find((x) => x.k === k); return kept ? { ...kept.r } : { p: null, locked: false }; });
+    movable.forEach((p, j) => { out[openK[seat[j]]] = { p, locked: false }; });
+    setRoster(out);
+  }
+  function remove(k) { if (roster[k].locked) return; setRes(null); setRoster(roster.map((r, j) => (j === k ? { p: null, locked: false } : r))); }
+  function toggleLock(k) { if (roster[k].p == null) return; setRoster(roster.map((r, j) => (j === k ? { ...r, locked: !r.locked } : r))); }
+  function clear() { setRes(null); setMsg(""); setRoster(roster.map((r) => (r.locked ? r : { p: null, locked: false }))); }
+  function complete() {
+    setRes(null); setMsg("");
+    const fixed = roster.map((r, k) => ({ slot: slots[k], p: r.p, k })).filter((f) => f.p != null);
+    const open = slots.filter((_, k) => roster[k].p == null);
+    const score = Float64Array.from(players.map((p) => Math.max(0, p.proj)));
+    const fill = bestFill(score, sim, players, fixed, open, {});
+    if (!fill) { setMsg("No legal way to fill the open slots under the salary cap."); return; }
+    let j = 0;
+    setRoster(roster.map((r) => (r.p != null ? r : { p: fill[j++], locked: false })));
+  }
+  function runIt() {
+    setBusy(0.01); setRes(null);
+    const lineup = roster.map((r, k) => [r.p, slots[k].mult || 1]);
+    const opts = { now, kind, corr, sims: Number(cfg.sims) || 20000, fieldSize: Number(cfg.fieldSize) || 10000,
+      entryFee: Number(cfg.entryFee) || 0, firstPct: Number(cfg.firstPct) || 20, seed: 4242 };
+    runSim("single", { players, lineup, opts }, (f) => setBusy(Math.max(0.01, f)))
+      .then((r) => { setRes(r); setBusy(0); }).catch((e) => { setMsg(e.message); setBusy(0); });
+  }
+  const over = salary > SALARY_CAP;
+  return (
+    <div>
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Single Lineup Simulator"}</div>
+        <div style={{ fontSize: 12, color: MU }}>{"Hand-build a lineup for " + (slate ? slate.name : "this slate") + " and simulate it against a full contest field. Separate from the 10,000-lineup pool and from late swap."}</div>
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.4fr) minmax(0,1fr)", gap: 12 }}>
+        <div style={card}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 13 }}>
+            <b>{"Your lineup"}</b>
+            <span><span style={{ color: over ? RE : OH, fontWeight: 800 }}>{money(salary)}</span><span style={{ color: MU }}>{" / " + money(SALARY_CAP) + " · " + money(SALARY_CAP - salary) + " left · proj " + fmt(proj)}</span></span>
+          </div>
+          {roster.map((r, k) => {
+            const p = r.p != null ? players[r.p] : null;
+            return (
+              <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 10px", marginBottom: 6, borderRadius: 8, background: "#111118", border: "1px solid " + (r.locked ? OH : BR) }}>
+                <span style={{ width: 44, fontSize: 11, fontWeight: 800, color: slots[k].mult ? "#a78bfa" : MU }}>{slots[k].label}</span>
+                {p ? (
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <b>{p.name}</b><StarterIcon p={p} />{p.gameStart && now >= Date.parse(p.gameStart) ? <LockIcon /> : null}
+                    <div style={{ fontSize: 11, color: MU }}>{(p.positions || []).join("/") + " · " + p.team + " · " + money(slotSalary(p, slots[k])) + " · proj " + fmt(p.proj * (slots[k].mult || 1))}</div>
+                  </div>
+                ) : <div style={{ flex: 1, color: MU, fontSize: 13 }}>{"empty"}</div>}
+                {p ? <button title={r.locked ? "Unlock to remove" : "Remove"} disabled={r.locked} onClick={() => remove(k)}
+                  style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: r.locked ? BR : RE, color: "#fff", fontWeight: 900, fontSize: 16, cursor: r.locked ? "not-allowed" : "pointer", opacity: r.locked ? 0.4 : 1 }}>{"−"}</button> : null}
+                {p ? <button title={r.locked ? "Unlock" : "Lock (kept through Clear)"} onClick={() => toggleLock(k)}
+                  style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid " + (r.locked ? OH : BR), background: r.locked ? OH + "33" : "transparent", cursor: "pointer", fontSize: 13 }}>{r.locked ? "🔒" : "🔓"}</button> : null}
+              </div>
+            );
+          })}
+          {msg ? <div style={{ color: YE, fontSize: 12, margin: "6px 0" }}>{msg}</div> : null}
+          <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
+            <button onClick={complete} disabled={full} style={{ ...btn(OH), opacity: full ? 0.5 : 1 }}>{"✨ Complete lineup"}</button>
+            <button onClick={clear} style={btn(RE + "22", RE)}>{"Clear"}</button>
+          </div>
+          {full ? (
+            <div style={{ marginTop: 14, borderTop: "1px solid " + BR, paddingTop: 12 }}>
+              <ContestSettings cfg={cfg} setCfg={setCfg} />
+              <button onClick={runIt} disabled={over || busy > 0} style={{ ...btn(GR), marginTop: 10, width: "100%", padding: "11px 0", fontSize: 14, opacity: over || busy ? 0.6 : 1 }}>
+                {busy ? "Simulating… " + Math.round(busy * 100) + "%" : over ? "Over the salary cap" : "▶ Run simulation"}
+              </button>
+            </div>
+          ) : null}
+          {res ? (
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(120px,1fr))", gap: 8, marginTop: 12 }}>
+              <Stat big={fmt(res.roi) + "%"} label="ROI" col={roiCol(res.roi)} />
+              <Stat big={fmt(res.cash) + "%"} label="Cash rate" col={OH} />
+              <Stat big={fmt(res.top1, 2) + "%"} label="Top 1%" col={OH} />
+              <Stat big={fmt(res.win, 3) + "%"} label="Win" col={OH} />
+              <Stat big={fmt(res.mean)} label={"Avg pts (± " + fmt(res.sd) + ")"} col={"#e8e8f0"} />
+              <Stat big={"$" + fmt(res.ev, 2)} label="Avg payout" col={"#e8e8f0"} />
+            </div>
+          ) : null}
+        </div>
+        <div style={{ ...card, display: "flex", flexDirection: "column", maxHeight: 720 }}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Search players…" style={{ ...inp, width: "100%", marginBottom: 8 }} />
+          <div style={{ overflowY: "auto", flex: 1 }}>
+            {list.map((i) => {
+              const p = players[i], started = p.gameStart && now >= Date.parse(p.gameStart);
+              return (
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 4px", borderBottom: "1px solid " + BR + "60" }}>
+                  <div style={{ flex: 1, minWidth: 0, fontSize: 13 }}>
+                    <b>{p.name}</b><StarterIcon p={p} />{started ? <LockIcon /> : null}
+                    <div style={{ fontSize: 11, color: MU }}>{(p.positions || []).join("/") + " · " + p.team + " · " + money(p.salary) + " · " + fmt(p.proj) + " pts · " + fmt(p.own) + "% own"}</div>
+                  </div>
+                  <button title="Add" onClick={() => place(i)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: GR, color: "#0f0f13", fontWeight: 900, fontSize: 17, cursor: "pointer" }}>{"+"}</button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

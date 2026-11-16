@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
 const SALARY_CAP_NBA=50000;
 const W1=0.605,W2=0.363,W3=0.242;
 const OH="#ff6b00",BG="#0f0f13",CARD="#1a1a24",BR="#2a2a3a",MU="#7a7a9a",GR="#00c97a",RE="#ff4466";
@@ -57,26 +58,25 @@ function minsAgo(iso){if(!iso)return"";var m=Math.round((Date.now()-new Date(iso
 // sorted DraftKings ids, so likes survive every refresh as long as the lineup
 // is still in the pool.
 function buildLiveLineups(doc,players){
-  var byId={};for(var i=0;i<players.length;i++){if(players[i].dkId)byId[players[i].dkId]=players[i];}
+  var byId={},byCpt={};for(var i=0;i<players.length;i++){if(players[i].dkId)byId[players[i].dkId]=players[i];if(players[i].cptId)byCpt[players[i].cptId]=players[i];}
   var out=[];
   for(var j=0;j<(doc.lineups||[]).length;j++){
     var l=doc.lineups[j],ps=[],asg=[],ok=true;
-    for(var k=0;k<8;k++){var p=byId[l.ids[k]];if(!p){ok=false;break;}ps.push(p);asg.push(Object.assign({},p,{slot:NBA_SLOTS[k]}));}
+    var labels=doc.slots||NBA_SLOTS;
+    for(var k=0;k<labels.length;k++){var p=labels[k]==="CPT"?byCpt[l.ids[k]]:byId[l.ids[k]];if(!p){ok=false;break;}ps.push(p);asg.push(Object.assign({},p,{slot:labels[k]}));}
     if(!ok)continue;
     var ceil=0;for(var c=0;c<ps.length;c++)ceil+=ps[c].ceiling||0;
     out.push({id:l.ids.slice().sort(function(a,b){return a-b;}).join("-"),rank:l.rank,players:ps,assigned:asg,
       salary:l.salary,projTotal:l.proj,sumOwn:l.own,sumCeil:ceil,pWin:l.win,simMean:l.mean,simSd:l.sd,
-      simROI:0,compositeScore:l.win,live:true});
+      simROI:0,compositeScore:l.win,live:true,slotLabels:labels,showdown:labels[0]==="CPT"});
   }
   return out;
 }
 function starterBadge(p){
-  var st=p.starterStatus||"";
-  if(!st&&!p.starting)return p.unexpected==="benched"?<span title="Usual starter, not starting" style={{marginLeft:5,fontSize:9,color:RE,fontWeight:800}}>{"BENCHED"}</span>:null;
-  var col=st==="confirmed"?GR:st==="expected"?"#f5b942":MU;
-  var lab=st==="confirmed"?"▶ C":st==="expected"?"▶ E":"▶ P";
-  var tip=st==="confirmed"?"Confirmed starter":st==="expected"?"Expected starter (NBA.com)":"Projected starter (Sigma)";
-  return <span title={tip+(p.unexpected==="starting"?" — unexpected!":"")} style={{marginLeft:5,fontSize:9,fontWeight:800,color:col}}>{lab}{p.unexpected==="starting"?" ⚡":""}</span>;
+  var benched=p.unexpected==="benched"?<span title="Usual starter, not starting tonight" style={{marginLeft:5,fontSize:9,color:RE,fontWeight:800}}>{"NOT STARTING"}</span>:null;
+  var surprise=p.unexpected==="starting"?<span title="Unexpected start" style={{marginLeft:2,fontSize:10}}>{"⚡"}</span>:null;
+  var locked=p.gameStart&&Date.now()>=Date.parse(p.gameStart)?<LockIcon/>:null;
+  return <span><StarterIcon p={p}/>{surprise}{benched}{locked}</span>;
 }
 function prettyStatus(s){return{OUT:"Out",DOUBTFUL:"Doubtful",QUESTIONABLE:"Questionable",PROBABLE:"Probable","":"Available"}[s]||s;}
 function splitLine(line){
@@ -112,7 +112,10 @@ function parseProjections(text,sport){
         starting:safeStr(c[19]).trim().toLowerCase()==="true",
         batOrder:toInt(c[20]),confirmed:false,teamTotal:0,hrPct:0,hand:"",
         dkId:toInt(c[12]),starterStatus:safeStr(c[21]).trim(),unexpected:safeStr(c[22]).trim(),
-        gameStart:safeStr(c[23]).trim(),restricted:safeStr(c[24]).trim().toLowerCase()==="true"
+        gameStart:safeStr(c[23]).trim(),restricted:safeStr(c[24]).trim().toLowerCase()==="true",
+        cptId:toInt(c[25])||null,cptSalary:toInt(c[26])||null,
+        liveFP:safeStr(c[27]).trim()===""?null:toFloat(c[27]),progress:safeStr(c[28]).trim()===""?null:toFloat(c[28]),
+        optExp:safeStr(c[29]).trim()===""?null:toFloat(c[29]),corrGame:safeStr(c[30]).trim()
       });
     }
   }
@@ -779,13 +782,14 @@ function ExposuresTab(props){
       </div>
       {exposures.length===0?<div style={{textAlign:"center",padding:"32px 0",color:MU,fontSize:13}}>{"Like lineups to see player exposures."}</div>:
       filtered.length===0?<div style={{textAlign:"center",padding:"24px 0",color:MU,fontSize:13}}>{"No players match."}</div>:
-      <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr><th style={S.tblH}>{"Player"}</th><th style={S.tblH}>{"Exposure"}</th><th style={S.tblH}>{"Bar"}</th><th style={S.tblH}>{"Cap"}</th></tr></thead><tbody>
+      <div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:13}}><thead><tr><th style={S.tblH}>{"Player"}</th><th style={S.tblH}>{"Exposure"}</th><th style={S.tblH} title="Share of historical winning lineups with players of this profile">{"Suggested"}</th><th style={S.tblH}>{"Bar"}</th><th style={S.tblH}>{"Cap"}</th></tr></thead><tbody>
         {filtered.map(function(expItem,rowIdx){
           var bc=expItem.pct>=66?RE:expItem.pct>=33?OH:GR;
           var cv=caps[expItem.name]!==undefined?caps[expItem.name]:"";
           return(<tr key={expItem.name} style={{background:rowIdx%2===0?"transparent":"#ffffff04"}}>
             <td style={S.tblD}><b>{expItem.name}</b></td>
             <td style={S.tblD}><span style={{fontWeight:700,color:bc,fontSize:14}}>{expItem.pct.toFixed(2)}{"%"}</span></td>
+            <td style={S.tblD}>{props.suggested&&props.suggested[expItem.name]!=null?<span style={{fontWeight:700,color:Math.abs(props.suggested[expItem.name]-expItem.pct)<8?GR:"#f5b942"}}>{props.suggested[expItem.name].toFixed(0)+"%"}</span>:"—"}</td>
             <td style={Object.assign({},S.tblD,{width:"30%"})}><div style={{background:BR,borderRadius:3,height:8,overflow:"hidden",minWidth:60}}><div style={{width:expItem.pct+"%",height:"100%",background:bc,borderRadius:3}}/></div></td>
             <td style={S.tblD}><div style={{display:"flex",alignItems:"center",gap:4}}>
               <input type="text" placeholder="Cap %" value={cv} onChange={function(e){var v=e.target.value;if(v===""||/^\d*\.?\d*$/.test(v)){setCaps(function(prev){var n=Object.assign({},prev);n[expItem.name]=v;return n;});}}} style={{width:58,background:"#111118",border:"1px solid "+BR,borderRadius:4,color:"#e8e8f0",padding:"3px 6px",fontSize:11,textAlign:"center"}}/>
@@ -811,8 +815,8 @@ function renderLineupDetail(lu,sport){
         <td key="nm" style={S.tblD}><b>{p.name}</b>{starterBadge(p)}{p.injury?<span style={Object.assign({},pill(STATUS_COL[p.injury]||RE),{marginLeft:4,fontSize:9,padding:"1px 5px"})}>{STATUS_ABBR[p.injury]||"⚠"}</span>:null}</td>,
         <td key="ps" style={S.tblD}><span style={pill(pcMap[p.pos]||MU)}>{p.pos}</span></td>,
         <td key="tm" style={S.tblD}><span style={{color:MU}}>{p.team}</span></td>,
-        <td key="sa" style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span></td>,
-        <td key="pr" style={S.tblD}>{p.proj>0?p.proj.toFixed(2):"—"}</td>,
+        <td key="sa" style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{(p.slot==="CPT"&&p.cptSalary?p.cptSalary:p.salary).toLocaleString()}</span></td>,
+        <td key="pr" style={S.tblD}>{p.proj>0?(p.proj*(p.slot==="CPT"?1.5:1)).toFixed(2):"—"}</td>,
         <td key="ow" style={S.tblD}><span style={{color:p.own<10?GR:p.own>25?RE:"#e8e8f0"}}>{p.own.toFixed(2)}{"%"}</span></td>,
         <td key="bm" style={S.tblD}><span style={{color:GR}}>{p.boom>0?p.boom.toFixed(2)+"%":"—"}</span></td>,
         <td key="bs" style={S.tblD}><span style={{color:RE}}>{p.bust>0?p.bust.toFixed(2)+"%":"—"}</span></td>,
@@ -930,6 +934,10 @@ export default function App(){
   var tickS=useState(0);var setTick=tickS[1];
   var narrowS=useState(typeof window!=="undefined"&&window.innerWidth<900);var narrow=narrowS[0];var setNarrow=narrowS[1];
   useEffect(function(){function f(){setNarrow(window.innerWidth<900);}window.addEventListener("resize",f);return function(){window.removeEventListener("resize",f);};},[]);
+  var spotS=useState(null);var spotlightDoc=spotS[0];var setSpotlight=spotS[1];
+  var qsS=useState("");var qSearch=qsS[0];var setQSearch=qsS[1];
+  var qtS=useState([]);var qTeams=qtS[0];var setQTeams=qtS[1];
+  var runSim=useSimWorker();
   var poolS=useState(null);var poolInfo=poolS[0];var setPoolInfo=poolS[1];
   var luNewsS=useState([]);var luNews=luNewsS[0];var setLuNews=luNewsS[1];
   var startersS=useState(null);var startersDoc=startersS[0];var setStartersDoc=startersS[1];
@@ -956,6 +964,7 @@ export default function App(){
   function loadSlate(sl,isUpdate){
     if(!sl)return Promise.resolve();
     slateRef.current=sl.id;setSlateId(sl.id);
+    if(sl.spotlight_file)fetchJson(sl.spotlight_file).then(setSpotlight).catch(function(){setSpotlight(null);});
     setTeamStartMap(slateTeamStartMap(sl));
     return fetchText(sl.file).then(function(t){
       var parsed=applyLiveCsv(t,isUpdate);
@@ -1006,10 +1015,9 @@ export default function App(){
         var sl=res[0]||[];setSlates(sl);setInjLog(res[1]||[]);setLuNews(res[2]||[]);setStartersDoc(res[3]);
         pushToasts(newsSince(res[1]||[],res[2]||[]));
         if(sourceRef.current==="manual")return;           // user uploaded their own CSV
+        if(slateRef.current==null){try{var saved=JSON.parse(localStorage.getItem("sigma_slate")||"null");if(saved&&saved.date===m.date)slateRef.current=saved.id;}catch(e){}}
         var cur=null;for(var i=0;i<sl.length;i++){if(sl[i].id===slateRef.current)cur=sl[i];}
-        if(!cur){for(var k=0;k<sl.length;k++){if(sl[k].main)cur=sl[k];}}
-        if(!cur)cur=sl[0];
-        if(!cur)return;
+        if(!cur){setActiveTab("slates");return;}            // pick the slate first
         return loadSlate(cur,!initial&&cur.id===slateRef.current&&!runningRef.current);
       });
       });
@@ -1021,7 +1029,10 @@ export default function App(){
     var tk=setInterval(function(){setTick(function(x){return x+1;});},30000);
     return function(){clearInterval(iv);clearInterval(tk);};
   },[]);
-  function pickSlate(id){var sl=null;for(var i=0;i<slates.length;i++){if(String(slates[i].id)===String(id))sl=slates[i];}if(!sl)return;sourceRef.current="auto";loadSlate(sl,false).catch(function(e){setAutoErr(e.message);});}
+  function pickSlate(id){var sl=null;for(var i=0;i<slates.length;i++){if(String(slates[i].id)===String(id))sl=slates[i];}if(!sl)return;
+    try{localStorage.setItem("sigma_slate",JSON.stringify({id:sl.id,date:meta&&meta.date}));}catch(e){}
+    sourceRef.current="auto";setActiveTab("pool");setLineups([]);setPoolInfo(null);setLikedIds(new Set());setSpotlight(null);
+    loadSlate(sl,false).catch(function(e){setAutoErr(e.message);});}
   function useLiveAgain(){sourceRef.current="auto";setProjSource("auto");refreshLive(true);}
 
   function doRestart(){
@@ -1088,6 +1099,7 @@ export default function App(){
   var filteredLineups=useMemo(function(){
     var lw=lineupsWithBoosts;
     var passed=lw.filter(function(lu,luIdx){
+      if((qSearch||qTeams.length)&&!matchesQuick(lu.players.map(function(p){return p.name;}),lu.players.map(function(p){return p.team;}),qSearch,qTeams))return false;
       if(fOwnMin!==""&&lu.sumOwn<Number(fOwnMin))return false;
       if(fOwnMax!==""&&lu.sumOwn>Number(fOwnMax))return false;
       if(fProjMin!==""&&lu.projTotal<Number(fProjMin))return false;
@@ -1122,7 +1134,7 @@ export default function App(){
       passed=kept;
     }
     return passed;
-  },[lineupsWithBoosts,fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeam,fTeamMin,fTeamMax,mustContain,mustExclude,lineupType]);
+  },[qSearch,qTeams,lineupsWithBoosts,fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeam,fTeamMin,fTeamMax,mustContain,mustExclude,lineupType]);
 
   // liked lineups stay liked (and exportable) even when a filter hides them
   var likedLineups=useMemo(function(){return lineupsWithBoosts.filter(function(l){return likedIds.has(l.id);});},[lineupsWithBoosts,likedIds]);
@@ -1131,7 +1143,7 @@ export default function App(){
   var exposureMap=useMemo(function(){var m={};exposures.forEach(function(e){m[e.name]=e.pct;});return m;},[exposures]);
 
   var hasActiveFilters=[fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeamMin,fTeamMax].some(function(f){return f!==""})||mustContain.length>0||mustExclude.length>0||lineupType!=="all";
-  useEffect(function(){setPage(0);},[fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeam,fTeamMin,fTeamMax,mustContain,mustExclude,lineupType]);
+  useEffect(function(){setPage(0);},[qSearch,qTeams,fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeam,fTeamMin,fTeamMax,mustContain,mustExclude,lineupType]);
   function clearFilters(){setFOwnMin("");setFOwnMax("");setFProjMin("");setFProjMax("");setFUniqMin("");setFUniqMax("");setMustContain([]);setMustExclude([]);setLineupType("all");setFTeam("");setFTeamMin("");setFTeamMax("");}
 
   function doExport(){
@@ -1139,7 +1151,7 @@ export default function App(){
     if(!liked.length)return;
     var slotNames=["PG","SG","SF","PF","C","G","F","UTIL"];
     var csvContent="";
-    if(playerIdData&&playerIdData.headerLineIdx!==-1){
+    if(playerIdData&&playerIdData.headerLineIdx!==-1&&!liked[0].showdown){
       var rawLines=playerIdData.rawLines.slice();
       function fmtP(name){var id=playerIdData.playerMap[name.toLowerCase()];if(id)return name+" ("+id+")";var lname=name.toLowerCase();for(var k in playerIdData.playerMap){if(k.indexOf(lname)!==-1||lname.indexOf(k)!==-1)return name+" ("+playerIdData.playerMap[k]+")";}return name;}
       for(var li2=0;li2<liked.length;li2++){
@@ -1169,11 +1181,12 @@ export default function App(){
       csvContent=rawLines.join("\n");
     } else {
       // DraftKings lineup-upload format: slot headers, one row per lineup, DK player IDs
-      var rows2=[slotNames.join(",")],missing=0;
+      var hdr=liked[0].slotLabels||slotNames;
+      var rows2=[hdr.join(",")],missing=0;
       for(var li3=0;li3<liked.length;li3++){
         var a2=liked[li3].assigned||assignNBASlots(liked[li3].players,teamStartMap)||[];
-        var cells=a2.map(function(p){return p&&p.dkId?String(p.dkId):"";});
-        if(cells.length!==8||cells.indexOf("")!==-1){missing++;continue;}
+        var cells=a2.map(function(p){var id=p&&(p.slot==="CPT"?p.cptId:p.dkId);return id?String(id):"";});
+        if(cells.length!==hdr.length||cells.indexOf("")!==-1){missing++;continue;}
         rows2.push(cells.join(","));
       }
       if(missing)alert(missing+" lineup(s) skipped: missing DraftKings IDs (manual CSV without IDs?).");
@@ -1190,7 +1203,7 @@ export default function App(){
   var sportLabel="NBA";
   var posList=["ALL","PG","SG","SF","PF","C"];
   var pcMap=NBA_PC;
-  var cols=[["name","Player"],["salary","Salary"],["minutes","Min"],["proj","Proj"],["own","Own%"],["boom","Boom%"],["bust","Bust%"],["ceiling","Ceiling"],["floor","Floor"],["value","Value"],["lev","Leverage"]];
+  var cols=[["name","Player"],["salary","Salary"],["minutes","Min"],["proj","Proj"],["own","Own%"],["optExp","Sugg Exp%"],["boom","Boom%"],["bust","Bust%"],["ceiling","Ceiling"],["floor","Floor"],["value","Value"],["lev","Leverage"]];
   var settings=[["Field size",fieldSize,setFieldSize,false],["Payout to 1st (%)",firstPct,setFirstPct,true],["Entry fee ($)",entryFee,setEntryFee,true],["Max entries/person",maxEntries,setMaxEntries,false]];
 
 
@@ -1213,10 +1226,11 @@ export default function App(){
       return(
         <tr key={i} style={{background:i%2===0?"transparent":"#ffffff04"}}>
           <td style={S.tblD}><b>{p.name}</b>{starterBadge(p)}{p.restricted?<span title="Minutes restriction noted on the injury report" style={{marginLeft:4,fontSize:9,color:"#f5b942"}}>{"⏱"}</span>:null}{(p.injury&&p.injury.toLowerCase()!=="none"&&p.injury!=="")?<span title={p.injury} style={Object.assign({},pill(STATUS_COL[p.injury]||RE),{marginLeft:5,fontSize:9,padding:"1px 5px"})}>{STATUS_ABBR[p.injury]||"⚠"}</span>:null}<span style={{marginLeft:6,fontSize:10,color:MU}}>{p.positions&&p.positions.length>1?p.positions.join("/"):""}</span></td>
-          <td style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span></td>
+          <td style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span>{p.cptSalary?<div style={{fontSize:10,color:"#a78bfa"}}>{"CPT $"+p.cptSalary.toLocaleString()}</div>:null}</td>
           <td style={S.tblD}>{p.minutes>0?p.minutes.toFixed(1):"—"}</td>
           <td style={S.tblD}>{p.proj>0?p.proj.toFixed(2):<span style={{color:RE}}>{"—"}</span>}</td>
           <td style={S.tblD}><span style={{color:p.own<10?GR:p.own>25?RE:"#e8e8f0"}}>{p.own.toFixed(1)}{"%"}</span></td>
+          <td style={S.tblD} title="Share of historical winning lineups with this pre-game profile">{p.optExp!=null?<b>{p.optExp.toFixed(0)+"%"}</b>:"—"}</td>
           <td style={S.tblD}><span style={{color:GR}}>{p.boom>0?p.boom.toFixed(2)+"%":"—"}</span></td>
           <td style={S.tblD}><span style={{color:RE}}>{p.bust>0?p.bust.toFixed(2)+"%":"—"}</span></td>
           <td style={S.tblD}>{p.ceiling>0?p.ceiling.toFixed(2):"—"}</td>
@@ -1264,6 +1278,7 @@ export default function App(){
           </div>
         </div>
         {likedMissing>0?<div style={Object.assign({},S.card,{borderColor:"#f5b942",padding:"8px 12px",marginBottom:10,fontSize:12})}>{"⚠ "+likedMissing+" liked lineup"+(likedMissing!==1?"s are":" is")+" no longer in the pool (news changed the slate) and won't be exported."}<button onClick={function(){setLikedIds(function(prev){var have={};lineupsWithBoosts.forEach(function(l){have[l.id]=1;});var n=new Set();prev.forEach(function(id){if(have[id])n.add(id);});return n;});}} style={Object.assign({},tabSt(false),{marginLeft:8,padding:"3px 8px"})}>{"Remove them"}</button></div>:null}
+        <QuickFilters search={qSearch} setSearch={setQSearch} teams={Array.from(new Set(players.map(function(p){return (p.team||"").toUpperCase();}))).sort()} selTeams={qTeams} setSelTeams={setQTeams}/>
         {noMatch}
         {pager}
         {luCards}
@@ -1303,13 +1318,11 @@ export default function App(){
         {meta.frozen_players?<div style={{color:MU}}>{"🔒 "+meta.frozen_players+" players frozen (game started)"}</div>:null}
         {meta.message?<div style={{color:MU}}>{meta.message}</div>:null}
       </div>:null}
-      {slates.length>0?<div style={{marginTop:10}}>
-        <div style={S.lbl}>{"DraftKings slate"}</div>
-        <select value={slateId||""} onChange={function(e){pickSlate(e.target.value);}} style={S.nin}>
-          {slates.map(function(sl){return <option key={sl.id} value={sl.id}>{sl.name+" — "+sl.game_count+" games"+(sl.locked?" (locked)":"")}</option>;})}
-        </select>
-        {curSlate?<div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:4}}>{curSlate.games.map(function(g){return <span key={g.name} title={g.start_et} style={pill(g.locked?MU:"#4a9eff")}>{(g.locked?"🔒 ":"")+g.away+"@"+g.home+" "+(g.start_et||"")}</span>;})}</div>:null}
-      </div>:null}
+      {curSlate?<div style={{marginTop:10}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><b>{curSlate.name}</b><span style={pill(curSlate.kind==="showdown"?"#a78bfa":"#4a9eff")}>{curSlate.kind==="showdown"?"SHOWDOWN":"CLASSIC"}</span></div>
+        <div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:4}}>{curSlate.games.map(function(g){return <span key={g.name} title={g.start_et} style={pill(g.locked?MU:"#4a9eff")}>{(g.locked?"🔒 ":"")+g.away+"@"+g.home+" "+(g.start_et||"")}</span>;})}</div>
+        <button onClick={function(){setActiveTab("slates");}} style={Object.assign({},tabSt(false),{marginTop:8,width:"100%"})}>{"Change slate"}</button>
+      </div>:slates.length?<button onClick={function(){setActiveTab("slates");}} style={Object.assign({},tabSt(true),{marginTop:10,width:"100%"})}>{"Choose your slate"}</button>:null}
       <div style={{display:"flex",gap:6,marginTop:10}}>
         <button onClick={function(){refreshLive(false);}} style={Object.assign({},tabSt(false),{flex:1})}>{"↻ Check now"}</button>
         {notifPerm==="default"?<button onClick={function(){Notification.requestPermission().then(setNotifPerm);}} style={Object.assign({},tabSt(false),{flex:1})}>{"🔔 Desktop alerts"}</button>:null}
@@ -1404,40 +1417,21 @@ export default function App(){
     }
   }
 
-  var patternsContent=null;
-  if(activeTab==="patterns"){
-    var pd=patternsDoc;
-    if(!pd||!pd.nights){patternsContent=<div style={S.card}><div style={S.sl}>{"Winning Patterns"}</div><div style={{color:MU,fontSize:13}}>{(pd&&pd.note)||"The historical analysis builds in the background (a few nights per run) and appears here once the first verified nights are done."}</div></div>;}
-    else{
-      var st2=pd.structure||{},why=pd.why_players_hit||{};
-      var row=function(l,v){return <div style={{display:"flex",justifyContent:"space-between",fontSize:13,padding:"4px 0",borderBottom:"1px solid "+BR+"40"}}><span style={{color:MU}}>{l}</span><b>{v}</b></div>;};
-      patternsContent=(
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:12}}>
-          <div style={S.card}><div style={S.sl}>{"Sample"}</div>
-            {row("Verified slates",pd.nights)}{row("Top lineups analysed",pd.lineups_analysed)}{row("Date range",(pd.date_range||[]).join(" → "))}
-            <div style={{fontSize:11,color:MU,marginTop:8}}>{"For every night: the 20 highest-scoring legal DK lineups (solved exactly) from verified salaries (RotoGuru archive, cross-checked against NBA.com box scores)."}</div></div>
-          <div style={S.card}><div style={S.sl}>{"What winning lineups look like"}</div>
-            {row("Median salary used","$"+(st2.salary_used_median||0).toLocaleString())}{row("Use $49K+",st2.pct_using_49k_plus+"%")}
-            {row("Studs ($9K+)",st2.avg_studs_9k_plus)}{row("Mid ($5K–9K)",st2.avg_mid_5k_9k)}{row("Value (<$5K)",st2.avg_value_under_5k)}{row("Punts (≤$3.5K)",st2.avg_punts_3_5k_or_less)}
-            {row("3+ from one team",st2.pct_3plus_from_one_team+"%")}{row("4+ from one game",st2.pct_4plus_from_one_game+"%")}{row("Bring-back (both sides of a game)",st2.pct_with_bring_back+"%")}{row("Games used",st2.avg_games_used)}</div>
-          <div style={S.card}><div style={S.sl}>{"Why the players hit"}</div>
-            {row("A rotation teammate was out",why.teammate_out_pct+"%")}{row("Surprise start",why.surprise_start_pct+"%")}{row("Minutes spike (+6 vs. usual)",why.minutes_spike_pct+"%")}
-            {row("Game went to overtime",why.overtime_pct+"%")}{row("Blowout game",why.blowout_game_pct+"%")}{row("Top-25% scoring game",why.high_total_game_pct+"%")}
-            {row("Median points vs. pre-game projection",why.median_points_vs_projection?why.median_points_vs_projection+"×":"—")}{row("Not a top-20 projected value",why.pct_outside_top20_projected_value+"%")}</div>
-          <div style={S.card}><div style={S.sl}>{"Applied to your lineups"}</div>
-            {row("Minimum salary",(pd.rules?"$"+pd.rules.min_salary.toLocaleString():"—"))}{row("Max players per team",pd.rules?pd.rules.max_per_team:"—")}{row("Max players per game",pd.rules?pd.rules.max_per_game:"—")}
-            <div style={{fontSize:11,color:MU,marginTop:8}}>{"Stacking isn't forced: the simulator models how teammates and opponents score together, so lineups stack exactly as much as it pays to."}</div></div>
-          {pd.real_contests&&pd.real_contests.count?<div style={S.card}><div style={S.sl}>{"Your DraftKings contests"}</div>
-            {pd.real_contests.contests.map(function(c,i){var w=(c.top_0_1pct||[])[0]||{};return <div key={i} style={{fontSize:12,padding:"4px 0",borderBottom:"1px solid "+BR+"40"}}><b>{c.file}</b>{" · "+c.entries.toLocaleString()+" entries · won with "+c.winning_score}{w.total_own!=null?" · winner's total ownership "+w.total_own+"%, "+w.sub10_owned+" players under 10%":""}</div>;})}</div>:null}
-        </div>
-      );
-    }
-  }
+  var likedExposure=useMemo(function(){var m={__count:likedLineups.length};exposures.forEach(function(e){m[e.name]=e.pct;});return m;},[exposures,likedLineups]);
+  var patternsContent=activeTab==="patterns"?<ToolBoundary><PatternsView patterns={patternsDoc} spotlight={spotlightDoc} slate={curSlate} players={players} likedExposure={likedExposure}/></ToolBoundary>:null;
+  var toolDefaults={fieldSize:Number(fieldSize)||10000,entryFee:Number(entryFee)||15,firstPct:Number(firstPct)||20};
+  var simCorr=(meta&&meta.correlation)||{team:0.02,opp:0.05};
+  var slatesContent=activeTab==="slates"?<SlatePicker slates={slates} current={slateId} onPick={function(sl){pickSlate(sl.id);}} fmtClock={fmtClock}/>:null;
+  var lateSwapContent=<div style={{display:activeTab==="lateswap"?"block":"none"}}><ToolBoundary key={"ls"+slateId}><LateSwapTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
+  var singleContent=<div style={{display:activeTab==="single"?"block":"none"}}><ToolBoundary key={"sl"+slateId}><SingleLineupTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
 
   var tabButtons=[];
+  tabButtons.push(<button key="slates" style={Object.assign({},tabSt(activeTab==="slates"),{background:activeTab==="slates"?OH:"#2a1a0e",color:activeTab==="slates"?"#fff":OH})} onClick={function(){setActiveTab("slates");}}>{curSlate?"🏀 "+curSlate.name+(curSlate.kind==="showdown"?" (Showdown)":"")+" ▾":"🏀 Choose slate"}</button>);
   tabButtons.push(<button key="pool" style={tabSt(activeTab==="pool")} onClick={function(){setActiveTab("pool");}}>{"Projections"}{players.length>0?" ("+players.length+")":""}</button>);
   tabButtons.push(<button key="lineups" style={tabSt(activeTab==="lineups")} onClick={function(){setActiveTab("lineups");}}>{"Lineups"}{lineups.length>0?" ("+filteredLineups.length+"/"+lineups.length+")":""}</button>);
   tabButtons.push(<button key="starters" style={tabSt(activeTab==="starters")} onClick={function(){setActiveTab("starters");}}>{"Starting Lineups"}{startersDoc?" ("+startersDoc.teams.filter(function(t){return t.status==="confirmed";}).length+"/"+startersDoc.teams.length+" ✅)":""}</button>);
+  tabButtons.push(<button key="lateswap" style={tabSt(activeTab==="lateswap")} onClick={function(){setActiveTab("lateswap");}}>{"Late Swap"}</button>);
+  tabButtons.push(<button key="single" style={tabSt(activeTab==="single")} onClick={function(){setActiveTab("single");}}>{"Lineup Simulator"}</button>);
   tabButtons.push(<button key="patterns" style={tabSt(activeTab==="patterns")} onClick={function(){setActiveTab("patterns");}}>{"Winning Patterns"}</button>);
   if(likedCount>0)tabButtons.push(<button key="exp" style={tabSt(activeTab==="exposures")} onClick={function(){setActiveTab("exposures");}}>{"Exposures ("}{likedCount}{")"}</button>);
 
@@ -1506,9 +1500,12 @@ export default function App(){
           {staleBanner}
           {activeTab==="pool"?<div style={S.card}>{poolContent}</div>:null}
           {activeTab==="lineups"?lineupsContent:null}
+          {slatesContent}
+          {lateSwapContent}
+          {singleContent}
           {activeTab==="starters"?startersContent:null}
           {activeTab==="patterns"?patternsContent:null}
-          {activeTab==="exposures"?<ExposuresTab exposures={exposures} likedCount={likedCount} likedIds={likedIds} setLikedIds={setLikedIds} filteredLineups={filteredLineups}/>:null}
+          {activeTab==="exposures"?<ExposuresTab suggested={players.reduce(function(m,p){if(p.optExp!=null)m[p.name]=p.optExp;return m;},{})} exposures={exposures} likedCount={likedCount} likedIds={likedIds} setLikedIds={setLikedIds} filteredLineups={filteredLineups}/>:null}
         </div>
       </div>
     </div>

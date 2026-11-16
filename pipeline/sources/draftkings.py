@@ -15,7 +15,8 @@ LOBBY_URL = "https://www.draftkings.com/lobby/getcontests?sport=NBA"
 DRAFTABLES_URL = "https://api.draftkings.com/draftgroups/v1/draftgroups/{dg}/draftables"
 
 seen: list[dict] = []  # draft groups the lobby listed on the last call (for meta.json)
-_SKIP_WORDS = ("showdown", "tiers", "snake", "pick6", "single game", "captain", "in-game")
+# contest styles we don't build for (showdown IS supported; it's detected from the draftables)
+_SKIP_WORDS = ("tiers", "snake", "pick6", "in-game", "best ball", "arcade")
 
 
 @dataclass
@@ -25,6 +26,7 @@ class Slate:
     start_utc: datetime
     game_count: int
     featured: bool
+    kind: str = "classic"          # "classic" or "showdown" (CPT + 5 UTIL)
     players: list[dict] = field(default_factory=list)
     games: list[dict] = field(default_factory=list)
 
@@ -54,7 +56,14 @@ def parse_dt(raw) -> datetime | None:
 
 
 def list_classic_draft_groups(now: datetime) -> list[Slate]:
-    """Classic NBA draft groups whose first game is on the current ET 'DFS day'."""
+    """Kept for compatibility: every NBA draft group (classic and showdown) for today."""
+    return list_draft_groups(now)
+
+
+def list_draft_groups(now: datetime) -> list[Slate]:
+    """NBA draft groups (classic + showdown) whose first game is on the current ET 'DFS day'.
+    Note: DraftKings removes a group from the lobby once it locks; run.py remembers the
+    groups it has seen today so late swap keeps working after lock."""
     data = get_json(LOBBY_URL)
     groups = data.get("DraftGroups") or data.get("draftGroups") or []
     day = dfs_day(now)
@@ -69,15 +78,13 @@ def list_classic_draft_groups(now: datetime) -> list[Slate]:
             "DraftGroupTag", "ContestStartTimeSuffix", "GameType", "ContestTypeName")).lower()
         if any(w in tag for w in _SKIP_WORDS):
             continue
-        # Showdown/Tiers are single-game or salary-less; classic needs 2+ games.
-        # (Showdown groups are also rejected later: every player is listed twice.)
-        if g.get("GameCount") is not None and int(g.get("GameCount") or 0) < 2:
-            continue
         start = parse_dt(g.get("StartDate") or g.get("StartDateEst") or g.get("MinStartTime"))
         if not start or not (start_win <= start < end_win):
             continue
         suffix = (g.get("ContestStartTimeSuffix") or "").strip(" ()")
         name = suffix or ("Main" if g.get("DraftGroupTag") == "Featured" else "Classic")
+        if int(g.get("GameCount") or 0) == 1 and " vs " not in name and "@" not in name:
+            name = name if name not in ("Classic", "Main") else "Single game"
         out.append(Slate(
             draft_group_id=int(g["DraftGroupId"]),
             name=name,
@@ -87,7 +94,22 @@ def list_classic_draft_groups(now: datetime) -> list[Slate]:
         ))
     # de-duplicate (the lobby lists one row per draft group, but be safe)
     uniq = {s.draft_group_id: s for s in out}
-    return sorted(uniq.values(), key=lambda s: (not s.featured, -s.game_count, s.start_utc))
+    return sort_slates(list(uniq.values()))
+
+
+def sort_slates(slates: list[Slate]) -> list[Slate]:
+    return sorted(slates, key=lambda s: (s.kind != "classic", not s.featured, -s.game_count, s.start_utc))
+
+
+def slate_header(s: Slate) -> dict:
+    return {"draft_group_id": s.draft_group_id, "name": s.name, "start_utc": s.start_utc.isoformat(),
+            "game_count": s.game_count, "featured": s.featured, "kind": s.kind}
+
+
+def slate_from_header(h: dict) -> Slate:
+    return Slate(draft_group_id=int(h["draft_group_id"]), name=h["name"], start_utc=parse_dt(h["start_utc"]),
+                 game_count=int(h.get("game_count") or 0), featured=bool(h.get("featured")),
+                 kind=h.get("kind", "classic"))
 
 
 def dfs_day(now: datetime):
@@ -111,13 +133,17 @@ def load_draftables(slate: Slate) -> Slate:
             "home": home, "away": away,
             "start_utc": parse_dt(c.get("startTime")),
         }
-    players: dict[int, dict] = {}
-    seen_player_ids: dict[int, int] = {}
+    by_player: dict[int, list[dict]] = {}
     for d in data.get("draftables") or []:
-        pid = d.get("playerId")
-        seen_player_ids[pid] = seen_player_ids.get(pid, 0) + 1
-        if pid in players:
-            continue
+        by_player.setdefault(d.get("playerId"), []).append(d)
+    # showdown groups list every player twice: captain (1.5x salary) and UTIL
+    doubled = sum(1 for v in by_player.values() if len(v) > 1)
+    slate.kind = "showdown" if by_player and doubled > len(by_player) / 2 else "classic"
+    players: dict[int, dict] = {}
+    for pid, entries in by_player.items():
+        entries = sorted(entries, key=lambda d: int(d.get("salary") or 0))
+        d = entries[0]                      # UTIL (or the only) entry
+        cpt = entries[-1] if slate.kind == "showdown" and len(entries) > 1 else None
         comp = d.get("competition") or {}
         cid = comp.get("competitionId")
         if cid not in comps and cid is not None:
@@ -134,6 +160,8 @@ def load_draftables(slate: Slate) -> Slate:
             "name": d.get("displayName") or f"{d.get('firstName','')} {d.get('lastName','')}".strip(),
             "position": d.get("position") or "",
             "salary": int(d.get("salary") or 0),
+            "cpt_id": cpt.get("draftableId") if cpt else None,
+            "cpt_salary": int(cpt.get("salary") or 0) if cpt else None,
             "team_dk": team,
             "team": team_code(team),
             "opp_dk": opp or "",
@@ -144,11 +172,9 @@ def load_draftables(slate: Slate) -> Slate:
             "dk_status": _dk_status(d.get("status")),
             "disabled": bool(d.get("isDisabled")),
         }
-    # showdown-style groups list every player twice (CPT + FLEX): not classic
-    if seen_player_ids and sum(1 for v in seen_player_ids.values() if v > 1) > len(seen_player_ids) / 2:
-        raise ValueError(f"draft group {slate.draft_group_id} is not a classic slate")
     slate.players = [p for p in players.values() if p["salary"] > 0]
     slate.games = sorted(comps.values(), key=lambda g: (g["start_utc"] or datetime.max.replace(tzinfo=timezone.utc)))
+    slate.game_count = len(slate.games) or slate.game_count
     return slate
 
 

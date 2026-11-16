@@ -19,7 +19,7 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 
-from . import factors, history, injuries, model, notify, ownership, patterns, sim
+from . import factors, history, injuries, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
 from .sources import draftkings, espn, nba_cdn, referees
@@ -30,7 +30,8 @@ log = logging.getLogger("pipeline")
 CSV_HEADER = ["Name", "Salary", "Position", "Team", "Opp", "Minutes", "FptsPerMin", "Proj",
               "Value", "Own", "OptPct", "Leverage", "DKID", "StdDev", "Boom", "Bust",
               "Ceiling", "Floor", "Injury", "Starting", "BatOrder", "StarterStatus", "Unexpected",
-              "GameStartUTC", "MinutesRestricted"]
+              "GameStartUTC", "MinutesRestricted", "CptID", "CptSalary", "LiveFP", "GameProgress",
+              "OptExposure", "CorrGame"]
 
 
 # ── state helpers ────────────────────────────────────────────────────────────
@@ -66,6 +67,11 @@ def csv_row(r: dict) -> list:
         "true" if r.get("starting") else "false", 0,
         r.get("starter_status", ""), r.get("unexpected", ""), _iso(r.get("start_utc")) or "",
         "true" if r.get("restricted") else "false",
+        r.get("cpt_id") or "", r.get("cpt_salary") or "",
+        "" if r.get("live_fp") is None else f"{r['live_fp']:.2f}",
+        "" if r.get("progress") is None else f"{r['progress']:.3f}",
+        "" if r.get("opt_exposure") is None else f"{r['opt_exposure']:.1f}",
+        r.get("competition_id") or "",
     ]
 
 
@@ -173,6 +179,53 @@ def _game_context(all_players, logs, refs_today: dict, fit: dict, today) -> dict
     return ctx
 
 
+def _live_scoring(rows: list[dict], state: dict, now: datetime) -> None:
+    """For games that have tipped: DraftKings points so far + share of the game played
+    (official NBA live box score), refreshed every 3 minutes. Feeds the late swap tool."""
+    started = {}
+    for r in rows:
+        if r["start_utc"] and r["start_utc"] <= now:
+            started.setdefault((r["team"], r["opp"]), r["start_utc"])
+    if not started:
+        return
+    cache = state.setdefault("live", {})
+    if _due(state, "live_at", now, 3):
+        sched = _MEM.get("schedule")
+        if sched is None or _MEM.get("schedule_day") != now.date():
+            try:
+                sched = nba_cdn.schedule()
+                _MEM["schedule"], _MEM["schedule_day"] = sched, now.date()
+            except Exception as e:  # noqa: BLE001
+                log.info("schedule unavailable for live scoring: %s", e)
+                sched = []
+        for (team, opp), start in started.items():
+            g = next((g for g in sched if {g["home"], g["away"]} == {team, opp}
+                      and g["start_utc"] and abs((g["start_utc"] - start).total_seconds()) < 6 * 3600), None)
+            if not g:
+                continue
+            key = g["game_id"]
+            if cache.get(key, {}).get("status") == 3:
+                continue
+            try:
+                progress, status, players = nba_cdn.live_scores(key)
+                cache[key] = {"progress": progress, "status": status,
+                              "fp": {norm_name(p["name"]) + "|" + p["team"]: p["dk_fp"] for p in players}}
+            except Exception as e:  # noqa: BLE001
+                log.info("live box score %s unavailable: %s", key, e)
+        state["live_at"] = now.isoformat()
+    for r in rows:
+        if not (r["start_utc"] and r["start_utc"] <= now):
+            continue
+        for g in cache.values():
+            k = norm_name(r["name"]) + "|" + r["team"]
+            if k in g.get("fp", {}):
+                r["live_fp"] = g["fp"][k]
+                r["progress"] = g["progress"]
+                break
+        else:
+            r["live_fp"], r["progress"] = None, None
+
+
 def _slate_hash(rows: list[dict]) -> str:
     key = sorted((r.get("draftable_id"), round(r["proj"] * 2) / 2, r.get("status", ""),
                   bool(r.get("is_starter")), round(r.get("own", 0))) for r in rows)
@@ -192,20 +245,33 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     logs = _load_logs(state, now, today, force)
     fit = _fit(state, logs, today)
 
-    # 2) slates
+    # 2) slates: the lobby, plus groups seen earlier today (DraftKings drops a group from
+    # the lobby once it locks, but late swap needs it until its last game tips)
+    remembered = (state.get("dk_groups") or {}).get(today_iso, [])
     try:
-        slates = draftkings.list_classic_draft_groups(now)
+        slates = draftkings.list_draft_groups(now)
     except Exception as e:  # noqa: BLE001
         log.error("DraftKings lobby unavailable: %s", e)
-        _write_json(state_path, state)
-        return {"status": 1, "changed": False}
+        slates = []
+        if not remembered:
+            _write_json(state_path, state)
+            return {"status": 1, "changed": False}
+    have = {s.draft_group_id for s in slates}
+    slates += [draftkings.slate_from_header(h) for h in remembered if int(h["draft_group_id"]) not in have]
+    state["dk_groups"] = {today_iso: [draftkings.slate_header(s) for s in slates]}
+    if state.get("live_day") != today_iso:
+        state["live"], state["live_day"] = {}, today_iso
     loaded = []
     for s in slates:
         try:
             loaded.append(draftkings.load_draftables(s))
         except Exception as e:  # noqa: BLE001
             log.info("skipping draft group %s: %s", s.draft_group_id, e)
-    slates = [s for s in loaded if s.players]
+    slates = draftkings.sort_slates([s for s in loaded if s.players])
+    for s in slates:   # keep the detected kind (classic/showdown) for next time
+        for h in state["dk_groups"][today_iso]:
+            if int(h["draft_group_id"]) == s.draft_group_id:
+                h["kind"], h["game_count"] = s.kind, s.game_count
     if not slates:
         log.info("no DraftKings classic NBA slate for %s", today_iso)
         before = (DATA_DIR / "meta.json").read_text() if (DATA_DIR / "meta.json").exists() else ""
@@ -226,7 +292,11 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     for s in slates:
         for p in s.players:
             p["key"] = player_key(p["name"], p["team"])
-            players.setdefault(p["dk_player_id"], p)
+            q = players.setdefault(p["dk_player_id"], dict(p))
+            # the same player appears on several slates; draftable ids differ per slate
+            q.setdefault("slate_ids", {})[s.draft_group_id] = {
+                "draftable_id": p["draftable_id"], "cpt_id": p.get("cpt_id"),
+                "salary": p["salary"], "cpt_salary": p.get("cpt_salary")}
     all_players = list(players.values())
     starts = [p["start_utc"] for p in all_players if p["start_utc"]]
     if starts and max(starts) <= now and not force and state.get("final_run_for") == today_iso:
@@ -293,6 +363,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                     r[k] = old[k]
             frozen += 1
     locked_teams = {r["team"] for r in rows if r["locked"]}
+    _live_scoring(rows, state, now)
 
     def impacts_for(teams_dk: set[str]) -> dict[str, list]:
         out: dict[str, list] = {}
@@ -361,15 +432,39 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     # 6) slate outputs
     by_id = {r["dk_player_id"]: r for r in rows}
     slate_meta = []
-    main_id = slates[0].draft_group_id
-    rules = patterns.load_rules()
+    classic = [s for s in slates if s.kind == "classic"]
+    main_id = next((s.draft_group_id for s in classic if s.featured), (classic or slates)[0].draft_group_id)
+    exp_model = patterns.load_exposure_model()
+    key = (today_iso, len(logs))
+    if _MEM.get("hist_key") != key:
+        _MEM["hist_prep"], _MEM["hist_key"] = model.prepare_history(logs, today), key
+    hist_prep = _MEM["hist_prep"]
+    season = nba_cdn.season_start_year(today)
     corr = fit.get("corr") if (fit.get("corr") or {}).get("team_games", 0) >= 500 else SIM["default_corr"]
     sim_state = state.setdefault("sims", {})
     sims_ran = []
     for s in slates:
-        srows = [dict(by_id[p["dk_player_id"]]) for p in s.players if p["dk_player_id"] in by_id]
-        ownership.estimate_ownership(srows)
-        ownership.optimal_rates(srows)
+        srows = []
+        for p in s.players:
+            if p["dk_player_id"] not in by_id:
+                continue
+            r = dict(by_id[p["dk_player_id"]])
+            r.update(draftable_id=p["draftable_id"], cpt_id=p.get("cpt_id"), cpt_salary=p.get("cpt_salary"))
+            if r["salary"] != p["salary"]:      # value/boom/bust depend on this slate's salary
+                r["salary"] = p["salary"]
+                model.finish(r)
+            srows.append(r)
+        ownership.estimate_ownership(srows, 6 if s.kind == "showdown" else 8)
+        if s.kind == "classic":
+            ownership.optimal_rates(srows)
+        rules = patterns.load_rules(s.game_count)
+        spotlight.tag_exposure(srows, s.game_count, exp_model)
+        try:
+            _write_json(DATA_DIR / "spotlight" / f"{s.draft_group_id}.json",
+                        {"slate_id": s.draft_group_id, "updated_at": _iso(now), "kind": s.kind,
+                         "games": s.game_count, **spotlight.build(srows, hist_prep, season, s.game_count)})
+        except Exception as e:  # noqa: BLE001
+            log.warning("spotlight failed for %s: %s", s.draft_group_id, e)
         write_csv(SLATES_DIR / f"{s.draft_group_id}.csv", srows)
         if s.draft_group_id == main_id:
             write_csv(DATA_DIR / "projections.csv", srows)
@@ -384,9 +479,11 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                           "start_minutes": (st.astimezone(ET).hour * 60 + st.astimezone(ET).minute) if st else None,
                           "locked": bool(st and st <= now)})
         all_locked = all(g["locked"] for g in games) if games else False
+        contest_locked = any(g["locked"] for g in games)
         lfile = f"lineups/{s.draft_group_id}.json"
-        # 10,000 lineups x 1,000,000 simulated contests, re-run whenever the inputs move
-        if sims and not all_locked:
+        # 10,000 lineups x 1,000,000 simulated contests, re-run whenever the inputs move.
+        # Once the first game tips no new entries are possible: the late swap tool takes over.
+        if sims and not contest_locked:
             h = _slate_hash(srows)
             st = sim_state.get(str(s.draft_group_id), {})
             phase = None
@@ -397,7 +494,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
             if phase:
                 try:
                     res = sim.build_slate_lineups(srows, rules, corr, exact=(phase == "exact"),
-                                                  seed=int(now.timestamp()) % 100000)
+                                                  seed=int(now.timestamp()) % 100000, kind=s.kind)
                     res.update({"generated_at": _iso(now), "slate_id": s.draft_group_id,
                                 "phase": phase, "inputs": h})
                     _write_json(DATA_DIR / lfile, res)
@@ -406,9 +503,12 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                 except Exception as e:  # noqa: BLE001
                     log.exception("simulation failed for %s: %s", s.draft_group_id, e)
         slate_meta.append({"id": s.draft_group_id, "name": s.name, "main": s.draft_group_id == main_id,
+                           "kind": s.kind, "contest_locked": contest_locked,
                            "start_utc": _iso(s.start_utc), "game_count": len(s.games),
                            "file": f"slates/{s.draft_group_id}.csv",
                            "lineups_file": lfile if (DATA_DIR / lfile).exists() else None,
+                           "spotlight_file": f"spotlight/{s.draft_group_id}.json",
+                           "size_bucket": patterns.size_bucket(s.game_count),
                            "lineups_phase": sim_state.get(str(s.draft_group_id), {}).get("phase"),
                            "games": games, "locked": all_locked})
 
@@ -442,7 +542,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                                  "team": r["team"]} for r in rows],
     })
     if not (DATA_DIR / "patterns.json").exists():
-        _write_json(DATA_DIR / "patterns.json", {"nights": 0, "rules": rules,
+        _write_json(DATA_DIR / "patterns.json", {"nights": 0, "rules": patterns.default_rules(),
                                                  "note": "Historical analysis runs in the background."})
     unlocked = [p["start_utc"] for p in all_players if p["start_utc"] and p["start_utc"] > now]
     _write_json(DATA_DIR / "meta.json", {
@@ -463,7 +563,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         "factors": {"used": fit.get("used"), "backtest": fit.get("backtest"), "coef": fit.get("coef"),
                     "note": fit.get("note")},
         "correlation": corr,
-        "rules": rules,
+        "rules": patterns.load_rules(),
         "changes_this_run": len(changes),
         "lineup_events_this_run": len(lu_events),
         "sims_this_run": sims_ran,

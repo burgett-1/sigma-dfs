@@ -15,7 +15,7 @@ log = logging.getLogger(__name__)
 COLUMNS = [
     "game_id", "date", "team", "opp", "home", "person_id", "name", "position", "starter",
     "status", "not_playing_reason", "minutes", "pts", "reb", "ast", "stl", "blk", "tov",
-    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp", "officials", "arena_team",
+    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp", "officials", "arena_team", "start_utc",
 ]
 
 
@@ -45,6 +45,9 @@ def load() -> pd.DataFrame:
         df["officials"] = ""
     if "arena_team" not in df.columns:
         df["arena_team"] = ""
+    if "start_utc" not in df.columns:
+        df["start_utc"] = ""
+    df["start_utc"] = df["start_utc"].fillna("")
     df["officials"] = df["officials"].fillna("")
     df["arena_team"] = df["arena_team"].fillna("")
     return df
@@ -54,7 +57,7 @@ def complete_game_ids(df: pd.DataFrame) -> set[str]:
     """Games stored with every column (older rows lack referee data)."""
     if df.empty:
         return set()
-    ok = df[df["officials"].astype(str) != ""]
+    ok = df[(df["officials"].astype(str) != "") & (df["start_utc"].astype(str) != "")]
     return set(ok["game_id"].astype(str))
 
 
@@ -67,7 +70,7 @@ def save(df: pd.DataFrame) -> None:
         if path.exists():
             try:
                 old = pd.read_csv(path, nrows=1)
-                if "officials" in old.columns and len(pd.read_csv(path, usecols=["game_id"])) == len(g) \
+                if "start_utc" in old.columns and len(pd.read_csv(path, usecols=["game_id"])) == len(g) \
                         and not (g["officials"].astype(str) == "").any():
                     continue
             except (OSError, ValueError):

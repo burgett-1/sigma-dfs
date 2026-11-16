@@ -109,10 +109,56 @@ ownership, drop DraftKings "contest standings" CSVs into `contest_results/`.
 4. When news breaks, your phone buzzes, the pool rebuilds itself, and a banner shows what
    moved. Like, export, upload.
 
+
+## Slates, tools and alerts (in the app)
+
+**Pick your slate first.** The app opens on the DraftKings slates for today, pulled straight
+from DraftKings: Main, Night/Turbo/Early and each Showdown, each with its own games and lock
+times. Everything after that is for the slate you pick: projections, the 10,000-lineup pool and
+its simulations, the spotlight, the patterns, late swap and the lineup simulator. Showdown is
+fully supported: Captain at 1.5× points and salary, both teams required, and export uses the
+captain's own DraftKings ID.
+
+**Starters.** A green **S** marks a confirmed starter; a yellow **S** marks a projected or
+expected starter. They update as teams post and change lineups. ⚡ marks a surprise starter,
+"NOT STARTING" a benched regular, and 🔒 a player whose game has tipped.
+
+**Filters.** On the lineup pool (and in Late Swap) you can search by player name and filter by
+team chips, alongside the existing filters (ownership, projection, min-unique, team stacks,
+must include / exclude, lineup type).
+
+**Winning Patterns** (tailored to the selected slate's size: 1–3, 4–6 or 7+ games):
+- *Tonight's spotlight*: connections between the history and tonight, strongest first and
+  highlighted. Examples: "Without X, he averaged 46 DK pts in 7 games (vs 34 with) and hit 6×
+  tonight's salary in 4", or a player whose profile historically filled a large share of
+  winning lineups while the field is light on him. Same-situation cards only appear if the
+  difference passes a statistical test (Welch's t ≥ 2.5), so a hot streak alone doesn't count.
+- *Exposure guide*: for every player, the share of historical winning lineups that contained
+  players with the same pre-game profile (slate size × value rank × teammate out). Compare it
+  with your exposure in liked lineups (also shown on the Exposures tab).
+- *What wins on slates like this*: salary used, price tiers, stacking, and why players hit.
+
+**Late Swap** (its own tab). After lock, upload the entries file from DraftKings (My Contests →
+Edit Entries → Download). Players whose games have started are locked 🔒 and never move. Every
+other slot is re-optimised with the same simulation model, using official live scoring for
+games in progress. The tab shows average ROI before and after, per-entry ROI, and the same
+filters; you pick swaps and download a file ready to upload back to DraftKings. Projections and
+live scores keep updating after lock, until the last game tips.
+
+**Lineup Simulator** (its own tab). Build a lineup by hand: search the player list and press the
+green **+**. The red **−** removes a player and 🔒 keeps him. **Clear** removes everyone who
+isn't locked; a locked player has to be unlocked before he can be removed. **Complete lineup**
+fills the open spots with the highest projection that fits the salary cap. **Run simulation**
+plays the lineup through simulated contests and shows ROI, cash rate, top-1% rate, win % and
+average score.
+
 ### Honest limits
 - GitHub's scheduler can start a run late (usually minutes). Inside a run, polling is every 60s.
 - An exact rebuild takes ~2–3 minutes of compute per slate; the fast pool covers that gap.
 - Ownership is a model estimate (no free real-time ownership source exists).
+- Late swap and the lineup simulator run in your browser. The defaults (20,000 simulations,
+  2,000 sampled opponents scaled to your contest size) finish in seconds to a minute on a phone.
+- Historical patterns cover classic slates; showdown uses the same projections and simulation.
 - Public data has no complete archive of real contest winners. The pattern analysis uses
   each night's top possible lineups (what large-field GPP winners approximate) and,
   optionally, your own contest results.

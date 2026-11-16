@@ -110,6 +110,7 @@ def parse_boxscore(data: dict) -> list[dict]:
                 "team_score": int(team.get("score") or 0),
                 "opp_score": int(opp.get("score") or 0),
                 "officials": officials,
+                "start_utc": start.isoformat() if start else "",
                 "arena_team": (g.get("homeTeam") or {}).get("teamTricode"),
             })
     return rows
@@ -119,3 +120,35 @@ def game_ids_for_season(start_year: int, max_games: int = 1230) -> list[str]:
     """Regular-season ids, e.g. 2025 -> 0022500001 .. 0022501230."""
     yy = start_year % 100
     return [f"002{yy:02d}{n:05d}" for n in range(1, max_games + 1)]
+
+
+def live_progress(data: dict) -> tuple[float, int]:
+    """(share of regulation played 0..1, gameStatus) from a live box score."""
+    g = data.get("game") or {}
+    status = int(g.get("gameStatus") or 0)
+    if status >= 3:
+        return 1.0, status
+    period = int(g.get("period") or 0)
+    if status < 2 or period == 0:
+        return 0.0, status
+    left = parse_minutes(g.get("gameClock")) if g.get("gameClock") else 0.0
+    if period <= 4:
+        played = (period - 1) * 12 + (12 - left)
+    else:                                  # overtime: regulation is done
+        played = 48.0
+    return max(0.0, min(1.0, played / 48.0)), status
+
+
+def live_scores(game_id: str) -> tuple[float, int, list[dict]]:
+    """Live DraftKings points so far for every player in a game in progress."""
+    from ..history import dk_points
+    import pandas as pd
+
+    data = get_json(BOXSCORE_URL.format(gid=game_id))
+    progress, status = live_progress(data)
+    rows = parse_boxscore(data)
+    if not rows:
+        return progress, status, []
+    df = pd.DataFrame(rows)
+    df["dk_fp"] = dk_points(df)
+    return progress, status, df[["name", "team", "dk_fp", "minutes"]].to_dict("records")

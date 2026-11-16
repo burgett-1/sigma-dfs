@@ -77,11 +77,15 @@ class SlatePool:
     start: np.ndarray      # game start (epoch seconds) for late-swap slot order
     n_team: int
     n_game: int
+    kind: str = "classic"
+    cpt_sal: np.ndarray | None = None   # showdown captain salary (1.5x)
+    cpt_ids: np.ndarray | None = None   # showdown captain draftable ids
 
 
-def build_pool(rows: list[dict]) -> SlatePool:
+def build_pool(rows: list[dict], kind: str = "classic") -> SlatePool:
     live = [r for r in rows if r.get("proj", 0) >= SIM["min_proj"] and r.get("salary", 0) > 0
-            and pos_code(r.get("position", ""))]
+            and (pos_code(r.get("position", "")) or kind == "showdown")
+            and (kind != "showdown" or r.get("cpt_id"))]
     teams = sorted({r["team_dk"] for r in live})
     games = sorted({r.get("competition_id") or "|".join(sorted((r["team_dk"], r["opp_dk"]))) for r in live},
                    key=str)
@@ -108,7 +112,9 @@ def build_pool(rows: list[dict]) -> SlatePool:
         own=np.array([max(r.get("own", 0.0), 0.05) for r in live], dtype=np.float64),
         p_play=np.array(p_play, dtype=np.float64),
         start=np.array(start, dtype=np.float64),
-        n_team=len(teams), n_game=len(games),
+        n_team=len(teams), n_game=len(games), kind=kind,
+        cpt_sal=np.array([r.get("cpt_salary") or int(r["salary"] * 1.5) for r in live], dtype=np.int64),
+        cpt_ids=np.array([r.get("cpt_id") or 0 for r in live], dtype=np.int64),
     )
 
 
@@ -326,12 +332,57 @@ def exact_lineup(score: np.ndarray, pool: SlatePool, rules: dict, start: tuple |
     return lu if len(lu) == 8 else start
 
 
+# ── showdown: 1 captain (1.5x points, 1.5x salary) + 5 UTIL, both teams used ──
+def showdown_lineup(score: np.ndarray, pool: SlatePool, rules: dict) -> tuple | None:
+    """Exact best showdown lineup for one score vector. Returned as
+    (captain, *sorted utils)."""
+    import highspy
+
+    P = len(score)
+    if P < 6:
+        return None
+    h = highspy.Highs()
+    h.setOptionValue("output_flag", False)
+    n = 2 * P                                   # [0,P) util, [P,2P) captain
+    h.addVars(n, np.zeros(n), np.ones(n))
+    h.changeColsIntegrality(n, np.arange(n, dtype=np.int32), np.array([highspy.HighsVarType.kInteger] * n))
+
+    def row(idx, coef, lo, hi):
+        h.addRow(lo, hi, len(idx), np.asarray(idx, dtype=np.int32), np.asarray(coef, dtype=float))
+
+    row(np.arange(P), np.ones(P), 5, 5)
+    row(np.arange(P, n), np.ones(P), 1, 1)
+    for i in range(P):
+        row([i, P + i], [1, 1], 0, 1)
+    row(np.arange(n), np.concatenate([pool.sal, pool.cpt_sal]).astype(float),
+        rules.get("min_salary_showdown", 0), DK_SALARY_CAP)
+    for t in set(pool.team.tolist()):
+        idx = np.nonzero(pool.team == t)[0]
+        row(np.concatenate([idx, idx + P]), np.ones(2 * len(idx)), 1, 5)   # both teams represented
+    h.changeColsCost(n, np.arange(n, dtype=np.int32), np.concatenate([score, 1.5 * score]).astype(float))
+    h.changeObjectiveSense(highspy.ObjSense.kMaximize)
+    h.run()
+    if h.getModelStatus() != highspy.HighsModelStatus.kOptimal:
+        return None
+    x = np.asarray(h.getSolution().col_value)
+    utils = sorted(int(i) for i in np.nonzero(x[:P] > 0.5)[0])
+    cpt = [int(i) for i in np.nonzero(x[P:] > 0.5)[0]]
+    if len(utils) != 5 or len(cpt) != 1:
+        return None
+    return (cpt[0], *utils)
+
+
 def _gen_chunk(args) -> list[tuple]:
     pool, rules, corr, n, seed, exact = args
     rng = np.random.default_rng(seed)
     scores = sample_scores(pool, n, rng, corr).astype(np.float64)
     out = []
     for s in scores:
+        if pool.kind == "showdown":
+            lu = showdown_lineup(s, pool, rules)
+            if lu:
+                out.append(lu)
+            continue
         warm = best_lineup(s, pool, {**rules, "min_salary": 0} if exact else rules)
         lu = exact_lineup(s, pool, rules, warm) if exact and warm else warm
         if lu:
@@ -365,6 +416,8 @@ def generate_lineups(pool: SlatePool, target: int, rules: dict, corr: dict, seed
 def sample_field(pool: SlatePool, n: int, rng: np.random.Generator, rules: dict) -> list[tuple]:
     """Opponent lineups built the way the public drafts: ownership-weighted
     picks, salary mostly spent."""
+    if pool.kind == "showdown":
+        return _sample_field_showdown(pool, n, rng)
     w = np.log(pool.own / 100.0 + 1e-6)
     out = []
     min_cost = int(np.sort(pool.sal)[:8].sum() / 8)
@@ -389,6 +442,36 @@ def sample_field(pool: SlatePool, n: int, rng: np.random.Generator, rules: dict)
     return out
 
 
+def _sample_field_showdown(pool: SlatePool, n: int, rng: np.random.Generator) -> list[tuple]:
+    w = np.log(pool.own / 100.0 + 1e-6)
+    out = []
+    tries = 0
+    while len(out) < n and tries < n * 30:
+        tries += 1
+        keys = w + rng.gumbel(size=len(w))
+        order = list(np.argsort(-keys))
+        cpt = order[0]
+        spent = int(pool.cpt_sal[cpt])
+        utils = []
+        for i in order[1:]:
+            if spent + pool.sal[i] > DK_SALARY_CAP:
+                continue
+            utils.append(int(i))
+            spent += int(pool.sal[i])
+            if len(utils) == 5:
+                break
+        if len(utils) == 5 and len(set(pool.team[[cpt] + utils].tolist())) == 2 and spent >= 45000:
+            out.append((int(cpt), *sorted(utils)))
+    return out
+
+
+def lineup_weights(lu: tuple, kind: str) -> list[tuple[int, float]]:
+    """(player index, scoring multiplier) for a lineup."""
+    if kind == "showdown":
+        return [(lu[0], 1.5)] + [(i, 1.0) for i in lu[1:]]
+    return [(i, 1.0) for i in lu]
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # the contest
 # ─────────────────────────────────────────────────────────────────────────────
@@ -399,11 +482,13 @@ def run_contest(pool: SlatePool, lineups: list[tuple], field: list[tuple], sims:
     # only players who appear in some lineup need simulating
     used = sorted({i for lu in allu for i in lu})
     remap = {p: k for k, p in enumerate(used)}
+    kind = pool.kind
     pool = subpool(pool, used)
     P = len(used)
     M = np.zeros((P, len(allu)), dtype=np.float32)
     for j, lu in enumerate(allu):
-        M[[remap[i] for i in lu], j] = 1.0
+        for i, w in lineup_weights(lu, kind):
+            M[remap[i], j] = w
     L = len(lineups)
     wins = np.zeros(len(allu), dtype=np.float64)
     xs = np.zeros(P, dtype=np.float64)        # sum of player scores
@@ -435,7 +520,8 @@ def subpool(pool: SlatePool, idx: list[int]) -> SlatePool:
     return SlatePool(ids=pool.ids[ix], names=[pool.names[i] for i in ix], mu=pool.mu[ix], sd=pool.sd[ix],
                      sal=pool.sal[ix], code=pool.code[ix], team=pool.team[ix], game=pool.game[ix],
                      own=pool.own[ix], p_play=pool.p_play[ix], start=pool.start[ix],
-                     n_team=pool.n_team, n_game=pool.n_game)
+                     n_team=pool.n_team, n_game=pool.n_game, kind=pool.kind,
+                     cpt_sal=pool.cpt_sal[ix], cpt_ids=pool.cpt_ids[ix])
 
 
 def slot_order(lu: tuple, pool: SlatePool) -> list[int] | None:
@@ -466,13 +552,13 @@ def slot_order(lu: tuple, pool: SlatePool) -> list[int] | None:
 
 def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: int | None = None,
                         sims: int | None = None, field_size: int | None = None, seed: int = 1,
-                        exact: bool = True) -> dict:
+                        exact: bool = True, kind: str = "classic") -> dict:
     n_lineups = n_lineups or SIM["lineups"]
     sims = sims or SIM["sims"]
     field_size = field_size or SIM["field_lineups"]
-    pool = build_pool(rows)
-    if len(pool.mu) < 8:
-        return {"lineups": [], "sims": 0}
+    pool = build_pool(rows, kind)
+    if len(pool.mu) < (6 if kind == "showdown" else 8):
+        return {"lineups": [], "sims": 0, "kind": kind}
     t0 = time.time()
     lineups = generate_lineups(pool, n_lineups, rules, corr, seed=seed,
                                time_limit=SIM["generate_time_limit"], exact=exact)
@@ -484,20 +570,29 @@ def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: in
     out = []
     for rank, j in enumerate(order, 1):
         lu = lineups[j]
-        slots = slot_order(lu, pool)
-        if slots is None:
-            continue
+        if kind == "showdown":
+            ids = [int(pool.cpt_ids[lu[0]])] + [int(pool.ids[i]) for i in lu[1:]]
+            proj = 1.5 * pool.mu[lu[0]] + pool.mu[list(lu[1:])].sum()
+            salary = int(pool.cpt_sal[lu[0]] + pool.sal[list(lu[1:])].sum())
+        else:
+            slots = slot_order(lu, pool)
+            if slots is None:
+                continue
+            ids = [int(pool.ids[i]) for i in slots]
+            proj = pool.mu[list(lu)].sum()
+            salary = int(pool.sal[list(lu)].sum())
         out.append({
             "rank": rank,
-            "ids": [int(pool.ids[i]) for i in slots],
+            "ids": ids,
             "win": round(float(res["win"][j]), 5),
             "mean": round(float(res["mean"][j]), 2),
             "sd": round(float(res["sd"][j]), 2),
-            "proj": round(float(pool.mu[list(lu)].sum()), 2),
-            "salary": int(pool.sal[list(lu)].sum()),
+            "proj": round(float(proj), 2),
+            "salary": salary,
             "own": round(float(pool.own[list(lu)].sum()), 1),
         })
     log.info("built %d lineups in %.0fs, contest %.0fs", len(lineups), t1 - t0, t2 - t1)
-    return {"lineups": out, "sims": sims, "field_size": len(field), "exact": exact, "field_win_pct": res["field_win"],
+    return {"lineups": out, "sims": sims, "field_size": len(field), "exact": exact, "kind": kind,
+            "slots": ["CPT", "UTIL", "UTIL", "UTIL", "UTIL", "UTIL"] if kind == "showdown" else list(SLOTS), "field_win_pct": res["field_win"],
             "generate_seconds": round(t1 - t0, 1), "contest_seconds": round(t2 - t1, 1),
             "correlation": corr, "rules": rules}

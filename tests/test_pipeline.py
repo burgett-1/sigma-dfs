@@ -26,10 +26,16 @@ def test_names_and_teams():
 # ── sources ──────────────────────────────────────────────────────────────────
 def test_draftkings_parsing(monkeypatch):
     now = syn.utc(2026, 11, 15, 18)
-    monkeypatch.setattr(draftkings, "get_json", lambda url: syn.lobby(TIP) if "lobby" in url else syn.draftables(TIP))
-    slates = draftkings.list_classic_draft_groups(now)
-    assert [s.draft_group_id for s in slates] == [555]  # showdown skipped
+    monkeypatch.setattr(draftkings, "get_json", lambda url: syn.lobby(TIP) if "lobby" in url else
+                        syn.showdown_draftables(TIP) if "556" in url else syn.draftables(TIP))
+    slates = draftkings.list_draft_groups(now)
+    assert [s.draft_group_id for s in slates] == [555, 556]
+    sd = draftkings.load_draftables(slates[1])
+    assert sd.kind == "showdown" and len(sd.players) == 20 and len(sd.games) == 1
+    p0 = sd.players[0]
+    assert p0["cpt_id"] == p0["draftable_id"] + 500000 and p0["cpt_salary"] == int(p0["salary"] * 1.5)
     s = draftkings.load_draftables(slates[0])
+    assert s.kind == "classic"
     assert len(s.players) == 40
     p = next(p for p in s.players if p["team_dk"] == "GS")
     assert p["team"] == "GSW" and p["opp"] == "NYK" and p["opp_dk"] == "NY" and not p["home"]
@@ -255,3 +261,10 @@ def test_lineup_change_events():
     assert ev["NYK"]["kind"] == "expected" and "GSW" not in ev
     msgs = notify.lineup_messages([ev["LAL"]], {"LAL": ["K starting (rarely starts)"]}, {})
     assert "CHANGED" in msgs[0]["title"] and "In: K" in msgs[0]["message"] and msgs[0]["priority"] == 5
+
+
+def test_live_progress():
+    assert nba_cdn.live_progress({"game": {"gameStatus": 2, "period": 3, "gameClock": "PT06M00.00S"}})[0] == pytest.approx(30 / 48)
+    assert nba_cdn.live_progress({"game": {"gameStatus": 3, "period": 4}})[0] == 1.0
+    assert nba_cdn.live_progress({"game": {"gameStatus": 1, "period": 0}})[0] == 0.0
+    assert nba_cdn.live_progress({"game": {"gameStatus": 2, "period": 5, "gameClock": "PT03M00.00S"}})[0] == 1.0

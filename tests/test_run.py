@@ -29,7 +29,8 @@ def env(tmp_path, monkeypatch):
     history.save(syn.season_logs(TODAY))
 
     monkeypatch.setattr(draftkings, "get_json",
-                        lambda url: syn.lobby(TIP) if "lobby" in url else syn.draftables(TIP))
+                        lambda url: syn.lobby(TIP) if "lobby" in url else
+                        syn.showdown_draftables(TIP) if "/556/" in url else syn.draftables(TIP))
     monkeypatch.setattr(nba_cdn, "schedule", lambda: [])
     monkeypatch.setattr(history, "backfill_season", lambda logs, y: logs)
     monkeypatch.setattr(espn, "odds_for_date", lambda d: {
@@ -56,7 +57,7 @@ def _csv(path):
         return list(csv.reader(f))
 
 
-def test_three_runs(env):
+def test_three_runs(env, monkeypatch):
     tmp, report, sent, feed = env
     star, bos_b = syn.name("BOS", 0), syn.name("BOS", 1)
     lal, gsw = syn.name("LAL", 0), syn.name("GSW", 0)
@@ -71,7 +72,7 @@ def test_three_runs(env):
     assert len(sent) == 1 and "live" in sent[0][0]
     rows = _csv(tmp / "projections.csv")
     assert rows[0][:8] == runmod.CSV_HEADER[:8] and len(rows) == 41
-    assert all(len(r) == len(runmod.CSV_HEADER) == 25 for r in rows)
+    assert all(len(r) == len(runmod.CSV_HEADER) == 31 for r in rows)
     by = {r[0]: r for r in rows[1:]}
     assert by[star][18] == "Questionable" and float(by[star][7]) > 30
     assert by[gsw][3] == "GS" and by[gsw][4] == "NY"  # DK abbreviations kept
@@ -136,6 +137,19 @@ def test_three_runs(env):
     assert meta["frozen_players"] == 20 and meta["next_lock_utc"].startswith("2026-11-16T02:30")
     slates = json.loads((tmp / "slates.json").read_text())
     assert slates[0]["games"][0]["locked"] and not slates[0]["games"][1]["locked"]
+
+    # DraftKings drops locked groups from its lobby: today's slates must survive for late swap
+    monkeypatch.setattr(draftkings, "get_json", lambda url: {"DraftGroups": []} if "lobby" in url else
+                        syn.showdown_draftables(TIP) if "/556/" in url else syn.draftables(TIP))
+    runmod.run(syn.utc(2026, 11, 16, 1, 0))
+    slates = json.loads((tmp / "slates.json").read_text())
+    assert {s["id"] for s in slates} == {555, 556}
+    assert next(s for s in slates if s["id"] == 556)["kind"] == "showdown"
+    assert all(s["contest_locked"] for s in slates)
+    sd = json.loads((tmp / "lineups" / "556.json").read_text())
+    assert sd["kind"] == "showdown" and len(sd["lineups"][0]["ids"]) == 6
+    by = {r[0]: r for r in _csv(tmp / "slates" / "555.csv")[1:]}
+    assert float(by[gsw][7]) == 0                             # unlocked game still updating
 
     # run 4: everything locked -> final run, then later runs are no-ops
     runmod.run(syn.utc(2026, 11, 16, 3, 0))
