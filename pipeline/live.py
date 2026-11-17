@@ -158,11 +158,22 @@ def main(argv=None) -> int:
                 res = runner.run(datetime.now(timezone.utc), do_notify=not args.no_notify,
                                  force=args.force and first)
                 status = res["status"]
+                err_file = DATA_DIR / "updater_error.json"
+                if err_file.exists():          # recovered: clear the warning on the site
+                    err_file.unlink()
+                    res["changed"] = True
                 if res["changed"]:
                     publish()
         except Exception as e:  # noqa: BLE001 - keep polling; one bad pass must not end the loop
             log.exception("pass failed: %s", e)
             status = 1
+            # show the failure on the site instead of silently going stale
+            try:
+                (DATA_DIR / "updater_error.json").write_text(json.dumps(
+                    {"at": datetime.now(timezone.utc).isoformat(), "error": f"{type(e).__name__}: {e}"[:400]}))
+                publish()
+            except Exception:  # noqa: BLE001
+                pass
         finally:
             faulthandler.cancel_dump_traceback_later()
         first = False

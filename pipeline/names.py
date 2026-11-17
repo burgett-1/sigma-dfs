@@ -40,7 +40,7 @@ _NICK_TO_TRI["76ers"] = "PHI"
 
 def team_code(raw: str | None) -> str:
     """Return the NBA.com tricode for any abbreviation or full team name."""
-    if not raw:
+    if not isinstance(raw, str) or not raw:
         return ""
     s = raw.strip()
     up = s.upper()
@@ -67,7 +67,7 @@ _SUFFIX = re.compile(r"\b(jr|sr|ii|iii|iv|v)\b\.?", re.I)
 
 def norm_name(name: str | None) -> str:
     """Lowercase ascii name without punctuation or Jr./III suffixes."""
-    if not name:
+    if not isinstance(name, str) or not name:     # blank cells arrive as NaN floats
         return ""
     s = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
     s = s.lower().replace("’", "'")

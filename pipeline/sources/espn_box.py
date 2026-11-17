@@ -111,6 +111,8 @@ def parse_summary(data: dict, event_id: str) -> list[dict]:
             idx = {k: i for i, k in enumerate(labels)}
             for a in stat.get("athletes") or []:
                 ath = a.get("athlete") or {}
+                if not ath.get("displayName") or not team:
+                    continue
                 vals = a.get("stats") or []
                 dnp = bool(a.get("didNotPlay")) or not vals
                 get = (lambda k: vals[idx[k]] if k in idx and idx[k] < len(vals) else "")

@@ -280,3 +280,23 @@ def test_only_classic_and_showdown_contest_types(monkeypatch):
                                      "StartDate": start, "GameCount": 2, "ContestStartTimeSuffix": suffix})
     monkeypatch.setattr(draftkings, "get_json", lambda url: lobby)
     assert [s.draft_group_id for s in draftkings.list_draft_groups(now)] == [555, 556]
+
+
+def test_blank_names_and_teams_are_safe():
+    import math
+    assert norm_name(float("nan")) == "" and norm_name(None) == "" and team_code(math.nan) == ""
+    import pandas as pd
+    from pipeline import history
+    df = syn.season_logs(TODAY)
+    df.loc[df.index[:3], "name"] = None
+    import tempfile, pathlib
+    d = pathlib.Path(tempfile.mkdtemp())
+    old = history.HISTORY_DIR
+    history.HISTORY_DIR = d
+    try:
+        history.save(df)
+        back = history.load()
+    finally:
+        history.HISTORY_DIR = old
+    assert len(back) == len(df) - 3
+    model.prepare_history(back, TODAY)         # used to crash on the blank names

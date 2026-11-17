@@ -934,6 +934,7 @@ export default function App(){
   var tickS=useState(0);var setTick=tickS[1];
   var narrowS=useState(typeof window!=="undefined"&&window.innerWidth<900);var narrow=narrowS[0];var setNarrow=narrowS[1];
   useEffect(function(){function f(){setNarrow(window.innerWidth<900);}window.addEventListener("resize",f);return function(){window.removeEventListener("resize",f);};},[]);
+  var uerrS=useState(null);var updaterErr=uerrS[0];var setUpdaterErr=uerrS[1];
   var runS=useState(null);var runState=runS[0];var setRunState=runS[1];
   var mktS=useState(null);var marketsDoc=mktS[0];var setMarketsDoc=mktS[1];
   var runRef=useRef(null);
@@ -1021,6 +1022,7 @@ export default function App(){
       return fetchJson("meta.json").then(function(m){
       var changed=!metaRef.current||metaRef.current.updated_at!==m.updated_at;
       metaRef.current=m;setMeta(m);setAutoErr("");
+      fetchJson("updater_error.json").then(setUpdaterErr).catch(function(){setUpdaterErr(null);});
       if(runRef.current){fetchJson("run_status.json").then(function(st){
         var r=runRef.current;if(!r)return;
         if(st&&st.req===r.req){
@@ -1351,6 +1353,7 @@ export default function App(){
         <span style={pill(projSource==="auto"?GR:projSource==="manual"?OH:MU)}>{projSource==="auto"?"● AUTO":projSource==="manual"?"MANUAL CSV":"OFFLINE"}</span>
       </div>
       {autoErr?<div style={{fontSize:11,color:RE,marginBottom:8}}>{autoErr}</div>:null}
+      {updaterErr&&updaterErr.error?<div style={{fontSize:12,color:"#fff",background:RE,borderRadius:6,padding:"6px 8px",marginBottom:8}}>{"⚠ Your Mac's updater hit an error at "+fmtClock(updaterErr.at)+": "+updaterErr.error+". It keeps retrying every minute; send this to Claude to fix."}</div>:null}
       {meta&&meta.updated_at&&(Date.now()-Date.parse(meta.updated_at))>20*60000?<div style={{fontSize:12,color:"#fff",background:RE,borderRadius:6,padding:"6px 8px",marginBottom:8}}>{"⚠ No update from your Mac since "+fmtClock(meta.updated_at)+" ("+minsAgo(meta.updated_at)+"). Make sure it's on and awake; the updater restarts by itself."}</div>:null}
       {meta?<div style={{fontSize:12,lineHeight:1.7}}>
         <div><span style={{color:MU}}>{"Updated: "}</span><b>{fmtClock(meta.updated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(meta.updated_at)+")"}</span></div>

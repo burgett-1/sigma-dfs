@@ -41,6 +41,9 @@ def load() -> pd.DataFrame:
                    ignore_index=True)
     for c in ("not_playing_reason", "position", "status"):
         df[c] = df[c].fillna("")
+    # rows without a player name or team can't be used (occasional gaps in box scores)
+    df = df[df["name"].apply(lambda x: isinstance(x, str) and x.strip() != "")
+            & df["team"].apply(lambda x: isinstance(x, str) and x.strip() != "")].reset_index(drop=True)
     # columns added later: older days are re-downloaded once to fill them
     if "officials" not in df.columns:
         df["officials"] = ""
