@@ -21,10 +21,10 @@ from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 
-from . import factors, health, history, injuries, model, notify, ownership, patterns, sim, spotlight
+from . import factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
-from .sources import draftkings, espn, espn_box, nba_cdn, referees
+from .sources import draftkings, espn, espn_box, nba_cdn, odds_api, referees
 from .sources import lineups as lineups_src
 
 log = logging.getLogger("pipeline")
@@ -95,7 +95,7 @@ PUBLIC_FIELDS = [
     "fpts_min", "bump", "env", "env_source", "implied_total", "spread", "dvp", "std_dev",
     "ceiling", "floor", "boom", "bust", "value", "starting", "games_cur", "games_prev",
     "has_history", "absence_streak", "is_starter", "starter_status", "unexpected", "start_rate",
-    "restricted", "situational", "ww_evidence",
+    "restricted", "situational", "ww_evidence", "proj_model", "market_delta", "market_stats",
 ]
 
 
@@ -113,6 +113,14 @@ def public(r: dict) -> dict:
 
 # ── main ─────────────────────────────────────────────────────────────────────
 _MEM: dict = {}   # in-process cache shared by consecutive runs of the live loop
+
+
+def _control() -> dict | None:
+    """Where the site sends "Run simulations" requests (see pipeline/live.py)."""
+    topic = os.environ.get("CONTROL_TOPIC", "").strip()
+    if not topic:
+        return None
+    return {"server": os.environ.get("NTFY_SERVER", "https://ntfy.sh").rstrip("/"), "topic": topic}
 
 
 def _due(state: dict, key: str, now: datetime, minutes: float) -> bool:
@@ -232,7 +240,10 @@ def _slate_hash(rows: list[dict]) -> str:
     return hashlib.sha1(json.dumps(key, default=str).encode()).hexdigest()[:16]
 
 
-def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool = True) -> dict:
+def run(now: datetime, do_notify: bool = True, force: bool = False,
+        sim_request: dict | None = None) -> dict:
+    """One pass: projections always; lineups only for `sim_request`
+    ({"slate_id", "phase": "fast"|"exact", "req"}), i.e. when the user asked."""
     """One pass. Returns {"status": exit code, "changed": outputs changed}."""
     STATE_DIR.mkdir(parents=True, exist_ok=True)
     state_path = STATE_DIR / "run_state.json"
@@ -279,7 +290,8 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                "message": "No NBA slate open on DraftKings",
                "dk_groups_seen": draftkings.seen[:40],
                "history_games": int(logs["game_id"].nunique()) if not logs.empty else 0,
-               "factors": {"used": fit.get("used"), "backtest": fit.get("backtest"), "note": fit.get("note")}}
+               "factors": {"used": fit.get("used"), "backtest": fit.get("backtest"), "note": fit.get("note")},
+               "control": _control()}
         _write_json(DATA_DIR / "meta.json", msg)
         _write_json(DATA_DIR / "slates.json", [])
         if not (DATA_DIR / "injury_log.json").exists():
@@ -321,6 +333,10 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
             log.warning("odds unavailable: %s", e)
             health.fail("ESPN odds", e)
     state["odds"] = {today_iso: odds}
+    # sharp books (The Odds API) override ESPN's line and add player props
+    mcache = markets.refresh(state, now, {p["team"] for p in all_players}, _due)
+    if mcache.get("games"):
+        odds = {**odds, **odds_api.team_odds(mcache["games"])}
     nba_lineups = (state.get("nba_lineups") or {}).get(today_iso, {})
     try:
         nba_lineups = lineups_src.fetch(today) or nba_lineups
@@ -354,7 +370,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     game_ctx = _game_context(all_players, logs, refs_today, fit, today)
     ctx = model.Context(today=today, statuses=statuses, odds=odds, positions=positions,
                         teams_played_yesterday=played_yday, lineups=nba_lineups, factors=fit,
-                        game_context=game_ctx)
+                        game_context=game_ctx, props=mcache.get("props") or {})
 
     # 4) projections, freezing anyone whose game has started
     rows = model.project(all_players, logs, ctx)
@@ -374,6 +390,11 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                     r[k] = old[k]
             frozen += 1
     locked_teams = {r["team"] for r in rows if r["locked"]}
+    try:
+        markets.snapshot(mcache, now)
+        markets.write(mcache, rows, logs, nba_cdn.season_start_year(today), now, odds)
+    except Exception as e:  # noqa: BLE001
+        log.warning("markets page failed: %s", e)
     _live_scoring(rows, state, now)
 
     def impacts_for(teams_dk: set[str]) -> dict[str, list]:
@@ -454,6 +475,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     corr = fit.get("corr") if (fit.get("corr") or {}).get("team_games", 0) >= 500 else SIM["default_corr"]
     sim_state = state.setdefault("sims", {})
     sims_ran = []
+    sim_errors: list[str] = []
     for s in slates:
         srows = []
         for p in s.players:
@@ -492,27 +514,23 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         all_locked = all(g["locked"] for g in games) if games else False
         contest_locked = any(g["locked"] for g in games)
         lfile = f"lineups/{s.draft_group_id}.json"
-        # 10,000 lineups x 1,000,000 simulated contests, re-run whenever the inputs move.
-        # Once the first game tips no new entries are possible: the late swap tool takes over.
-        if sims and not contest_locked:
-            h = _slate_hash(srows)
-            st = sim_state.get(str(s.draft_group_id), {})
-            phase = None
-            if st.get("hash") != h:
-                phase = "fast"     # news: publish a fresh pool within about a minute
-            elif st.get("phase") == "fast" and (s.draft_group_id == main_id or not _MEM.get("busy")):
-                phase = "exact"    # then upgrade to exactly-solved lineups
-            if phase:
-                try:
-                    res = sim.build_slate_lineups(srows, rules, corr, exact=(phase == "exact"),
-                                                  seed=int(now.timestamp()) % 100000, kind=s.kind)
-                    res.update({"generated_at": _iso(now), "slate_id": s.draft_group_id,
-                                "phase": phase, "inputs": h})
-                    _write_json(DATA_DIR / lfile, res)
-                    sim_state[str(s.draft_group_id)] = {"hash": h, "phase": phase, "at": now.isoformat()}
-                    sims_ran.append((s.draft_group_id, phase))
-                except Exception as e:  # noqa: BLE001
-                    log.exception("simulation failed for %s: %s", s.draft_group_id, e)
+        # 10,000 lineups x 1,000,000 simulated contests: only when the user presses
+        # "Run simulations" for this slate (sim_request), using the projections as they
+        # stand at that moment. Once the first game tips, late swap takes over.
+        h = _slate_hash(srows)
+        if sim_request and int(sim_request["slate_id"]) == s.draft_group_id and not contest_locked:
+            phase = sim_request.get("phase", "fast")
+            try:
+                res = sim.build_slate_lineups(srows, rules, corr, exact=(phase == "exact"),
+                                              seed=int(now.timestamp()) % 100000, kind=s.kind)
+                res.update({"generated_at": _iso(now), "slate_id": s.draft_group_id,
+                            "phase": phase, "inputs": h, "request": sim_request.get("req")})
+                _write_json(DATA_DIR / lfile, res)
+                sim_state[str(s.draft_group_id)] = {"hash": h, "phase": phase, "at": now.isoformat()}
+                sims_ran.append((s.draft_group_id, phase))
+            except Exception as e:  # noqa: BLE001
+                log.exception("simulation failed for %s: %s", s.draft_group_id, e)
+                sim_errors.append(str(e))
         slate_meta.append({"id": s.draft_group_id, "name": s.name, "main": s.draft_group_id == main_id,
                            "kind": s.kind, "contest_locked": contest_locked,
                            "start_utc": _iso(s.start_utc), "game_count": len(s.games),
@@ -521,6 +539,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
                            "spotlight_file": f"spotlight/{s.draft_group_id}.json",
                            "size_bucket": patterns.size_bucket(s.game_count),
                            "lineups_phase": sim_state.get(str(s.draft_group_id), {}).get("phase"),
+                           "inputs": h,   # changes whenever projections move: the app flags older pools
                            "games": games, "locked": all_locked})
 
     # starting lineups page: every team, announced or projected
@@ -579,6 +598,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
         "lineup_events_this_run": len(lu_events),
         "sims_this_run": sims_ran,
         "sources": health.snapshot(),
+        "control": _control(),
     })
     if not unlocked:
         state["final_run_for"] = today_iso
@@ -592,7 +612,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False, sims: bool =
     _write_json(state_path, state)
     log.info("projected %d players (%d frozen), %d injury changes, %d lineup events, sims %s",
              len(rows), frozen, len(changes), len(lu_events), sims_ran)
-    return {"status": 0, "changed": changed}
+    return {"status": 0, "changed": changed, "sims_ran": sims_ran, "sim_errors": sim_errors}
 
 
 def main(argv=None) -> int:

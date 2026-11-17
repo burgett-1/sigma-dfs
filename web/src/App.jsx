@@ -1,6 +1,6 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
+import { MarketsView, ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
 const SALARY_CAP_NBA=50000;
 const W1=0.605,W2=0.363,W3=0.242;
 const OH="#ff6b00",BG="#0f0f13",CARD="#1a1a24",BR="#2a2a3a",MU="#7a7a9a",GR="#00c97a",RE="#ff4466";
@@ -934,6 +934,9 @@ export default function App(){
   var tickS=useState(0);var setTick=tickS[1];
   var narrowS=useState(typeof window!=="undefined"&&window.innerWidth<900);var narrow=narrowS[0];var setNarrow=narrowS[1];
   useEffect(function(){function f(){setNarrow(window.innerWidth<900);}window.addEventListener("resize",f);return function(){window.removeEventListener("resize",f);};},[]);
+  var runS=useState(null);var runState=runS[0];var setRunState=runS[1];
+  var mktS=useState(null);var marketsDoc=mktS[0];var setMarketsDoc=mktS[1];
+  var runRef=useRef(null);
   var spotS=useState(null);var spotlightDoc=spotS[0];var setSpotlight=spotS[1];
   var qsS=useState("");var qSearch=qsS[0];var setQSearch=qsS[1];
   var qtS=useState([]);var qTeams=qtS[0];var setQTeams=qtS[1];
@@ -974,10 +977,22 @@ export default function App(){
         setLineups(lus);setPage(0);
         if(isUpdate)setStaleInfo(function(si){return si&&doc.generated_at&&doc.generated_at>=si.at?null:si;});
         setPoolInfo({generated_at:doc.generated_at,phase:doc.phase,sims:doc.sims,field:doc.field_size,count:lus.length,
-          gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation});
+          gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation,inputs:doc.inputs,slate_id:doc.slate_id});
         if(!isUpdate)setLikedIds(new Set());
       });
     });
+  }
+  // "Run simulations": ask the Mac (over your private control channel) to build
+  // 10,000 lineups x 1,000,000 contests for this slate with the current projections
+  function runSimulations(){
+    var ctl=meta&&meta.control;
+    if(!ctl||!ctl.topic){setRunState({state:"error",message:"Your Mac's updater hasn't shared its control channel yet. Update it (git pull) and restart it."});return;}
+    var req=Math.random().toString(36).slice(2,10);
+    var r={req:req,slate_id:slateId,sentAt:Date.now(),state:"sent",message:"Sending to your Mac…"};
+    runRef.current=r;setRunState(r);
+    fetch(ctl.server+"/"+ctl.topic,{method:"POST",body:JSON.stringify({action:"run",slate_id:slateId,req:req})})
+      .then(function(res){if(!res.ok)throw new Error("ntfy "+res.status);setRunState(Object.assign({},r,{state:"sent",message:"Request sent. Waiting for your Mac to start…"}));})
+      .catch(function(e){runRef.current=null;setRunState({state:"error",message:"Couldn't send the request: "+e.message});});
   }
   function pushToasts(items){
     if(!items.length)return;
@@ -1006,6 +1021,15 @@ export default function App(){
       return fetchJson("meta.json").then(function(m){
       var changed=!metaRef.current||metaRef.current.updated_at!==m.updated_at;
       metaRef.current=m;setMeta(m);setAutoErr("");
+      if(runRef.current){fetchJson("run_status.json").then(function(st){
+        var r=runRef.current;if(!r)return;
+        if(st&&st.req===r.req){
+          // each new stage from the Mac (fast pool ready, exact pool ready) forces a reload
+          if(r.lastStage!==st.state+"/"+st.phase){r.lastStage=st.state+"/"+st.phase;metaRef.current=null;}
+          setRunState(Object.assign({},r,st));
+          if(st.state==="done"||st.state==="error"){setTimeout(function(){refreshLive(false);},300);runRef.current=null;}}
+        else if(Date.now()-r.sentAt>120000){setRunState(Object.assign({},r,{state:"error",message:"Your Mac didn't pick up the request within 2 minutes. Make sure it's on, awake and the updater is running."}));runRef.current=null;}
+      }).catch(function(){});}
       if(!changed&&!initial)return;
       fetchJson("patterns.json").then(setPatternsDoc).catch(function(){});
       if(!m.slates||!m.slates.length){setSlates([]);return;}   // no slate open right now
@@ -1026,8 +1050,9 @@ export default function App(){
   useEffect(function(){
     refreshLive(true);
     var iv=setInterval(function(){refreshLive(false);},AUTO_POLL_MS);
+    var fast=setInterval(function(){if(runRef.current)refreshLive(false);},5000);
     var tk=setInterval(function(){setTick(function(x){return x+1;});},30000);
-    return function(){clearInterval(iv);clearInterval(tk);};
+    return function(){clearInterval(iv);clearInterval(tk);clearInterval(fast);};
   },[]);
   function pickSlate(id){var sl=null;for(var i=0;i<slates.length;i++){if(String(slates[i].id)===String(id))sl=slates[i];}if(!sl)return;
     try{localStorage.setItem("sigma_slate",JSON.stringify({id:sl.id,date:meta&&meta.date}));}catch(e){}
@@ -1247,7 +1272,7 @@ export default function App(){
   if(running){
     lineupsContent=<SpinningSigma progress={progress} phase={phase}/>;
   } else if(!lineups.length){
-    lineupsContent=<div style={Object.assign({},S.card,{textAlign:"center",padding:48})}><div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{color:MU}}>{projSource==="auto"?"The lineup pool for this slate is being simulated (10,000 lineups × 1,000,000 contests). It appears here automatically.":"Upload your projections CSV and run the optimizer to generate lineups."}</div></div>;
+    lineupsContent=<div style={Object.assign({},S.card,{textAlign:"center",padding:48})}>{projSource==="auto"?<div style={{maxWidth:360,margin:"0 auto 16px"}}>{runButton}</div>:null}<div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{color:MU}}>{projSource==="auto"?"No lineups yet for this slate. Press Run simulations to build 10,000 lineups and simulate 1,000,000 contests with the current projections.":"Upload your projections CSV and run the optimizer to generate lineups."}</div></div>;
   } else {
     var likedLabel=likedCount>0?<span style={{color:OH,fontWeight:700}}>{likedCount}{" liked"}</span>:<span>{"👍 Like lineups to export them"}</span>;
     var PER=50,pages=Math.max(1,Math.ceil(filteredLineups.length/PER)),pg=Math.min(page,pages-1);
@@ -1277,6 +1302,20 @@ export default function App(){
             <button onClick={function(){setLikedIds(new Set());}} style={{padding:"6px 13px",background:RE+"11",color:RE,border:"1px solid "+RE+"33",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",opacity:likedCount>0?1:0.3}}>{"Clear"}</button>
           </div>
         </div>
+        {likedCount>0?<div style={Object.assign({},S.card,{marginBottom:10,padding:"10px 14px"})}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:6}}>
+            <b style={{fontSize:13}}>{"Exposure in your "+likedLineups.length+" liked lineup"+(likedLineups.length!==1?"s":"")}</b>
+            <button onClick={function(){setActiveTab("exposures");}} style={Object.assign({},tabSt(false),{padding:"3px 9px"})}>{"All players & caps ›"}</button>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(210px,1fr))",gap:"4px 14px"}}>
+            {exposures.slice(0,12).map(function(e){var pl=players.find(function(x){return x.name===e.name;});var sug=pl&&pl.optExp!=null?pl.optExp:null;return(
+              <div key={e.name} style={{fontSize:12}}>
+                <div style={{display:"flex",justifyContent:"space-between"}}><span>{e.name}</span><b style={{color:OH}}>{e.pct.toFixed(0)+"%"}</b></div>
+                <div style={{background:BR,borderRadius:3,height:5,overflow:"hidden"}}><div style={{width:Math.min(100,e.pct)+"%",height:"100%",background:OH}}/></div>
+                {sug!=null?<div style={{fontSize:10,color:MU}}>{"suggested "+sug.toFixed(0)+"%"}</div>:null}
+              </div>);})}
+          </div>
+        </div>:null}
         {likedMissing>0?<div style={Object.assign({},S.card,{borderColor:"#f5b942",padding:"8px 12px",marginBottom:10,fontSize:12})}>{"⚠ "+likedMissing+" liked lineup"+(likedMissing!==1?"s are":" is")+" no longer in the pool (news changed the slate) and won't be exported."}<button onClick={function(){setLikedIds(function(prev){var have={};lineupsWithBoosts.forEach(function(l){have[l.id]=1;});var n=new Set();prev.forEach(function(id){if(have[id])n.add(id);});return n;});}} style={Object.assign({},tabSt(false),{marginLeft:8,padding:"3px 8px"})}>{"Remove them"}</button></div>:null}
         <QuickFilters search={qSearch} setSearch={setQSearch} teams={Array.from(new Set(players.map(function(p){return (p.team||"").toUpperCase();}))).sort()} selTeams={qTeams} setSelTeams={setQTeams}/>
         {noMatch}
@@ -1312,6 +1351,7 @@ export default function App(){
         <span style={pill(projSource==="auto"?GR:projSource==="manual"?OH:MU)}>{projSource==="auto"?"● AUTO":projSource==="manual"?"MANUAL CSV":"OFFLINE"}</span>
       </div>
       {autoErr?<div style={{fontSize:11,color:RE,marginBottom:8}}>{autoErr}</div>:null}
+      {meta&&meta.updated_at&&(Date.now()-Date.parse(meta.updated_at))>20*60000?<div style={{fontSize:12,color:"#fff",background:RE,borderRadius:6,padding:"6px 8px",marginBottom:8}}>{"⚠ No update from your Mac since "+fmtClock(meta.updated_at)+" ("+minsAgo(meta.updated_at)+"). Make sure it's on and awake; the updater restarts by itself."}</div>:null}
       {meta?<div style={{fontSize:12,lineHeight:1.7}}>
         <div><span style={{color:MU}}>{"Updated: "}</span><b>{fmtClock(meta.updated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(meta.updated_at)+")"}</span></div>
         <div><span style={{color:MU}}>{"Next lock: "}</span><b>{meta.next_lock_utc?fmtClock(meta.next_lock_utc):"all games locked"}</b></div>
@@ -1352,16 +1392,29 @@ export default function App(){
     </div>
   ):null;
 
+  var poolOutdated=!!(poolInfo&&curSlate&&poolInfo.inputs&&curSlate.inputs&&poolInfo.inputs!==curSlate.inputs);
+  var running2=runState&&(runState.state==="sent"||runState.state==="running");
+  var runButton=(
+    <div>
+      <button onClick={runSimulations} disabled={running2||!curSlate||curSlate.contest_locked}
+        style={{display:"block",width:"100%",padding:"12px 0",background:running2?BR:"linear-gradient(135deg,"+GR+",#00a060)",color:"#fff",border:"none",borderRadius:8,fontWeight:800,fontSize:15,cursor:running2?"default":"pointer",opacity:(!curSlate||curSlate.contest_locked)?0.5:1}}>
+        {running2?"⏳ Simulating…":"▶ Run simulations"}
+      </button>
+      <div style={{fontSize:11,color:MU,marginTop:6}}>{curSlate&&curSlate.contest_locked?"This slate has locked: use Late Swap.":"10,000 lineups × 1,000,000 contests for "+(curSlate?curSlate.name:"this slate")+", using the projections right now."}</div>
+      {runState?<div style={{fontSize:12,marginTop:8,color:runState.state==="error"?RE:runState.state==="done"?GR:"#f5b942"}}>{runState.message||runState.state}</div>:null}
+    </div>
+  );
   var poolCard=projSource==="auto"?(
     <div style={S.card}>
       <div style={S.sl}>{"Simulation"}</div>
-      {poolInfo?<div style={{fontSize:12,lineHeight:1.8}}>
+      {runButton}
+      {poolInfo?<div style={{fontSize:12,lineHeight:1.8,marginTop:10,borderTop:"1px solid "+BR,paddingTop:8}}>
         <div><b>{poolInfo.count.toLocaleString()}</b>{" lineups · "}<b>{(poolInfo.sims||0).toLocaleString()}</b>{" simulated contests"}</div>
         <div style={{color:MU}}>{"vs "+(poolInfo.field||0).toLocaleString()+" ownership-based opponent lineups · ranked by win %"}</div>
         <div><span style={{color:MU}}>{"Built: "}</span><b>{fmtClock(poolInfo.generated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(poolInfo.generated_at)+")"}</span></div>
         <div><span style={pill(poolInfo.phase==="exact"?GR:"#f5b942")}>{poolInfo.phase==="exact"?"EXACT-OPTIMAL LINEUPS":"FAST BUILD · exact version coming"}</span></div>
-        {poolInfo.rules?<div style={{color:MU,fontSize:11}}>{"Rules from winning-lineup history: ≥$"+(poolInfo.rules.min_salary||0).toLocaleString()+" salary, ≤"+poolInfo.rules.max_per_team+" per team"}</div>:null}
-      </div>:<div style={{fontSize:12,color:MU}}>{"The lineup pool appears here once the first simulation for this slate finishes (about 1 minute after the slate loads)."}</div>}
+        {poolOutdated?<div style={{color:"#f5b942",fontSize:12}}>{"⚠ Projections have changed since this run. Press Run simulations for an updated pool."}</div>:null}
+      </div>:<div style={{fontSize:12,color:MU,marginTop:8}}>{"No lineups yet for this slate. Press Run simulations."}</div>}
     </div>
   ):null;
 
@@ -1432,8 +1485,9 @@ export default function App(){
   tabButtons.push(<button key="starters" style={tabSt(activeTab==="starters")} onClick={function(){setActiveTab("starters");}}>{"Starting Lineups"}{startersDoc?" ("+startersDoc.teams.filter(function(t){return t.status==="confirmed";}).length+"/"+startersDoc.teams.length+" ✅)":""}</button>);
   tabButtons.push(<button key="lateswap" style={tabSt(activeTab==="lateswap")} onClick={function(){setActiveTab("lateswap");}}>{"Late Swap"}</button>);
   tabButtons.push(<button key="single" style={tabSt(activeTab==="single")} onClick={function(){setActiveTab("single");}}>{"Lineup Simulator"}</button>);
+  tabButtons.push(<button key="markets" style={tabSt(activeTab==="markets")} onClick={function(){setActiveTab("markets");fetchJson("markets.json").then(setMarketsDoc).catch(function(){setMarketsDoc({error:true});});}}>{"Betting Markets"}</button>);
   tabButtons.push(<button key="patterns" style={tabSt(activeTab==="patterns")} onClick={function(){setActiveTab("patterns");}}>{"Winning Patterns"}</button>);
-  if(likedCount>0)tabButtons.push(<button key="exp" style={tabSt(activeTab==="exposures")} onClick={function(){setActiveTab("exposures");}}>{"Exposures ("}{likedCount}{")"}</button>);
+  if(lineups.length>0||likedCount>0)tabButtons.push(<button key="exp" style={tabSt(activeTab==="exposures")} onClick={function(){setActiveTab("exposures");}}>{"Exposures ("}{likedCount}{")"}</button>);
 
   return(
     <div style={{background:BG,minHeight:"100vh",color:"#e8e8f0",fontFamily:"'Segoe UI',system-ui,sans-serif"}}>
@@ -1501,6 +1555,7 @@ export default function App(){
           {activeTab==="pool"?<div style={S.card}>{poolContent}</div>:null}
           {activeTab==="lineups"?lineupsContent:null}
           {slatesContent}
+          {activeTab==="markets"?<ToolBoundary><MarketsView doc={marketsDoc} slate={curSlate} fmtClock={fmtClock} onRefresh={function(){fetchJson("markets.json").then(setMarketsDoc).catch(function(){});}}/></ToolBoundary>:null}
           {lateSwapContent}
           {singleContent}
           {activeTab==="starters"?startersContent:null}

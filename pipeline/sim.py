@@ -561,7 +561,7 @@ def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: in
         return {"lineups": [], "sims": 0, "kind": kind}
     t0 = time.time()
     lineups = generate_lineups(pool, n_lineups, rules, corr, seed=seed,
-                               time_limit=SIM["generate_time_limit"], exact=exact)
+                               time_limit=SIM["generate_time_limit"] if kind == "classic" else 90, exact=exact)
     t1 = time.time()
     field = sample_field(pool, field_size, np.random.default_rng(seed + 5), rules)
     res = run_contest(pool, lineups, field, sims, corr, seed=seed + 9)

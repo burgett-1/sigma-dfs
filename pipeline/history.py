@@ -16,7 +16,7 @@ log = logging.getLogger(__name__)
 COLUMNS = [
     "game_id", "date", "team", "opp", "home", "person_id", "name", "position", "starter",
     "status", "not_playing_reason", "minutes", "pts", "reb", "ast", "stl", "blk", "tov",
-    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp", "officials", "arena_team", "start_utc",
+    "fg3m", "fga", "fta", "team_score", "opp_score", "dk_fp", "officials", "arena_team", "start_utc", "spread", "total",
 ]
 
 
@@ -48,6 +48,9 @@ def load() -> pd.DataFrame:
         df["arena_team"] = ""
     if "start_utc" not in df.columns:
         df["start_utc"] = ""
+    for c in ("spread", "total"):          # closing betting lines (added later: refetched once)
+        if c not in df.columns:
+            df[c] = ""
     df["start_utc"] = df["start_utc"].fillna("")
     df["officials"] = df["officials"].fillna("")
     df["arena_team"] = df["arena_team"].fillna("")
@@ -58,7 +61,8 @@ def complete_game_ids(df: pd.DataFrame) -> set[str]:
     """Games stored with every column (older rows lack referee data)."""
     if df.empty:
         return set()
-    ok = df[(df["officials"].astype(str) != "") & (df["start_utc"].astype(str) != "")]
+    ok = df[(df["officials"].astype(str) != "") & (df["start_utc"].astype(str) != "")
+            & (df["spread"].astype(str) != "") & (df["spread"].astype(str) != "nan")]
     return set(ok["game_id"].astype(str))
 
 
@@ -71,7 +75,7 @@ def save(df: pd.DataFrame) -> None:
         if path.exists():
             try:
                 old = pd.read_csv(path, nrows=1)
-                if "start_utc" in old.columns and len(pd.read_csv(path, usecols=["game_id"])) == len(g) \
+                if "spread" in old.columns and len(pd.read_csv(path, usecols=["game_id"])) == len(g) \
                         and not (g["officials"].astype(str) == "").any():
                     continue
             except (OSError, ValueError):
@@ -113,6 +117,12 @@ def _sync_dates(df: pd.DataFrame, days: list, now: datetime, recheck_days: int =
     """Fetch ESPN box scores for every finished game on these dates not yet stored."""
     done = _dates_done()
     today = espn_box.now_et_date(now)
+    # days whose stored games are missing newer columns (e.g. closing lines) are redone once
+    if not df.empty:
+        complete = complete_game_ids(df)
+        stale = set(df.loc[~df["game_id"].astype(str).isin(complete), "date"].astype(str))
+        for d in stale:
+            done.pop(d, None)
     todo_days = [d for d in days if d < today and (d.isoformat() not in done or (today - d).days <= recheck_days)]
     if not todo_days:
         return df

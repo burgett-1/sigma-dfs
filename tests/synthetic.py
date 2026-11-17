@@ -61,6 +61,9 @@ def season_logs(today: date, n_games: int = 18, seed: int = 1) -> pd.DataFrame:
                     })
     df = pd.DataFrame(rows)
     df["dk_fp"] = dk_points(df)
+    if "spread" not in df:
+        df["spread"] = -2.0
+        df["total"] = 224.5
     return df[COLUMNS]
 
 

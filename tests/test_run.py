@@ -80,8 +80,15 @@ def test_three_runs(env, monkeypatch):
     assert (tmp / "slates" / "555.csv").exists()
     assert by[bos_b][12].isdigit()                       # DraftKings id for direct upload
     assert by[star][21] == "projected"                    # Sigma-projected starter
+    assert not (tmp / "lineups" / "555.json").exists()       # lineups only when the user asks
+    slates = json.loads((tmp / "slates.json").read_text())
+    h0 = next(s for s in slates if s["id"] == 555)["inputs"]
+    # the user presses "Run simulations" for the main slate
+    res = runmod.run(syn.utc(2026, 11, 15, 18, 1), sim_request={"slate_id": 555, "phase": "fast", "req": "r1"})
+    assert res["sims_ran"] == [(555, "fast")] and not (tmp / "lineups" / "556.json").exists()
     lus = json.loads((tmp / "lineups" / "555.json").read_text())
     assert lus["phase"] == "fast" and len(lus["lineups"]) >= 250 and lus["sims"] == 20000
+    assert lus["request"] == "r1" and lus["inputs"] == h0
     assert [l["win"] for l in lus["lineups"]] == sorted((l["win"] for l in lus["lineups"]), reverse=True)
     sl = json.loads((tmp / "starting_lineups.json").read_text())
     bos = next(t for t in sl["teams"] if t["team"] == "BOS")
@@ -89,9 +96,9 @@ def test_three_runs(env, monkeypatch):
     b_before = float(by[bos_b][7])
 
     # run 2: 1:15pm ET, star ruled OUT -> one push with projection moves
-    # run 1b: nothing changed -> the fast pool is upgraded to exact lineups, no alerts
+    # run 1b: the exact upgrade of the requested pool, no alerts
     sent.clear()
-    runmod.run(syn.utc(2026, 11, 15, 18, 5))
+    runmod.run(syn.utc(2026, 11, 15, 18, 5), sim_request={"slate_id": 555, "phase": "exact", "req": "r1"})
     assert not sent
     assert json.loads((tmp / "lineups" / "555.json").read_text())["phase"] == "exact"
 
@@ -107,7 +114,10 @@ def test_three_runs(env, monkeypatch):
     assert float(by[bos_b][7]) > b_before + 2
     log = json.loads((tmp / "injury_log.json").read_text())
     assert log[0]["name"] == star and log[0]["to"] == "OUT"
-    assert json.loads((tmp / "lineups" / "555.json").read_text())["phase"] == "fast"   # news -> rebuilt
+    # news moves projections: the pool is NOT rebuilt by itself; the site flags it as out of date
+    assert json.loads((tmp / "lineups" / "555.json").read_text())["phase"] == "exact"
+    slates = json.loads((tmp / "slates.json").read_text())
+    assert next(s for s in slates if s["id"] == 555)["inputs"] != h0
 
     # run 2b: LAL confirm a lineup with a surprise starter, then change it
     sent.clear()
@@ -143,12 +153,13 @@ def test_three_runs(env, monkeypatch):
     monkeypatch.setattr(draftkings, "get_json", lambda url: {"DraftGroups": []} if "lobby" in url else
                         syn.showdown_draftables(TIP) if "/556/" in url else syn.draftables(TIP))
     runmod.run(syn.utc(2026, 11, 16, 1, 0))
+    res = runmod.run(syn.utc(2026, 11, 16, 1, 1), sim_request={"slate_id": 556, "phase": "fast", "req": "r2"})
+    assert res["sims_ran"] == []                                  # contest locked: no new pool
     slates = json.loads((tmp / "slates.json").read_text())
     assert {s["id"] for s in slates} == {555, 556}
     assert next(s for s in slates if s["id"] == 556)["kind"] == "showdown"
     assert all(s["contest_locked"] for s in slates)
-    sd = json.loads((tmp / "lineups" / "556.json").read_text())
-    assert sd["kind"] == "showdown" and len(sd["lineups"][0]["ids"]) == 6
+    assert not (tmp / "lineups" / "556.json").exists()
     by = {r[0]: r for r in _csv(tmp / "slates" / "555.csv")[1:]}
     assert float(by[gsw][7]) == 0                             # unlocked game still updating
 

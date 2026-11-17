@@ -101,6 +101,7 @@ def parse_summary(data: dict, event_id: str) -> list[dict]:
     officials = "|".join(sorted(o.get("displayName", "") for o in (data.get("gameInfo") or {}).get("officials") or []
                                 if o.get("displayName"))) or "-"
     home_team = next((t for t, v in teams.items() if v["home"]), "")
+    closing = closing_line(data, teams)
     rows = []
     for block in (data.get("boxscore") or {}).get("players") or []:
         team = team_code((block.get("team") or {}).get("abbreviation"))
@@ -133,8 +134,32 @@ def parse_summary(data: dict, event_id: str) -> list[dict]:
                     "team_score": teams.get(team, {}).get("score", 0), "opp_score": teams.get(opp, {}).get("score", 0),
                     "officials": officials, "arena_team": home_team,
                     "start_utc": start.isoformat() if start else "",
+                    "spread": closing.get(team, {}).get("spread", "-"),
+                    "total": closing.get("total", "-"),
                 })
     return rows
+
+
+def closing_line(data: dict, teams: dict) -> dict:
+    """Closing spread (each team's perspective) and total from the box score's
+    betting section ("pickcenter"). Missing lines come back empty."""
+    from .espn import _parse_details
+    for pc in data.get("pickcenter") or []:
+        total = pc.get("overUnder")
+        fav, line = _parse_details(pc.get("details"))
+        out = {}
+        if total is not None:
+            out["total"] = float(total)
+        if fav and line is not None:
+            fav = team_code(fav)
+            for t in teams:
+                out[t] = {"spread": -line if t == fav else line}
+        elif str(pc.get("details", "")).upper() in ("EVEN", "PK", "PICK"):
+            for t in teams:
+                out[t] = {"spread": 0.0}
+        if out:
+            return out
+    return {}
 
 
 def season_dates(start_year: int, until: date) -> list[date]:

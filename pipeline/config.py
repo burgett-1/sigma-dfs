@@ -78,6 +78,8 @@ MODEL = {
     "bust_multiple": 4.0,   # bust = scores <  4x salary/1000
     # players with no NBA history: projection implied by salary
     "rookie_fp_per_k": 4.0,
+    # how far a projection moves toward the sharp-book player props (0 = ignore, 1 = market only)
+    "market_weight": 0.7,
     # optimal-lineup simulation used for opt% / leverage
     "opt_sims": 1500,
 }

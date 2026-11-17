@@ -17,7 +17,7 @@ from datetime import date, timedelta
 import numpy as np
 import pandas as pd
 
-from .config import MODEL, NOT_PLAYING
+from .config import DK_SCORING, MODEL, NOT_PLAYING
 from . import factors
 from .names import norm_name
 
@@ -52,6 +52,7 @@ class Context:
     lineups: dict[str, dict] = field(default_factory=dict)    # team -> {status, starters}
     factors: dict = field(default_factory=dict)               # fitted adjustments (factors.py)
     game_context: dict[str, dict] = field(default_factory=dict)  # team -> rest/travel/ref features
+    props: dict[str, dict] = field(default_factory=dict)         # norm name -> {stat: {mean, line, ...}}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -180,6 +181,15 @@ def player_baseline(plogs: pd.DataFrame, team_games: list[str], season: int,
     else:
         minutes = (n_eff * minutes + k_sal * m_sal) / (n_eff + k_sal)
 
+    # per-minute rate of each box-score stat (for blending in betting-market props)
+    stat_rates = {}
+    pool = pd.concat([pc, pp.head(30)])
+    pm = float(pool["minutes"].sum())
+    if pm > 0:
+        for st in STAT_KEYS:
+            if st in pool.columns:
+                stat_rates[st] = float(pool[st].sum() / pm)
+
     # volatility (coefficient of variation of DK points in real-minute games)
     vol = pd.concat([pc, pp]).head(25)
     vol = vol[vol["minutes"] >= 10]
@@ -220,6 +230,7 @@ def player_baseline(plogs: pd.DataFrame, team_games: list[str], season: int,
         "start_rate": start_rate, "fresh": fresh, "absence_streak": streak,
         "games_cur": n_cur, "games_prev": len(mp), "has_history": len(plogs) > 0,
         "max_recent_min": float(mc.max()) if n_cur else float(minutes),
+        "stat_rates": stat_rates,
         "m_start": m_start, "n_start": n_start, "m_bench": m_bench, "n_bench": n_bench,
     }
 
@@ -436,10 +447,45 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             r["dvp"] = dvp
             r["situational"] = situ
             r["proj"] = m * r["rate"] * (1 + bump) * env * dvp * home * situ
+            r["proj_model"] = r["proj"]
+            apply_market(r, ctx.props.get(norm_name(r["name"])))
 
     for r in rows:
         finish(r)
     return rows
+
+
+STAT_KEYS = ("pts", "reb", "ast", "fg3m", "stl", "blk", "tov")
+
+
+def apply_market(r: dict, props: dict | None) -> None:
+    """Blend sharp-book player props into the projection.
+
+    The model's projection is split into expected box-score stats (the player's
+    per-minute rates, scaled to his projected DK points). For every stat the
+    market prices, the projection moves MODEL["market_weight"] of the way to the
+    market's de-vigged expectation, valued at DraftKings scoring."""
+    r["market_stats"] = 0
+    r["market_delta"] = 0.0
+    if not props or r.get("proj", 0) <= 0:
+        return
+    rates = r.get("stat_rates") or {}
+    m = r.get("proj_minutes") or 0
+    raw = sum(DK_SCORING[s] * rates.get(s, 0) * m for s in STAT_KEYS)
+    scale = r["proj"] / raw if raw > 0 else 1.0
+    delta, n = 0.0, 0
+    for s in STAT_KEYS:
+        mk = props.get(s)
+        if not mk or s not in rates:
+            continue
+        model_s = rates[s] * m * scale
+        delta += DK_SCORING[s] * (mk["mean"] - model_s)
+        n += 1
+    if n:
+        w = MODEL["market_weight"]
+        r["market_delta"] = round(w * delta, 2)
+        r["market_stats"] = n
+        r["proj"] = max(0.0, r["proj"] + w * delta)
 
 
 def p_opp(team_rows: list[dict]) -> str:

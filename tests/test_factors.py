@@ -60,6 +60,9 @@ def league(n_days=170, seed=4, b2b_effect=-0.06, alt_effect=-0.05, ww_boost=0.25
     df = pd.DataFrame(rows)
     df["dk_fp"] = dk_points(df)
     # make the synthetic fp exact (dk_points rounds via integer stats): rescale to the drawn value
+    if "spread" not in df:
+        df["spread"] = -2.0
+        df["total"] = 224.5
     return df[COLUMNS]
 
 

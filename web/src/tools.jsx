@@ -516,3 +516,113 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
     </div>
   );
 }
+
+// ── Betting markets ─────────────────────────────────────────────────────────
+const STAT_LABEL = { pts: "Points", reb: "Rebounds", ast: "Assists", fg3m: "Threes", blk: "Blocks", stl: "Steals", tov: "Turnovers" };
+const amer = (x) => (x == null ? "—" : x > 0 ? "+" + x : String(x));
+const spreadTxt = (m) => (m == null ? "—" : (m > 0 ? "-" : "+") + Math.abs(m).toFixed(1));
+
+export function MarketsView({ doc, slate, fmtClock, onRefresh }) {
+  const [q, setQ] = useState(""), [stat, setStat] = useState("all"), [sort, setSort] = useState("edge");
+  if (!doc) return <div style={card}><div style={{ color: MU }}>{"Loading markets…"}</div></div>;
+  if (doc.error) return <div style={card}><div style={{ color: MU }}>{"Betting markets appear once your Mac publishes them."}</div></div>;
+  const teamsOnSlate = new Set((slate && slate.games || []).flatMap((g) => [g.home, g.away].map((t) => ({ GS: "GSW", NY: "NYK", SA: "SAS", NO: "NOP", PHO: "PHX", WSH: "WAS", UTAH: "UTA" }[t] || t))));
+  const games = (doc.games || []).filter((g) => !teamsOnSlate.size || teamsOnSlate.has(g.home) || teamsOnSlate.has(g.away));
+  let props = (doc.props || []).filter((p) => (stat === "all" || p.stat === stat) && (!q || p.player.toLowerCase().includes(q.toLowerCase())));
+  if (sort === "edge") props = props.slice().sort((a, b) => Math.abs(b.edge_over) - Math.abs(a.edge_over));
+  else props = props.slice().sort((a, b) => a.player.localeCompare(b.player));
+  const teams = doc.teams || {};
+  return (
+    <div>
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={sl}>{"Betting markets" + (slate ? " · " + slate.name : "")}</div>
+          <button onClick={onRefresh} style={btn(BR, MU)}>{"↻ Refresh"}</button>
+        </div>
+        <div style={{ fontSize: 12, color: MU }}>
+          {"Source: " + doc.source + " · updated " + fmtClock(doc.updated_at) + (doc.credits_left ? " · API credits left: " + doc.credits_left : "")}
+          <div>{"Lines are de-vigged (bookmaker margin removed) with Pinnacle weighted most. These same numbers feed the player projections."}</div>
+        </div>
+      </div>
+      {games.map((g, i) => g.home ? (
+        <div key={i} style={{ ...card, marginBottom: 10 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+            <b style={{ fontSize: 15 }}>{g.away + " @ " + g.home}</b>
+            <span style={{ fontSize: 12, color: MU }}>{fmtClock(g.commence) + (g.sharpest ? " · sharpest: " + g.sharpest : "")}</span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 8, marginTop: 8 }}>
+            <Stat big={g.home + " " + spreadTxt(g.home_margin)} label={"Fair spread" + (g.open ? " (open " + spreadTxt(g.open.home_margin) + ")" : "")} col={OH} />
+            <Stat big={fmt(g.total)} label={"Fair total" + (g.open ? " (open " + fmt(g.open.total) + ")" : "")} col={OH} />
+            <Stat big={g.home_win != null ? fmt(g.home_win * 100, 0) + "%" : "—"} label={g.home + " win chance"} col={OH} />
+            <Stat big={fmt(g.away_implied) + " / " + fmt(g.home_implied)} label={"Implied team totals " + g.away + " / " + g.home} col={"#e8e8f0"} />
+          </div>
+          <details style={{ marginTop: 8 }}><summary style={{ cursor: "pointer", fontSize: 12, color: MU }}>{"Prices by book"}</summary>
+            <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}><tbody>
+              {Object.entries(g.books || {}).map(([k, b]) => (
+                <tr key={k}><td style={{ padding: "3px 6px" }}>{b.title}</td>
+                  <td style={{ padding: "3px 6px" }}>{b.spread ? g.home + " " + (b.spread.home > 0 ? "+" : "") + b.spread.home + " (" + amer(b.spread.home_price) + ")" : "—"}</td>
+                  <td style={{ padding: "3px 6px" }}>{b.total ? "O/U " + b.total.point + " (" + amer(b.total.over_price) + "/" + amer(b.total.under_price) + ")" : "—"}</td>
+                  <td style={{ padding: "3px 6px" }}>{b.ml ? "ML " + amer(b.ml.away) + " / " + amer(b.ml.home) : "—"}</td></tr>))}
+            </tbody></table></details>
+          {g.moves && g.moves.length > 1 ? <div style={{ fontSize: 11, color: MU, marginTop: 6 }}>{"Today's movement: " + g.moves.slice(-8).map((m) => fmtClock(m.t) + " " + spreadTxt(m.home_margin) + "/" + fmt(m.total)).join(" → ")}</div> : null}
+          <TeamRecords teams={teams} codes={[g.away, g.home]} />
+        </div>
+      ) : (
+        <div key={i} style={{ ...card, marginBottom: 10 }}>
+          <b>{(g.teams || []).join(" vs ")}</b>
+          <div style={{ fontSize: 12, color: MU }}>{"ESPN line: " + Object.entries(g.espn || {}).map(([t, o]) => o ? t + " " + (o.spread > 0 ? "+" : "") + o.spread + " (implied " + fmt(o.implied) + ")" : "").join(" · ") + (g.espn && Object.values(g.espn)[0] ? " · total " + Object.values(g.espn)[0].total : "")}</div>
+          <TeamRecords teams={teams} codes={g.teams || []} />
+        </div>
+      ))}
+      <div style={{ ...card, marginBottom: 12 }}>
+        <div style={sl}>{"Player props vs. the model"}</div>
+        <div style={{ fontSize: 12, color: MU, marginBottom: 8 }}>{"Fair % = market chance of the over after removing the vig. Model % = Sigma's projection before the market blend. Edge = model − market (positive favors the over)."}</div>
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 8 }}>
+          <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="🔍 Player…" style={{ ...inp, width: 170 }} />
+          {["all", ...Object.keys(STAT_LABEL)].map((k) => <button key={k} onClick={() => setStat(k)} style={{ ...pill(stat === k ? OH : MU), border: "1px solid " + (stat === k ? OH : BR), cursor: "pointer" }}>{k === "all" ? "All" : STAT_LABEL[k]}</button>)}
+          <button onClick={() => setSort(sort === "edge" ? "name" : "edge")} style={btn(BR, MU)}>{"Sort: " + (sort === "edge" ? "biggest edge" : "name")}</button>
+        </div>
+        {props.length ? (
+          <div style={{ overflowX: "auto", maxHeight: 520 }}><table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead><tr>{["Player", "Prop", "Line", "Market avg", "Fair over", "Model avg", "Model over", "Edge", "Best over", "Best under"].map((h) => <th key={h} style={{ textAlign: "left", color: MU, fontSize: 10, padding: "5px 6px", borderBottom: "1px solid " + BR, position: "sticky", top: 0, background: CARD }}>{h}</th>)}</tr></thead>
+            <tbody>{props.slice(0, 300).map((p, i) => {
+              const e = p.edge_over, col = Math.abs(e) >= 0.06 ? (e > 0 ? GR : RE) : MU;
+              return (<tr key={i}>
+                <td style={{ padding: "4px 6px" }}><b>{p.player}</b><span style={{ color: MU }}>{" " + (p.team || "")}</span></td>
+                <td style={{ padding: "4px 6px" }}>{STAT_LABEL[p.stat]}</td>
+                <td style={{ padding: "4px 6px" }}>{p.line}</td>
+                <td style={{ padding: "4px 6px" }}>{fmt(p.market_mean)}</td>
+                <td style={{ padding: "4px 6px" }}>{fmt(p.over_fair * 100, 0) + "%"}</td>
+                <td style={{ padding: "4px 6px" }}>{fmt(p.model_mean)}</td>
+                <td style={{ padding: "4px 6px" }}>{fmt(p.model_over * 100, 0) + "%"}</td>
+                <td style={{ padding: "4px 6px", color: col, fontWeight: 800 }}>{(e > 0 ? "+" : "") + fmt(e * 100, 1) + "%"}</td>
+                <td style={{ padding: "4px 6px" }}>{p.best_over ? p.best_over[0] + " " + p.best_over[1] + " " + amer(p.best_over[2]) : "—"}</td>
+                <td style={{ padding: "4px 6px" }}>{p.best_under ? p.best_under[0] + " " + p.best_under[1] + " " + amer(p.best_under[2]) : "—"}</td>
+              </tr>);
+            })}</tbody></table></div>
+        ) : <div style={{ color: MU, fontSize: 13 }}>{doc.source && doc.source.startsWith("ESPN") ? "Player props need an odds API key on your Mac (see setup)." : "No props posted yet for this slate."}</div>}
+      </div>
+    </div>
+  );
+}
+
+function TeamRecords({ teams, codes }) {
+  const rows = codes.filter((c) => teams[c]);
+  if (!rows.length) return null;
+  return (
+    <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(260px,1fr))", gap: 8 }}>
+      {rows.map((c) => {
+        const t = teams[c];
+        return (
+          <div key={c} style={{ background: "#111118", borderRadius: 6, padding: "8px 10px", fontSize: 12 }}>
+            <b>{c}</b><span style={{ color: MU }}>{" this season vs closing lines"}</span>
+            <div>{"ATS " + t.ats + " (last 10: " + t.ats_last10 + ") · home " + t.ats_home + " · away " + t.ats_away}</div>
+            <div>{"O/U " + t.ou + " (last 10: " + t.ou_last10 + ") · beats spread by " + fmt(t.avg_margin_vs_spread) + " pts/game"}</div>
+            <div style={{ color: MU }}>{"Last season: ATS " + t.last_season_ats + " · O/U " + t.last_season_ou}</div>
+            <div style={{ color: MU, fontSize: 11, marginTop: 3 }}>{(t.recent || []).slice(-5).map((r) => (r.home ? "vs " : "@") + r.opp + " " + r.score + " " + r.ats + "/" + (r.ou || "-")).join(" · ")}</div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}

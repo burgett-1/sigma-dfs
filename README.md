@@ -70,6 +70,49 @@ login.
 - The app's Live Projections card and `meta.json` → `sources` show whether each data
   source is responding.
 
+## Running simulations, odds and markets
+
+**Run simulations.** Projections update continuously (about every minute, and when lines
+move). Lineups are built only when you press **▶ Run simulations** on the Lineups tab or
+in the Simulation card. The site sends the request to your Mac over your private control
+channel; the Mac builds 10,000 lineups and simulates 1,000,000 contests for that slate
+with the projections at that moment, publishes them (about a minute), then upgrades them
+to exactly solved lineups (2–3 more minutes). If projections change afterwards, the card
+says so and you can run again.
+
+**Sharp odds in the projections.** Add a key from The Odds API (the-odds-api.com) on the
+Mac:
+
+```bash
+echo 'ODDS_API_KEY=your_key_here' >> ~/.sigma-dfs.env
+```
+
+Then restart the updater:
+
+```bash
+launchctl kickstart -k gui/$(id -u)/com.sigmadfs.updater
+```
+
+Game lines (every 2 minutes) and player props for points, rebounds, assists, threes,
+blocks, steals and turnovers (every 10 minutes) come from Pinnacle first, then low-margin
+books, then the major US books. Prices are de-vigged and turned into expected stats, and
+each projection moves 70% of the way to the market for every stat the market prices
+(`market_weight` in pipeline/config.py). Sharp team totals replace ESPN's line. Change the
+refresh timers with `ODDS_LINES_MINUTES` / `ODDS_PROPS_MINUTES` in `~/.sigma-dfs.env`.
+API usage grows with refresh frequency (props are billed per game), and the credits left
+are shown on the Betting Markets tab.
+
+**Betting Markets tab** (loads when you open it): each game's fair spread, total and win
+chance, implied team totals, prices by book and today's line movement; every player prop
+with the market's fair number next to Sigma's own and the edge between them; and each
+team's record against the spread and over/under. The historical records come from ESPN's
+archived closing lines on every box score, for this season and last.
+
+**Exposures.** Every time you like lineups (one at a time, a page, or Like Top N), the
+Lineups tab shows each player's share of your liked lineups, next to the suggested
+exposure from the winning-lineup history. The Exposures tab lists every player and lets
+you cap exposures.
+
 ## How it works
 
 **Live loop.** GitHub starts a run every 15 minutes (8am to 1am Eastern). Each run polls every

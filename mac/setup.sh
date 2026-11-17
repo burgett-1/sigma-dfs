@@ -60,6 +60,12 @@ if [ ! -f "$ENV_FILE" ]; then
   chmod 600 "$ENV_FILE"
 fi
 
+# 5b) optional: sharp-book odds (The Odds API key) for Vegas-driven projections
+if ! grep -q '^ODDS_API_KEY=' "$ENV_FILE" 2>/dev/null; then
+  read -r -p "The Odds API key (press Return to skip for now): " OKEY
+  if [ -n "$OKEY" ]; then printf 'ODDS_API_KEY=%s\n' "$OKEY" >> "$ENV_FILE"; fi
+fi
+
 # 6) background job (starts now and at every login)
 PLIST="$HOME/Library/LaunchAgents/com.sigmadfs.updater.plist"
 mkdir -p "$HOME/Library/LaunchAgents" "$HOME/Library/Logs"

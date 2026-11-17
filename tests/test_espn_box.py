@@ -19,6 +19,7 @@ SUMMARY = {
         "status": {"period": 3, "displayClock": "6:00", "type": {"state": "in", "completed": False}},
         "competitors": [{"homeAway": "home", "score": "88", "team": {"abbreviation": "LAL"}},
                         {"homeAway": "away", "score": "80", "team": {"abbreviation": "GS"}}]}]},
+    "pickcenter": [{"provider": {"name": "ESPN BET"}, "details": "LAL -4.5", "overUnder": 231.5}],
     "gameInfo": {"officials": [{"displayName": "Scott Foster"}, {"displayName": "Tony Brothers"}]},
     "boxscore": {"players": [
         {"team": {"abbreviation": "LAL"}, "statistics": [{"labels": LABELS, "athletes": [
@@ -42,6 +43,7 @@ def test_summary_rows_and_dk_points():
     assert (lbj["fg3m"], lbj["fga"], lbj["fta"]) == (2, 20, 8)
     assert lbj["team_score"] == 88 and lbj["opp_score"] == 80 and lbj["date"] == "2026-11-15"
     assert lbj["officials"] == "Scott Foster|Tony Brothers" and lbj["game_id"] == "E401700001"
+    assert lbj["spread"] == -4.5 and lbj["total"] == 231.5 and by["Stephen Curry"]["spread"] == 4.5
     assert by["Bench Guy"]["not_playing_reason"] == "DNP_COACH" and by["Bench Guy"]["minutes"] == 0
     assert by["Hurt Guy"]["not_playing_reason"] == "INACTIVE_INJURY" and by["Hurt Guy"]["status"] == "INACTIVE"
     import pandas as pd
