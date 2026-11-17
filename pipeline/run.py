@@ -19,10 +19,12 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 
+import pandas as pd
+
 from . import factors, health, history, injuries, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
-from .sources import draftkings, espn, nba_cdn, referees
+from .sources import draftkings, espn, espn_box, nba_cdn, referees
 from .sources import lineups as lineups_src
 
 log = logging.getLogger("pipeline")
@@ -130,16 +132,15 @@ def _load_logs(state: dict, now: datetime, today, force_refresh: bool):
         logs = history.load()
     if force_refresh or _due(state, "history_at", now, 20):
         try:
-            if state.get("backfill_v") != 2:
-                state["backfill_v"] = 2   # once: last season incl. referee crews
-                logs = history.backfill_season(logs, season - 1)
+            # last season + this season; dates already stored are skipped, failed ones retried
+            logs = history.backfill_season(logs, season - 1)
             logs = history.update_current_season(logs, now)
             history.save(logs)
             state["history_at"] = now.isoformat()
-            health.ok("NBA.com box scores", f"{logs['game_id'].nunique() if not logs.empty else 0} games stored")
+            health.ok("ESPN box scores", f"{logs['game_id'].nunique() if not logs.empty else 0} games stored")
         except Exception as e:  # noqa: BLE001
             log.warning("history update failed, using stored logs: %s", e)
-            health.fail("NBA.com box scores", e)
+            health.fail("ESPN box scores", e)
     _MEM["logs"] = logs
     return logs
 
@@ -183,46 +184,43 @@ def _game_context(all_players, logs, refs_today: dict, fit: dict, today) -> dict
 
 def _live_scoring(rows: list[dict], state: dict, now: datetime) -> None:
     """For games that have tipped: DraftKings points so far + share of the game played
-    (official NBA live box score), refreshed every 3 minutes. Feeds the late swap tool."""
+    (ESPN live box score), refreshed every 3 minutes. Feeds the late swap tool."""
     started = {}
     for r in rows:
         if r["start_utc"] and r["start_utc"] <= now:
-            started.setdefault((r["team"], r["opp"]), r["start_utc"])
+            started.setdefault(frozenset((r["team"], r["opp"])), r["start_utc"])
     if not started:
         return
     cache = state.setdefault("live", {})
     if _due(state, "live_at", now, 3):
-        sched = _MEM.get("schedule")
-        if sched is None or _MEM.get("schedule_day") != now.date():
-            try:
-                sched = nba_cdn.schedule()
-                _MEM["schedule"], _MEM["schedule_day"] = sched, now.date()
-            except Exception as e:  # noqa: BLE001
-                log.info("schedule unavailable for live scoring: %s", e)
-                sched = []
-        for (team, opp), start in started.items():
-            g = next((g for g in sched if {g["home"], g["away"]} == {team, opp}
-                      and g["start_utc"] and abs((g["start_utc"] - start).total_seconds()) < 6 * 3600), None)
-            if not g:
-                continue
-            key = g["game_id"]
-            if cache.get(key, {}).get("status") == 3:
+        try:
+            games = espn_box.games_on(espn_box.now_et_date(now - timedelta(hours=6)))
+            health.ok("ESPN live scores", f"{len(games)} games")
+        except Exception as e:  # noqa: BLE001
+            games = []
+            health.fail("ESPN live scores", e)
+        for g in games:
+            if frozenset((g["home"], g["away"])) not in started or cache.get(g["game_id"], {}).get("state") == "post":
                 continue
             try:
-                progress, status, players = nba_cdn.live_scores(key)
-                cache[key] = {"progress": progress, "status": status,
-                              "fp": {norm_name(p["name"]) + "|" + p["team"]: p["dk_fp"] for p in players}}
+                data = espn_box.summary(g["event_id"])
+                prog, st = espn_box.progress(data)
+                logs = pd.DataFrame(espn_box.parse_summary(data, g["event_id"]))
+                fp = {}
+                if not logs.empty:
+                    logs["dk_fp"] = history.dk_points(logs)
+                    fp = {norm_name(n) + "|" + t: float(v) for n, t, v in zip(logs["name"], logs["team"], logs["dk_fp"])}
+                cache[g["game_id"]] = {"progress": prog, "state": st, "fp": fp}
             except Exception as e:  # noqa: BLE001
-                log.info("live box score %s unavailable: %s", key, e)
+                log.info("live box score %s unavailable: %s", g["game_id"], e)
         state["live_at"] = now.isoformat()
     for r in rows:
         if not (r["start_utc"] and r["start_utc"] <= now):
             continue
+        k = norm_name(r["name"]) + "|" + r["team"]
         for g in cache.values():
-            k = norm_name(r["name"]) + "|" + r["team"]
             if k in g.get("fp", {}):
-                r["live_fp"] = g["fp"][k]
-                r["progress"] = g["progress"]
+                r["live_fp"], r["progress"] = g["fp"][k], g["progress"]
                 break
         else:
             r["live_fp"], r["progress"] = None, None

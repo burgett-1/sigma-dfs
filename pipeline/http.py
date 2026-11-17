@@ -33,6 +33,12 @@ def session() -> requests.Session:
     return _session
 
 
+def get_text(url: str, **kw) -> str:
+    r = session().get(url, timeout=kw.pop("timeout", HTTP_TIMEOUT), **kw)
+    r.raise_for_status()
+    return r.text
+
+
 def get_json(url: str, **kw):
     r = session().get(url, timeout=kw.pop("timeout", HTTP_TIMEOUT), **kw)
     r.raise_for_status()

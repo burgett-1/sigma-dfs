@@ -28,6 +28,7 @@ def test_draftkings_parsing(monkeypatch):
     now = syn.utc(2026, 11, 15, 18)
     monkeypatch.setattr(draftkings, "get_json", lambda url: syn.lobby(TIP) if "lobby" in url else
                         syn.showdown_draftables(TIP) if "556" in url else syn.draftables(TIP))
+    monkeypatch.setattr(draftkings, "get_text", syn.fake_dk_text)
     slates = draftkings.list_draft_groups(now)
     assert [s.draft_group_id for s in slates] == [555, 556]
     sd = draftkings.load_draftables(slates[1])
@@ -113,7 +114,7 @@ def test_dk_scoring():
 
 # ── model ────────────────────────────────────────────────────────────────────
 def _slate_players(monkeypatch):
-    monkeypatch.setattr(draftkings, "get_json", lambda url: syn.draftables(TIP))
+    monkeypatch.setattr(draftkings, "get_text", syn.fake_dk_text)
     s = draftkings.load_draftables(draftkings.Slate(555, "Main", TIP, 2, True))
     for p in s.players:
         p["key"] = player_key(p["name"], p["team"])

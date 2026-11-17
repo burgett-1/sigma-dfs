@@ -1,19 +1,25 @@
 """DraftKings public lobby + draftables endpoints (salaries, positions, start times)."""
 from __future__ import annotations
 
+import csv
+import io
 import logging
+import re
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 
 from ..config import ET
 from .. import health
-from ..http import get_json
+from ..http import get_json, get_text
 from ..names import team_code
 
 log = logging.getLogger(__name__)
 
 LOBBY_URL = "https://www.draftkings.com/lobby/getcontests?sport=NBA"
 DRAFTABLES_URL = "https://api.draftkings.com/draftgroups/v1/draftgroups/{dg}/draftables"
+# The salary file DraftKings offers on every contest page ("Export to CSV"): names,
+# positions, salaries, games and the player IDs DraftKings uses for lineup uploads.
+SALARY_CSV_URL = "https://www.draftkings.com/lineup/getavailableplayerscsv?contestTypeId={ct}&draftGroupId={dg}"
 # DraftKings contest types we build for. Others in the NBA lobby (Tiers, "Points"
 # scoring, second-half, in-game, pick'em…) use different rules and are skipped.
 CONTEST_TYPES = {70: "classic", 81: "showdown"}
@@ -31,6 +37,7 @@ class Slate:
     game_count: int
     featured: bool
     kind: str = "classic"          # "classic" or "showdown" (CPT + 5 UTIL)
+    contest_type: int = 70
     players: list[dict] = field(default_factory=list)
     games: list[dict] = field(default_factory=list)
 
@@ -103,6 +110,8 @@ def list_draft_groups(now: datetime) -> list[Slate]:
             start_utc=start,
             game_count=int(g.get("GameCount") or 0),
             featured=g.get("DraftGroupTag") == "Featured",
+            kind=CONTEST_TYPES.get(int(ctype), "classic") if ctype is not None else "classic",
+            contest_type=int(ctype) if ctype is not None else 70,
         ))
     # de-duplicate (the lobby lists one row per draft group, but be safe)
     uniq = {s.draft_group_id: s for s in out}
@@ -115,13 +124,14 @@ def sort_slates(slates: list[Slate]) -> list[Slate]:
 
 def slate_header(s: Slate) -> dict:
     return {"draft_group_id": s.draft_group_id, "name": s.name, "start_utc": s.start_utc.isoformat(),
-            "game_count": s.game_count, "featured": s.featured, "kind": s.kind}
+            "game_count": s.game_count, "featured": s.featured, "kind": s.kind,
+            "contest_type": s.contest_type}
 
 
 def slate_from_header(h: dict) -> Slate:
     return Slate(draft_group_id=int(h["draft_group_id"]), name=h["name"], start_utc=parse_dt(h["start_utc"]),
                  game_count=int(h.get("game_count") or 0), featured=bool(h.get("featured")),
-                 kind=h.get("kind", "classic"))
+                 kind=h.get("kind", "classic"), contest_type=int(h.get("contest_type") or 70))
 
 
 def dfs_day(now: datetime):
@@ -133,12 +143,73 @@ def dfs_day(now: datetime):
 
 
 def load_draftables(slate: Slate) -> Slate:
+    """Players for a draft group from DraftKings' salary CSV."""
     try:
-        data = get_json(DRAFTABLES_URL.format(dg=slate.draft_group_id))
-        health.ok("DraftKings players")
+        text = get_text(SALARY_CSV_URL.format(ct=slate.contest_type, dg=slate.draft_group_id))
+        load_salary_csv(slate, text)
+        health.ok("DraftKings salaries", f"{len(slate.players)} players in group {slate.draft_group_id}")
     except Exception as e:  # noqa: BLE001
-        health.fail("DraftKings players", e)
+        health.fail("DraftKings salaries", e)
         raise
+    return slate
+
+
+_GAME_INFO = re.compile(r"([A-Z]{2,4})@([A-Z]{2,4})\s+(\d{2}/\d{2}/\d{4})\s+(\d{1,2}:\d{2}\s*[AP]M)", re.I)
+
+
+def load_salary_csv(slate: Slate, text: str) -> Slate:
+    """DKSalaries CSV: Position, Name + ID, Name, ID, Roster Position, Salary,
+    Game Info, TeamAbbrev, AvgPointsPerGame. Showdown lists every player twice
+    (Roster Position CPT and UTIL, with different IDs)."""
+    rows = list(csv.reader(io.StringIO(text.lstrip("\ufeff"))))
+    head = next((i for i, r in enumerate(rows) if "ID" in r and "Salary" in r and "Name" in r), None)
+    if head is None:
+        raise ValueError("salary file has no header row")
+    h = [c.strip() for c in rows[head]]
+    col = {k: h.index(k) for k in ("Position", "Name", "ID", "Roster Position", "Salary", "Game Info", "TeamAbbrev") if k in h}
+    games: dict[str, dict] = {}
+    by_player: dict[tuple, dict] = {}
+    for r in rows[head + 1:]:
+        if len(r) <= max(col.values()) or not r[col["ID"]].strip().isdigit():
+            continue
+        name, team = r[col["Name"]].strip(), r[col["TeamAbbrev"]].strip()
+        m = _GAME_INFO.search(r[col["Game Info"]]) if "Game Info" in col else None
+        g = {}
+        if m:
+            away, home, day, tm = m.groups()
+            key = f"{away}@{home}"
+            if key not in games:
+                start = datetime.strptime(f"{day} {tm.replace(' ', '').upper()}", "%m/%d/%Y %I:%M%p").replace(tzinfo=ET)
+                games[key] = {"competition_id": key, "name": f"{away} @ {home}", "home": home, "away": away,
+                              "start_utc": start.astimezone(timezone.utc)}
+            g = games[key]
+        p = by_player.setdefault((name, team), {"position": r[col["Position"]].strip(), "game": g, "entries": []})
+        p["entries"].append({"id": int(r[col["ID"]]), "salary": int(float(r[col["Salary"]] or 0)),
+                             "roster": r[col["Roster Position"]].strip().upper() if "Roster Position" in col else ""})
+    slate.kind = "showdown" if any(e["roster"] == "CPT" for p in by_player.values() for e in p["entries"]) else "classic"
+    players = []
+    for (name, team), p in by_player.items():
+        ents = sorted(p["entries"], key=lambda e: e["salary"])
+        util = next((e for e in ents if e["roster"] != "CPT"), ents[0])
+        cpt = next((e for e in ents if e["roster"] == "CPT"), None)
+        g = p["game"]
+        opp = g.get("home") if team == g.get("away") else g.get("away")
+        players.append({
+            "draftable_id": util["id"], "dk_player_id": f"{name}|{team}", "name": name,
+            "position": p["position"], "salary": util["salary"],
+            "cpt_id": cpt["id"] if cpt else None, "cpt_salary": cpt["salary"] if cpt else None,
+            "team_dk": team, "team": team_code(team), "opp_dk": opp or "", "opp": team_code(opp),
+            "home": team == g.get("home"), "competition_id": g.get("competition_id"),
+            "start_utc": g.get("start_utc"), "dk_status": "", "disabled": False,
+        })
+    slate.players = [p for p in players if p["salary"] > 0]
+    slate.games = sorted(games.values(), key=lambda g: g["start_utc"])
+    slate.game_count = len(slate.games) or slate.game_count
+    return slate
+
+
+def load_draftables_json(slate: Slate, data: dict) -> Slate:
+    """Parse the draftables JSON format (kept for files saved in that format)."""
     comps = {}
     for c in data.get("competitions") or []:
         cid = c.get("competitionId")

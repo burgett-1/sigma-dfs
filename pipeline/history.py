@@ -1,14 +1,15 @@
 """Incremental store of every player game log (box score row) used by the model."""
 from __future__ import annotations
 
+import json
 import logging
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime
+from datetime import date, datetime
 
 import pandas as pd
 
 from .config import DK_DOUBLE_DOUBLE, DK_SCORING, DK_TRIPLE_DOUBLE, HISTORY_DIR
-from .sources import nba_cdn
+from .sources import espn_box, nba_cdn
 
 log = logging.getLogger(__name__)
 
@@ -98,29 +99,69 @@ def _append(df: pd.DataFrame, rows: list[dict]) -> pd.DataFrame:
         ["game_id", "person_id"], keep="last")
 
 
-def update_current_season(df: pd.DataFrame, now: datetime) -> pd.DataFrame:
-    """Download box scores for any finished games not yet stored."""
-    sched = nba_cdn.schedule()
-    have = complete_game_ids(df)
-    todo = [g["game_id"] for g in sched if g["status"] == 3 and g["game_id"] not in have
-            and g["start_utc"] and g["start_utc"] < now]
-    if not todo:
+DATES_FILE = "espn_dates.json"
+
+
+def _dates_done() -> dict:
+    try:
+        return json.loads((HISTORY_DIR / DATES_FILE).read_text())
+    except (OSError, ValueError):
+        return {}
+
+
+def _sync_dates(df: pd.DataFrame, days: list, now: datetime, recheck_days: int = 2) -> pd.DataFrame:
+    """Fetch ESPN box scores for every finished game on these dates not yet stored."""
+    done = _dates_done()
+    today = espn_box.now_et_date(now)
+    todo_days = [d for d in days if d < today and (d.isoformat() not in done or (today - d).days <= recheck_days)]
+    if not todo_days:
         return df
-    log.info("fetching %d new box scores", len(todo))
-    rows: list[dict] = []
+    have = complete_game_ids(df)
+    events: list[dict] = []
     with ThreadPoolExecutor(max_workers=8) as ex:
-        for r in ex.map(_fetch, todo):
-            rows.extend(r)
-    return _append(df, rows)
+        for d, games in zip(todo_days, ex.map(_games_on, todo_days)):
+            if games is None:
+                continue
+            fin = [g for g in games if g["completed"]]
+            events += [g for g in fin if g["game_id"] not in have]
+            if len(fin) == len(games):
+                done[d.isoformat()] = len(fin)
+    if events:
+        log.info("fetching %d box scores", len(events))
+        rows: list[dict] = []
+        with ThreadPoolExecutor(max_workers=8) as ex:
+            for r in ex.map(_fetch_espn, [g["event_id"] for g in events]):
+                rows.extend(r)
+        df = _append(df, rows)
+    HISTORY_DIR.mkdir(parents=True, exist_ok=True)
+    (HISTORY_DIR / DATES_FILE).write_text(json.dumps(done))
+    return df
+
+
+def _games_on(d):
+    try:
+        return espn_box.games_on(d)
+    except Exception as e:  # noqa: BLE001
+        log.debug("scoreboard %s unavailable: %s", d, e)
+        return None
+
+
+def _fetch_espn(event_id: str) -> list[dict]:
+    try:
+        return espn_box.parse_summary(espn_box.summary(event_id), event_id)
+    except Exception as e:  # noqa: BLE001
+        log.debug("box score %s unavailable: %s", event_id, e)
+        return []
+
+
+def update_current_season(df: pd.DataFrame, now: datetime) -> pd.DataFrame:
+    """Add box scores for finished games this season (ESPN)."""
+    today = espn_box.now_et_date(now)
+    season = nba_cdn.season_start_year(today)
+    return _sync_dates(df, espn_box.season_dates(season, today), now)
 
 
 def backfill_season(df: pd.DataFrame, start_year: int) -> pd.DataFrame:
-    """One-off: pull a full prior regular season by enumerating game ids."""
-    have = complete_game_ids(df)
-    ids = [g for g in nba_cdn.game_ids_for_season(start_year) if g not in have]
-    log.info("backfilling %d games for %d-%02d", len(ids), start_year, (start_year + 1) % 100)
-    rows: list[dict] = []
-    with ThreadPoolExecutor(max_workers=8) as ex:
-        for r in ex.map(_fetch, ids):
-            rows.extend(r)
-    return _append(df, rows)
+    """Pull a full past season (ESPN), date by date."""
+    log.info("backfilling the %d-%02d season", start_year, (start_year + 1) % 100)
+    return _sync_dates(df, espn_box.season_dates(start_year, date(start_year + 1, 6, 30)), datetime.now().astimezone())

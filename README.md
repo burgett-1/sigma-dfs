@@ -42,10 +42,11 @@ until you press **Use live**.
 
 ## Live updates run on your Mac
 
-DraftKings' player/salary API and NBA.com's data servers refuse requests from cloud
-servers such as GitHub's (HTTP 403), but they serve normal home connections. So the
-live updater runs on your Mac and publishes to the `data` branch; the website reads it
-from there as before.
+The live updater runs on your Mac and publishes to the `data` branch; the website reads
+it from there. It uses sources that serve automated requests: DraftKings' lobby and
+salary files, ESPN box scores, and NBA.com's lineups, injury report and referee pages.
+(DraftKings' player API and NBA.com's stats CDN refuse automated requests, so they
+aren't used.)
 
 One-time setup (Terminal):
 
@@ -76,11 +77,11 @@ login.
 
 | What | Source | Verification |
 |---|---|---|
-| Slates, salaries, positions, DK player IDs, lock times | DraftKings lobby + draftables API | the same IDs DK uses for uploads |
+| Slates, salaries, positions, DK player IDs, lock times | DraftKings lobby + DraftKings salary file ("Export to CSV") | the same IDs DK uses for uploads |
 | Injury status | Official NBA injury report (PDF) → ESPN → DraftKings | official report wins once a team has submitted |
 | Starting lineups | NBA.com "Today's Lineups" feed (Confirmed / Expected) | Sigma projects the five until a team posts |
 | Referee crews | official.nba.com referee assignments | |
-| History (every player-game, refs, arenas) | NBA.com box scores (cdn.nba.com) | official league data |
+| History (every player-game, refs, starters) and live in-game scoring | ESPN box scores | NBA.com's data servers refuse automated requests |
 | Historical DK salaries | RotoGuru DK archive | a night is used only if its DK points match NBA.com box scores for ≥95% of players |
 | Spreads / totals | ESPN | |
 

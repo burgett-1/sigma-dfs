@@ -6,7 +6,7 @@ import pytest
 
 from pipeline import history, injuries, notify, patterns, run as runmod
 from pipeline.config import SIM
-from pipeline.sources import draftkings, espn, injury_report, lineups, nba_cdn, referees
+from pipeline.sources import draftkings, espn, espn_box, injury_report, lineups, nba_cdn, referees
 from tests import synthetic as syn
 from tests.test_pipeline import TIP, TODAY
 
@@ -31,7 +31,8 @@ def env(tmp_path, monkeypatch):
     monkeypatch.setattr(draftkings, "get_json",
                         lambda url: syn.lobby(TIP) if "lobby" in url else
                         syn.showdown_draftables(TIP) if "/556/" in url else syn.draftables(TIP))
-    monkeypatch.setattr(nba_cdn, "schedule", lambda: [])
+    monkeypatch.setattr(draftkings, "get_text", syn.fake_dk_text)
+    monkeypatch.setattr(espn_box, "games_on", lambda d: [])
     monkeypatch.setattr(history, "backfill_season", lambda logs, y: logs)
     monkeypatch.setattr(espn, "odds_for_date", lambda d: {
         "BOS": {"implied": 116.0, "spread": -4.0}, "LAL": {"implied": 112.0, "spread": 4.0},

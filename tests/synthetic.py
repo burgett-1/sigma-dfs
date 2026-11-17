@@ -116,3 +116,35 @@ def showdown_draftables(start: datetime) -> dict:
         cpt["salary"] = int(p["salary"] * 1.5)
         d.append(cpt)
     return {"draftables": d, "competitions": [comp]}
+
+
+def salary_csv(start: datetime, showdown: bool = False) -> str:
+    """DraftKings DKSalaries.csv for the synthetic slate (showdown: BOS @ LAL only)."""
+    from zoneinfo import ZoneInfo
+    et = ZoneInfo("America/New_York")
+    d = draftables(start)
+    lines = ["Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame"]
+    for p in d["draftables"]:
+        comp = p["competition"]
+        if showdown and comp["competitionId"] != 1:
+            continue
+        st = datetime.fromisoformat(comp["startTime"].replace("Z", "+00:00")).astimezone(et)
+        away, home = comp["name"].split(" @ ")
+        info = f"{away}@{home} {st:%m/%d/%Y %I:%M%p} ET"
+        pos = p["position"]
+        if showdown:
+            lines.append(f"{pos},{p['displayName']} ({p['draftableId'] + 500000}),{p['displayName']},{p['draftableId'] + 500000},CPT,{int(p['salary'] * 1.5)},{info},{p['teamAbbreviation']},30.0")
+            lines.append(f"{pos},{p['displayName']} ({p['draftableId']}),{p['displayName']},{p['draftableId']},UTIL,{p['salary']},{info},{p['teamAbbreviation']},30.0")
+        else:
+            roster = "/".join(pos.split("/") + (["G"] if set(pos.split("/")) & {"PG", "SG"} else []) +
+                              (["F"] if set(pos.split("/")) & {"SF", "PF"} else []) + ["UTIL"])
+            lines.append(f"{pos},{p['displayName']} ({p['draftableId']}),{p['displayName']},{p['draftableId']},{roster},{p['salary']},{info},{p['teamAbbreviation']},30.0")
+    return "\n".join(lines) + "\n"
+
+
+def fake_dk_text(url: str) -> str:
+    """Stand-in for DraftKings' salary-file download (group 556 = showdown)."""
+    return salary_csv(_TIP_FOR_FAKE, showdown="draftGroupId=556" in url)
+
+
+_TIP_FOR_FAKE = datetime(2026, 11, 16, 0, 30, tzinfo=timezone.utc)
