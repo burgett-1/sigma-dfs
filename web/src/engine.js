@@ -46,6 +46,8 @@ export function buildSim(players, now) {
   const teams = {}, games = {};
   const P = players.length;
   const mu = new Float64Array(P), sd = new Float64Array(P), pplay = new Float64Array(P);
+  // per-player outcome percentiles at U_SAMPLE (learned from history), when published
+  const Q = new Array(P).fill(null);
   const team = new Int32Array(P), game = new Int32Array(P), locked = new Uint8Array(P), code = new Int32Array(P);
   players.forEach((p, i) => {
     const t = (p.team || "").toUpperCase(), o = (p.opp || "").toUpperCase();
@@ -56,21 +58,39 @@ export function buildSim(players, now) {
     code[i] = posCode(p.positions);
     const started = p.gameStart && now >= Date.parse(p.gameStart);
     locked[i] = started ? 1 : 0;
-    const s = p.stdDev > 0 ? p.stdDev : p.proj * 0.3;
+    const mean = p.mean != null && !isNaN(p.mean) ? p.mean : p.proj;   // proj is the median
+    const s = p.stdDev > 0 ? p.stdDev : mean * 0.3;
     if (started && p.liveFP != null && !isNaN(p.liveFP)) {
       const left = Math.max(0, 1 - (p.progress || 0));
-      mu[i] = p.liveFP + p.proj * left; sd[i] = s * Math.sqrt(left); pplay[i] = 1;
+      mu[i] = p.liveFP + mean * left; sd[i] = s * Math.sqrt(left); pplay[i] = 1;
     } else {
-      mu[i] = Math.max(0, p.proj); sd[i] = Math.max(s, 0.15 * p.proj);
+      mu[i] = Math.max(0, mean); sd[i] = Math.max(s, 0.15 * mean);
       pplay[i] = started ? 1 : (PLAY_PROB[p.injury] || 1);
+      if (Array.isArray(p.q) && p.q.length === U_SAMPLE.length && p.q.every((v) => !isNaN(v))) Q[i] = p.q;
     }
   });
-  return { P, mu, sd, pplay, team, game, locked, code, nTeam: Object.keys(teams).length, nGame: Object.keys(games).length };
+  return { P, mu, sd, pplay, Q, team, game, locked, code, nTeam: Object.keys(teams).length, nGame: Object.keys(games).length };
+}
+
+// percentiles the pipeline publishes (distribution.U_SAMPLE)
+export const U_SAMPLE = [0, 0.01, 0.025, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6,
+  0.65, 0.7, 0.75, 0.8, 0.85, 0.9, 0.95, 0.975, 0.99, 0.999];
+export function normCdf(z) {   // Abramowitz-Stegun 7.1.26, error < 2e-7
+  const x = Math.abs(z) / Math.SQRT2, t = 1 / (1 + 0.3275911 * x);
+  const e = 1 - t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429)))) * Math.exp(-x * x);
+  return 0.5 * (1 + (z < 0 ? -e : e));
+}
+export function fromCurve(q, u) {
+  let lo = 0, hi = U_SAMPLE.length - 1;
+  if (u >= U_SAMPLE[hi]) return q[hi];
+  while (hi - lo > 1) { const m = (lo + hi) >> 1; if (U_SAMPLE[m] <= u) lo = m; else hi = m; }
+  const w = (u - U_SAMPLE[lo]) / (U_SAMPLE[hi] - U_SAMPLE[lo]);
+  return q[lo] + w * (q[hi] - q[lo]);
 }
 
 // n correlated simulated slates: Float32Array of n*P
 export function sampleScores(sim, n, rng, corr) {
-  const { P, mu, sd, pplay, team, game, nTeam, nGame } = sim;
+  const { P, mu, sd, pplay, Q, team, game, nTeam, nGame } = sim;
   const rg = Math.min(Math.max((corr && corr.opp) || 0.04, 0), 0.3);
   const rt = Math.min(Math.max(((corr && corr.team) || 0.04) - rg, 0), 0.3);
   const a = Math.sqrt(rg), b = Math.sqrt(rt), c = Math.sqrt(Math.max(1e-6, 1 - rg - rt));
@@ -86,6 +106,7 @@ export function sampleScores(sim, n, rng, corr) {
       if (mu[i] <= 0) { out[base + i] = 0; continue; }
       if (pplay[i] < 1 && rng() > pplay[i]) { out[base + i] = 0; continue; }
       const z = a * G[game[i]] + b * T[team[i]] + c * rng.normal();
+      if (Q && Q[i]) { out[base + i] = fromCurve(Q[i], normCdf(z)); continue; }
       const w = Math.max(1 - h[i] + z * Math.sqrt(h[i]), 0);
       out[base + i] = sd[i] > 0 ? mu[i] * w * w * w : mu[i];
     }

@@ -22,7 +22,7 @@ from datetime import date
 import numpy as np
 import pandas as pd
 
-from . import history, model
+from . import distribution, history, model
 from .config import MODEL, NOT_PLAYING
 from .names import player_key
 
@@ -66,7 +66,10 @@ def replay_night(logs: pd.DataFrame, day: date) -> list[dict]:
             odds[r.team] = {"spread": sp, "total": tot, "implied": tot / 2 - sp / 2}
         except (TypeError, ValueError):
             pass
-    ctx = model.Context(today=day, statuses=statuses, odds=odds, lineups=lineups)
+    yday = (pd.Timestamp(day) - pd.Timedelta(days=1)).date().isoformat()
+    played_yday = set(prior.loc[prior["date"].astype(str) == yday, "team"])
+    ctx = model.Context(today=day, statuses=statuses, odds=odds, lineups=lineups,
+                        teams_played_yesterday=played_yday)
     rows = model.project(players, prior, ctx)
     actual = {(r.person_id): r for r in tonight.itertuples(index=False)}
     out = []
@@ -81,7 +84,10 @@ def replay_night(logs: pd.DataFrame, day: date) -> list[dict]:
                     "fppm": p["fpts_min"], "sd": p["std_dev"], "floor": p["floor"], "ceiling": p["ceiling"],
                     "salary": p["salary"], "boom": p["boom"], "bust": p["bust"],
                     "act_fp": float(a.dk_fp), "act_min": float(a.minutes), "starter": bool(a.starter),
-                    "proj_raw": p.get("proj_raw", p["proj"]), "cv_player": p.get("cv", 0.32)})
+                    "proj_raw": p.get("proj_raw", p["proj"]), "cv_player": p.get("cv", 0.32),
+                    "mean": p.get("mean", p["proj"]),
+                    # pre-game context, used to learn what widens or narrows outcomes
+                    **distribution.dist_features(p, played_yday)})
     return out
 
 
@@ -121,27 +127,9 @@ def summarise(rows: list[dict]) -> dict:
     }
 
 
-def recalibrated(rows: list[dict], cal: dict) -> list[dict]:
-    """The same audit rows with the calibration applied (to score it on held-out nights)."""
-    from . import calibration
-    out = []
-    for r in rows:
-        r = dict(r)
-        if r["proj"] > 0:
-            pc = float(calibration.apply_level(np.array([r["proj"]]), cal)[0])
-            cv = calibration.cv_for(pc, cal, r["cv_player"])
-            k = r["salary"] / 1000
-            r.update(proj=pc, sd=pc * cv, floor=calibration.quantile(pc, cv, 0.10),
-                     ceiling=calibration.quantile(pc, cv, 0.90),
-                     boom=100 * calibration.prob_at_least(pc, cv, MODEL["boom_multiple"] * k),
-                     bust=100 * (1 - calibration.prob_at_least(pc, cv, MODEL["bust_multiple"] * k)))
-        out.append(r)
-    return out
-
-
-def calibrate(logs: pd.DataFrame, n: int = 40) -> tuple[dict, dict]:
-    """Replay n past nights, fit the calibration, and report it honestly: fitted on half
-    the nights, scored on the other half, before and after."""
+def calibrate(logs: pd.DataFrame, n: int = 80) -> tuple[dict, dict]:
+    """Replay n past nights and fit the calibration. The distribution model reports
+    its own held-out accuracy (fitted on half the nights, scored on the other half)."""
     from . import calibration
     rows = []
     for d in nights(logs, n):
@@ -151,16 +139,12 @@ def calibrate(logs: pd.DataFrame, n: int = 40) -> tuple[dict, dict]:
             log.warning("audit night %s failed: %s", d, e)
     if not rows:
         return {"used": False, "note": "no nights to audit"}, {}
-    days = sorted({r["date"] for r in rows})
-    a, b = set(days[0::2]), set(days[1::2])
-    train = [r for r in rows if r["date"] in a]
-    test = [r for r in rows if r["date"] in b]
-    report = {"nights": len(days), "player_games": len(rows)}
-    half = calibration.fit(pd.DataFrame(train), min_rows=500)
-    if half.get("used") and test:
-        report["held_out_before"] = summarise(test)
-        report["held_out_after"] = summarise(recalibrated(test, half))
-    cal = calibration.fit(pd.DataFrame(rows))
+    df = pd.DataFrame(rows)
+    cal = calibration.fit(df)
+    dist = cal.get("dist") or {}
+    report = {"nights": int(df["date"].nunique()), "player_games": len(rows),
+              "raw_model": summarise(rows),
+              "distribution": {k: dist.get(k) for k in ("used", "feats", "selection", "held_out", "note")}}
     return cal, report
 
 

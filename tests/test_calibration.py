@@ -1,40 +1,55 @@
 import numpy as np
 import pandas as pd
 
-from pipeline import calibration
+from pipeline import calibration, distribution
 
 
-def _rows(n=4000, seed=1):
+def _rows(n=6000, seed=1):
+    """Synthetic backtest: real outcomes skewed, 8% above the raw projection, and wider
+    when a fact (f_bump) is on; another fact (f_total) is pure noise."""
     rng = np.random.default_rng(seed)
     proj = rng.uniform(3, 55, n)
-    true = proj * 1.08                                    # model 8% low
-    cv = 1.6 * true ** -0.5
+    bump = (rng.random(n) < 0.3).astype(float)
+    true = proj * 1.08
+    cv = 1.6 * true ** -0.5 * (1 + 0.6 * bump)
     k = 1 / cv ** 2
     act = rng.gamma(k, true / k)
-    mins = proj / 1.0
-    return pd.DataFrame({"proj": proj, "act_fp": act, "cv_player": 0.3, "minutes": mins, "act_min": mins * 0.95})
+    days = np.array([f"2026-01-{1 + i % 28:02d}" for i in range(n)])
+    return pd.DataFrame({"proj": proj, "act_fp": act, "date": days, "f_bump": bump,
+                         "f_total": rng.normal(114, 5, n), "minutes": proj, "act_min": proj * 0.95})
 
 
-def test_fit_recovers_level_and_spread():
+def test_distribution_learns_median_and_useful_facts_only():
+    df = _rows()
+    m = distribution.fit(df)
+    assert m["used"]
+    assert "f_bump" in m["feats"] and "f_total" not in m["feats"]
+    # median of the curve tracks the real median (gamma median of 1.08 * proj)
+    q_off = distribution.curve(30.0, {"f_bump": 0.0}, m)
+    q_on = distribution.curve(30.0, {"f_bump": 1.0}, m)
+    us = distribution.U_SAMPLE
+    med = np.interp(0.5, us, q_off)
+    sub = df[(df.proj > 27) & (df.proj < 33) & (df.f_bump == 0)]
+    assert abs(med - sub.act_fp.median()) < 1.5
+    # the fact widens the distribution: higher ceiling, lower floor
+    assert np.interp(0.9, us, q_on) > np.interp(0.9, us, q_off)
+    assert np.interp(0.1, us, q_on) < np.interp(0.1, us, q_off)
+    # held-out: each percentile is where it should be
+    for u, share in m["held_out"]["share_below"].items():
+        assert abs(share - float(u)) < 0.025
+
+
+def test_summary_consistent_with_curve():
+    m = distribution.fit(_rows())
+    q = distribution.curve(25.0, {"f_bump": 0.0}, m)
+    s = distribution.summary(q, 6000, 6, 4)
+    assert s["floor"] < s["median"] < s["ceiling"]
+    assert s["mean"] > s["median"]                      # right-skewed outcomes
+    # boom = P(X >= 36): consistent with the curve
+    assert abs(s["boom"] / 100 - (1 - np.interp(36.0, q, us := distribution.U_SAMPLE))) < 1e-6
+
+
+def test_calibration_fit_and_small_sample():
     cal = calibration.fit(_rows())
-    assert cal["used"]
-    mid = calibration.apply_level(np.array([30.0]), cal)[0]
-    assert 30 * 1.03 < mid < 30 * 1.13
-    assert -0.7 < cal["cv_b"] < -0.3                       # relative spread shrinks with projection
-    assert calibration.apply_level(np.array([30.0]), {"proj_x": cal["min_x"], "proj_y": cal["min_y"]})[0] < 30
-
-
-def test_quantiles_are_consistent():
-    m, cv = 30.0, 0.4
-    lo, hi = calibration.quantile(m, cv, 0.1), calibration.quantile(m, cv, 0.9)
-    assert lo < m < hi
-    assert abs(calibration.prob_at_least(m, cv, hi) - 0.10) < 0.01
-    assert abs(calibration.prob_at_least(m, cv, lo) - 0.90) < 0.01
-    rng = np.random.default_rng(0)
-    k = 1 / cv ** 2
-    x = rng.gamma(k, m / k, 200_000)
-    assert abs((x > hi).mean() - 0.10) < 0.01             # matches a real gamma
-
-
-def test_small_sample_not_used():
-    assert not calibration.fit(_rows(200))["used"]
+    assert cal["used"] and cal["dist"]["used"] and cal["minutes"]["x"]
+    assert not calibration.fit(_rows(500))["used"]

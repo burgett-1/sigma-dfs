@@ -154,35 +154,52 @@ position × situational factors:
 - **Referee crews are measured leaving out the game being predicted**, and opponent
   defense is a control in the fit, so neither can leak the result or pose as altitude/rest.
 
-**Every column is checked against real results (daily backtest).** Once a day the Mac
-replays ~40 past nights with only what was known before tip-off (earlier box scores, who
-sat, who started, the closing spread/total) and compares every column with what happened:
-projection, minutes, points per minute, std dev, floor, ceiling, boom and bust. From that
-it fits a calibration the live projections use:
-- projection level and projected minutes, by range (e.g. players projected ~34 that really
-  averaged ~37 are moved up);
-- the spread of outcomes by projection level (low projections vary far more, relatively);
-- floor = 10th percentile, ceiling = 90th percentile, boom/bust probabilities, all from
-  the same skewed distribution the contest simulator uses.
+**Every column is checked against real results (daily backtest).** Each morning the Mac
+replays 80 past nights with only what was known before tip-off (earlier box scores, who
+sat, who started, the closing spread/total) and compares every column with what happened.
+From that it learns each player's **whole outcome distribution** (`pipeline/distribution.py`):
 
-It is fitted on half the nights and scored on the other half; the report is published
-as `audit.json`. On the current history (6,300 player-games), held-out nights:
+- **Proj is the median**: half of real results land above it, half below. Nothing is
+  added on top. Where the raw model is systematically off (it under-rates stars by ~6–12%
+  and over-rates deep-bench players), the median follows what really happened.
+- **Floor / ceiling** are the 10th / 90th percentiles; **boom / bust** are read off the same
+  curve; the simulator draws every outcome from it (the curve is published per player).
+- **Minutes** are the median real minutes of players given that projection.
+- **The spread changes slate to slate.** Quantile regression fits every percentile (1% …
+  99%) to the projection *and* tonight's facts. Candidates: point spread, team total,
+  starting vs. bench, teammates out, how much the player's minutes have swung, back-to-back,
+  returning from absence, few games this season, the player's own volatility, minutes vs.
+  projection. A fact is kept only if it makes held-out nights' percentiles more accurate.
+  On the current history four earn a place: minutes vs. projection, teammates out, team
+  total, returning from absence. The point spread did not improve accuracy, so it isn't used.
+  The selection is redone daily as history grows.
 
-| | before | after |
+Held-out check through the live code path (fitted on 40 nights, the live model then
+projected 40 other nights, 5,867 player-games; the daily fit uses all 80):
+
+| | target | result |
 |---|---|---|
-| Results above the ceiling (target 10%) | 17.7% | 11.5% |
-| Results below the floor (target 10%; includes surprise DNPs) | 27.4% | 14.1% |
-| Spread of errors vs. stated std dev (target 1.0) | 2.57× | 1.05× |
-| DK points mean absolute error | 7.23 | 7.11 |
+| Real results below Proj, players projected 10+ | 50% | 45.6–49.9% by level (stars 48.3%) |
+| Real results below Proj, everyone | 50% | 51.4% (deep bench: real median is 0) |
+| Above the ceiling / below the floor | 10% / 10% | 10.7% / 8.6% |
+| Real minutes below projected minutes | 50% | 49.3% |
+| Boom chance 15–30% predicted → actual | | 20.3% → 22.2% |
+| Bust chance 30–50% predicted → actual | | 42.2% → 40.2% |
+| Percentile accuracy vs. the old fixed-shape model (pinball loss) | lower is better | 2.232 → 2.187 |
+
+Known edge: the very top projections beat their ceiling a bit more than 10% of the time
+(13%), so stars' upside is if anything slightly understated, never inflated.
+
+The full report is published as `audit.json`.
 
 **Lineups.** For every slate the optimizer:
 1. Builds **10,000 unique lineups**, each the exact best lineup for one simulated outcome of
    the slate (HiGHS integer programming; Hall's-theorem position model, verified against
    brute force).
 2. Simulates **1,000,000 contests**: your 10,000 lineups plus 10,000 opponent lineups drafted
-   from projected ownership. Player scores are skewed (gamma) and correlated: teammates and
-   opponents share game/team effects measured from history, and Questionable players
-   sometimes sit.
+   from projected ownership. Each player's score is drawn from his learned outcome
+   distribution, and players are correlated: teammates and opponents share game/team
+   effects measured from history. Questionable players sometimes sit.
 3. Ranks the lineups by **win probability** (share of the million contests won). A win
    tied with an identical field lineup is split with it (the card shows **dupes**).
 4. Orders a **best portfolio**: each pick is the lineup that adds the most simulated
@@ -193,10 +210,9 @@ as `audit.json`. On the current history (6,300 player-games), held-out nights:
 
 **Why lineups were too concentrated before, and what the data says.** The backtest showed
 outcome variance was underestimated by about 2.5×, so every simulated slate looked alike
-and the same players kept being optimal. With the measured variance, on a real main slate
-the best 150 lineups use 122 different players instead of 82, the most-used player drops
-from 57% to 39%, average total ownership from 136% to 122%, and each lineup carries ~3.8
-players under 10% owned. Forcing extra low-owned "leverage" lineups was also tested: the
+and the same players kept being optimal. With measured outcome distributions, the best
+150-lineup portfolio on a real main slate spreads across ~95–120 players with no one above
+~50%, average total ownership ~115%, and ~4 players under 10% owned per lineup. Forcing extra low-owned "leverage" lineups was also tested: the
 contest sim scored them lower (top-150 win coverage 8.40% → 8.11% → 7.72%), so it is off
 (`SIM["leverage_share"]` in `pipeline/config.py`).
 
@@ -214,9 +230,15 @@ private: see **My contests (admin only)** below.
 **Using it on game day.**
 1. Open the site. The **Lineups** tab shows the pool ranked by win %, 50 per page.
 2. Like lineups one at a time, a whole page, or **Like Top… → 20 / 50 / 150 / 500 / all**.
-3. **⬇ Export** downloads `DK_upload_N_lineups.csv`: slot headers plus DraftKings player
-   IDs, ready for DraftKings' lineup upload. To fill entries you already have, load your
-   DK entries CSV first and export fills it in.
+3. **⬇ Export**. DraftKings has two different upload pages, each with its own file:
+   - **New lineups** (Lineups → Upload Lineups): just press Export. The file has the
+     position headers and DraftKings player IDs.
+   - **Contests you already entered** (Contests → Edit Entries): on that page pick the
+     start time and **Download** your entries file, load it here in step 1, then Export.
+     The app fills your liked lineups into those entries (entry 1 gets lineup 1, …) and
+     keeps everything else exactly as DraftKings wrote it. Upload it back on Edit Entries.
+     (Uploading the new-lineups file on Edit Entries gives "Incorrect player position
+     header for sport".)
 4. When news breaks, your phone buzzes, the pool rebuilds itself, and a banner shows what
    moved. Like, export, upload.
 

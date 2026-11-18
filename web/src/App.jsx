@@ -1,5 +1,6 @@
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { fillEntries } from "./lateswap.js";
 import { MarketsView, ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
 const SALARY_CAP_NBA=50000;
 const W1=0.605,W2=0.363,W3=0.242;
@@ -116,7 +117,10 @@ function parseProjections(text,sport){
         gameStart:safeStr(c[23]).trim(),restricted:safeStr(c[24]).trim().toLowerCase()==="true",
         cptId:toInt(c[25])||null,cptSalary:toInt(c[26])||null,
         liveFP:safeStr(c[27]).trim()===""?null:toFloat(c[27]),progress:safeStr(c[28]).trim()===""?null:toFloat(c[28]),
-        optExp:safeStr(c[29]).trim()===""?null:toFloat(c[29]),corrGame:safeStr(c[30]).trim()
+        optExp:safeStr(c[29]).trim()===""?null:toFloat(c[29]),corrGame:safeStr(c[30]).trim(),
+        // proj is the median; mean and the outcome percentiles feed the simulator
+        mean:safeStr(c[31]).trim()===""?null:toFloat(c[31]),
+        q:safeStr(c[32]).trim()===""?null:safeStr(c[32]).split(";").map(Number)
       });
     }
   }
@@ -1195,51 +1199,36 @@ export default function App(){
     if(!liked.length)return;
     var slotNames=["PG","SG","SF","PF","C","G","F","UTIL"];
     var csvContent="";
-    if(playerIdData&&playerIdData.headerLineIdx!==-1&&!liked[0].showdown){
-      var rawLines=playerIdData.rawLines.slice();
-      function fmtP(name){var id=playerIdData.playerMap[name.toLowerCase()];if(id)return name+" ("+id+")";var lname=name.toLowerCase();for(var k in playerIdData.playerMap){if(k.indexOf(lname)!==-1||lname.indexOf(k)!==-1)return name+" ("+playerIdData.playerMap[k]+")";}return name;}
-      for(var li2=0;li2<liked.length;li2++){
-        var lu2=liked[li2];var asgn=lu2.assigned;
-        if(!asgn){asgn=assignNBASlots(lu2.players,teamStartMap);}
-        if(!asgn)continue;
-        var slotPlayerList={};
-        for(var ai=0;ai<asgn.length;ai++){if(!asgn[ai])continue;var aslot=asgn[ai].slot;if(!slotPlayerList[aslot])slotPlayerList[aslot]=[];slotPlayerList[aslot].push(fmtP(asgn[ai].name));}
-        var tmplCols;
-        if(li2<playerIdData.entries.length)tmplCols=playerIdData.entries[li2].cols.slice();
-        else if(playerIdData.entries.length>0)tmplCols=playerIdData.entries[0].cols.slice();
-        else continue;
-        var maxIdx=0;for(var sk in playerIdData.slotIdxMap){if(playerIdData.slotIdxMap[sk]>maxIdx)maxIdx=playerIdData.slotIdxMap[sk];}
-        while(tmplCols.length<=maxIdx)tmplCols.push("");
-        var slotFillCount={};
-        for(var si5=0;si5<slotNames.length;si5++){
-          var sl2=slotNames[si5];var idxList=playerIdData.slotIdxList[sl2];if(!idxList||!idxList.length)continue;
-          if(!slotFillCount[sl2])slotFillCount[sl2]=0;
-          var colIdx=idxList[slotFillCount[sl2]]!==undefined?idxList[slotFillCount[sl2]]:idxList[idxList.length-1];
-          var pArr=slotPlayerList[sl2]||[];
-          tmplCols[colIdx]=pArr[slotFillCount[sl2]]||"";
-          slotFillCount[sl2]++;
-        }
-        var row=tmplCols.map(function(c){return(typeof c==="string"&&c.indexOf(",")!==-1)?'"'+c+'"':(c||"");}).join(",");
-        if(li2<playerIdData.entries.length)rawLines[playerIdData.entries[li2].rowIdx]=row;else rawLines.push(row);
-      }
-      csvContent=rawLines.join("\n");
+    // each lineup as DraftKings slot labels + player IDs, in DK's slot order
+    var entryLineups=[],missing=0;
+    for(var li3=0;li3<liked.length;li3++){
+      var hdrL=liked[li3].slotLabels||slotNames;
+      var a2=liked[li3].assigned||assignNBASlots(liked[li3].players,teamStartMap)||[];
+      var ids=a2.map(function(p){var id=p&&(p.slot==="CPT"?p.cptId:p.dkId);return id?String(id):"";});
+      if(ids.length!==hdrL.length||ids.indexOf("")!==-1){missing++;continue;}
+      entryLineups.push({labels:hdrL,ids:ids});
+    }
+    if(missing)alert(missing+" lineup(s) skipped: missing DraftKings IDs.");
+    if(!entryLineups.length)return;
+    var fname;
+    if(playerIdData&&playerIdData.rawLines&&/entry id/i.test(playerIdData.rawLines.join("\n"))){
+      // Contests -> Edit Entries: fill the entries file DraftKings gave you
+      var res=fillEntries(playerIdData.rawLines.join("\n"),entryLineups);
+      if(res.error){alert(res.error);return;}
+      csvContent=res.csv;fname="DKEntries_filled_"+res.filled+".csv";
+      alert("Filled "+res.filled+" of "+res.entries+" entries"+(res.extra?" ("+res.extra+" liked lineups had no entry left)":"")+
+        ".\nUpload it on DraftKings: Contests → Edit Entries → Upload CSV.");
     } else {
-      // DraftKings lineup-upload format: slot headers, one row per lineup, DK player IDs
-      var hdr=liked[0].slotLabels||slotNames;
-      var rows2=[hdr.join(",")],missing=0;
-      for(var li3=0;li3<liked.length;li3++){
-        var a2=liked[li3].assigned||assignNBASlots(liked[li3].players,teamStartMap)||[];
-        var cells=a2.map(function(p){var id=p&&(p.slot==="CPT"?p.cptId:p.dkId);return id?String(id):"";});
-        if(cells.length!==hdr.length||cells.indexOf("")!==-1){missing++;continue;}
-        rows2.push(cells.join(","));
-      }
-      if(missing)alert(missing+" lineup(s) skipped: missing DraftKings IDs (manual CSV without IDs?).");
-      csvContent=rows2.join("\n");
+      // Lineups -> Upload Lineups: header row of positions, one row of player IDs per lineup
+      var rows2=[entryLineups[0].labels.join(",")];
+      entryLineups.forEach(function(l){rows2.push(l.ids.join(","));});
+      csvContent=rows2.join("\n");fname="DK_new_lineups_"+entryLineups.length+".csv";
+      alert("Upload this on DraftKings: Lineups → Upload Lineups (creates new lineups).\n\nTo change lineups in contests you already entered (Edit Entries), first download your entries file there, load it in step 1 on this page, then export again.");
     }
     if(!csvContent.trim())return;
     var blob=new Blob([csvContent],{type:"text/csv;charset=utf-8;"});
     var url=URL.createObjectURL(blob);
-    if(downloadRef.current){downloadRef.current.href=url;downloadRef.current.download="DK_upload_"+liked.length+"_lineups.csv";downloadRef.current.click();setTimeout(function(){URL.revokeObjectURL(url);},2000);}
+    if(downloadRef.current){downloadRef.current.href=url;downloadRef.current.download=fname;downloadRef.current.click();setTimeout(function(){URL.revokeObjectURL(url);},2000);}
   }
 
   var likedCount=likedIds.size;
@@ -1256,7 +1245,7 @@ export default function App(){
   if(filteredLineups.length){bestTop1=filteredLineups[0].live?(filteredLineups.reduce(function(a,l){return a+l.pWin;},0)).toFixed(2)+"%":Math.max.apply(null,filteredLineups.map(function(l){return l.pTop1;})).toFixed(2)+"%";bestWin=Math.max.apply(null,filteredLineups.map(function(l){return l.pWin;})).toFixed(4)+"%";avgProj=filteredLineups.reduce(function(a,l){return a+l.projTotal;},0)/filteredLineups.length;}
 
   var uploadRows=[
-    ["1. DK entries CSV (optional: to fill entries you already have)",playerIdOk,pidInputRef,onPlayerIdFile,playerIdOk?"✅ "+playerIdData.entries.length+" entries loaded":"Export works without this: lineups carry DraftKings IDs",playerIdErr,".csv,.txt"],
+    ["1. DK entries file (for Edit Entries: download it on DraftKings → Contests → Edit Entries)",playerIdOk,pidInputRef,onPlayerIdFile,playerIdOk?"✅ "+playerIdData.entries.length+" entries loaded: export fills them":"Without it, export makes new lineups for Lineups → Upload Lineups",playerIdErr,".csv,.txt"],
     ["2. Projections CSV (optional override)",projSource==="manual",projInputRef,onProjFile,projSource==="manual"?"✅ "+players.length+" players from your CSV":"Click to upload your own projections CSV",projErr,".csv,.txt"],
   ];
 

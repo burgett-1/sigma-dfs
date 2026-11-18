@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from .config import DK_SCORING, MODEL, NOT_PLAYING
-from . import calibration, factors
+from . import calibration, distribution, factors
 from .names import norm_name
 
 log = logging.getLogger(__name__)
@@ -226,8 +226,11 @@ def player_baseline(plogs: pd.DataFrame, team_games: list[str], season: int,
         if g in played_ids:
             break
         streak += 1
+    # how much this player's minutes have swung lately (spread of outcomes, not the mean)
+    m10 = mc[:10]
+    min_cv = float(m10.std(ddof=1) / max(m10.mean(), 1.0)) if len(m10) >= 3 else None
     return {
-        "minutes": float(minutes), "rate": float(rate), "cv": float(cv),
+        "minutes": float(minutes), "rate": float(rate), "cv": float(cv), "min_cv": min_cv,
         "start_rate": start_rate, "fresh": fresh, "absence_streak": streak,
         "games_cur": n_cur, "games_prev": len(mp), "has_history": len(plogs) > 0,
         "max_recent_min": float(mc.max()) if n_cur else float(minutes),
@@ -451,11 +454,17 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             r["situational"] = situ
             r["proj"] = m * r["rate"] * (1 + bump) * env * dvp * home * situ
             r["proj_raw"] = r["proj"]
-            if _CAL.get("used"):          # backtest-fitted level correction (calibration.py)
-                r["proj"] = float(calibration.apply_level([r["proj"]], _CAL)[0])
-                if _CAL.get("min_x"):     # minutes too: real minutes vs projected, by level
-                    r["proj_minutes"] = float(calibration.apply_level(
-                        [m], {"proj_x": _CAL["min_x"], "proj_y": _CAL["min_y"]})[0])
+            r["proj_minutes_raw"] = m
+            dist = _CAL.get("dist") or {}
+            if dist.get("used"):
+                # the player's whole outcome distribution, learned from history for
+                # tonight's facts (distribution.py); Proj is its median
+                r["dist_f"] = distribution.dist_features(r, ctx.teams_played_yesterday)
+                r["q"] = distribution.curve(r["proj_raw"], r["dist_f"], dist)
+                r["proj"] = float(np.interp(0.5, distribution.U_SAMPLE, r["q"]))
+            mins = _CAL.get("minutes") or {}
+            if mins.get("x"):             # median real minutes at this projected-minutes level
+                r["proj_minutes"] = float(calibration.apply_level([m], {"proj_x": mins["x"], "proj_y": mins["y"]})[0])
             r["proj_model"] = r["proj"]
             apply_market(r, ctx.props.get(norm_name(r["name"])))
 
@@ -495,6 +504,10 @@ def apply_market(r: dict, props: dict | None) -> None:
         r["market_delta"] = round(w * delta, 2)
         r["market_stats"] = n
         r["proj"] = max(0.0, r["proj"] + w * delta)
+        if r.get("q") is not None:      # the market moves the whole distribution with it
+            q = np.maximum(np.asarray(r["q"]) + w * delta, 0.0)
+            q[0] = 0.0
+            r["q"] = np.maximum.accumulate(q)
 
 
 def p_opp(team_rows: list[dict]) -> str:
@@ -511,27 +524,24 @@ _CAL: dict = {}
 def finish(r: dict) -> None:
     """Derived distribution columns the optimizer reads.
 
-    With a fitted calibration (the normal case once history exists), the spread
-    of outcomes comes from the backtest and floor/ceiling/boom/bust from the same
-    right-skewed gamma distribution the simulator uses. Without one, a plain
-    normal approximation around the player's own volatility is used."""
+    With a fitted distribution (the normal case once history exists), Proj is the
+    median of the player's outcome distribution for tonight, and std dev / floor /
+    ceiling / boom / bust are read off that same distribution, which the simulator
+    samples from (distribution.py). Without one, a plain normal approximation."""
     proj = max(0.0, r["proj"])
     r["proj"] = proj
     k = r["salary"] / 1000.0
     r["value"] = proj / k if r["salary"] else 0.0
     r["fpts_min"] = proj / r["proj_minutes"] if r.get("proj_minutes") else 0.0
     r["starting"] = bool(r.get("is_starter", r["start_rate"] >= 0.5)) and proj > 0
+    if r.get("q") is not None and r.get("status") not in NOT_PLAYING:
+        s = distribution.summary(np.asarray(r["q"]), r["salary"], MODEL["boom_multiple"], MODEL["bust_multiple"])
+        r.update(mean=s["mean"], std_dev=s["sd"], floor=s["floor"], ceiling=s["ceiling"],
+                 boom=s["boom"], bust=s["bust"])
+        return
+    r["mean"] = proj
     if proj <= 0:
         r.update(std_dev=0.0, ceiling=0.0, floor=0.0, boom=0.0, bust=100.0 if k else 0.0)
-        return
-    if _CAL.get("used"):
-        cv = calibration.cv_for(proj, _CAL, r.get("cv"))
-        r["cv_final"] = cv
-        r["std_dev"] = proj * cv
-        r["floor"] = calibration.quantile(proj, cv, 0.10)
-        r["ceiling"] = calibration.quantile(proj, cv, 0.90)
-        r["boom"] = 100.0 * calibration.prob_at_least(proj, cv, MODEL["boom_multiple"] * k)
-        r["bust"] = 100.0 * (1.0 - calibration.prob_at_least(proj, cv, MODEL["bust_multiple"] * k))
         return
     sd = proj * r["cv"]
     r["std_dev"] = sd

@@ -426,7 +426,7 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
     setRes(null); setMsg("");
     const fixed = roster.map((r, k) => ({ slot: slots[k], p: r.p, k })).filter((f) => f.p != null);
     const open = slots.filter((_, k) => roster[k].p == null);
-    const score = Float64Array.from(players.map((p) => Math.max(0, p.proj)));
+    const score = Float64Array.from(players.map((p) => Math.max(0, p.mean != null && !isNaN(p.mean) ? p.mean : p.proj)));   // expected points
     const fill = bestFill(score, sim, players, fixed, open, {});
     if (!fill) { setMsg("No legal way to fill the open slots under the salary cap."); return; }
     let j = 0;

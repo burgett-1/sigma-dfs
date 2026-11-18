@@ -17,8 +17,9 @@ import json
 import logging
 import os
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 
+import numpy as np
 import pandas as pd
 
 from . import audit, calibration, contests, factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
@@ -33,7 +34,7 @@ CSV_HEADER = ["Name", "Salary", "Position", "Team", "Opp", "Minutes", "FptsPerMi
               "Value", "Own", "OptPct", "Leverage", "DKID", "StdDev", "Boom", "Bust",
               "Ceiling", "Floor", "Injury", "Starting", "BatOrder", "StarterStatus", "Unexpected",
               "GameStartUTC", "MinutesRestricted", "CptID", "CptSalary", "LiveFP", "GameProgress",
-              "OptExposure", "CorrGame"]
+              "OptExposure", "CorrGame", "Mean", "Quantiles"]
 
 
 # ── state helpers ────────────────────────────────────────────────────────────
@@ -74,6 +75,9 @@ def csv_row(r: dict) -> list:
         "" if r.get("progress") is None else f"{r['progress']:.3f}",
         "" if r.get("opt_exposure") is None else f"{r['opt_exposure']:.1f}",
         r.get("competition_id") or "",
+        f"{r.get('mean', r['proj']):.2f}",
+        # outcome percentiles at distribution.U_SAMPLE (the simulator draws from these)
+        ";".join(f"{v:.2f}" for v in r["q"]) if r.get("q") is not None else "",
     ]
 
 
@@ -96,6 +100,7 @@ PUBLIC_FIELDS = [
     "ceiling", "floor", "boom", "bust", "value", "starting", "games_cur", "games_prev",
     "has_history", "absence_streak", "is_starter", "starter_status", "unexpected", "start_rate",
     "restricted", "situational", "ww_evidence", "proj_model", "market_delta", "market_stats",
+    "mean", "q",
 ]
 
 
@@ -105,6 +110,10 @@ def public(r: dict) -> dict:
         v = r.get(k)
         if isinstance(v, float):
             v = round(v, 3)
+        elif isinstance(v, (np.ndarray, list)):    # outcome percentiles
+            v = [round(float(x), 2) for x in v]
+        elif isinstance(v, np.generic):
+            v = v.item()
         elif isinstance(v, datetime):
             v = _iso(v)
         out[k] = v
@@ -173,16 +182,24 @@ def refresh_calibration(now: datetime) -> bool:
     spreads, floors and ceilings map to what really happened (pipeline/audit.py)."""
     today = draftkings.dfs_day(now)
     cur = calibration.load()
-    if cur.get("date") == today.isoformat():
+    current = cur.get("dist") is not None            # older files predate the distribution model
+    if current and cur.get("date") == today.isoformat():
+        return False
+    # the refit takes a few minutes and pauses projection updates, so it runs in the
+    # morning (5am-2pm ET), long before any lock, unless there is no usable fit at all
+    # or the last one is more than two days old
+    hour = now.astimezone(ET).hour
+    stale = not current or (today - date.fromisoformat(cur.get("date", "2000-01-01"))).days >= 2
+    if not stale and not (5 <= hour < 14):
         return False
     logs = history.load()
     if logs.empty:
         return False
-    cal, report = audit.calibrate(logs, 40)
+    cal, report = audit.calibrate(logs, 80)
     cal["date"] = today.isoformat()
-    _write_json(calibration.PATH, cal)
-    _write_json(DATA_DIR / "audit.json", {"date": today.isoformat(), "calibration_used": cal.get("used"),
-                                          "cv_curve": cal.get("cv_table"), **report})
+    calibration.save(cal)
+    _write_json(DATA_DIR / "audit.json", calibration._jsonable(
+        {"date": today.isoformat(), "calibration_used": cal.get("used"), **report}))
     _MEM.pop("cal", None)
     return True
 
@@ -411,7 +428,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
             old = prev[r["dk_player_id"]]
             for k in ("proj", "proj_minutes", "fpts_min", "std_dev", "ceiling", "floor", "boom",
                       "bust", "value", "starting", "status", "reason", "bump", "env", "dvp",
-                      "is_starter", "starter_status", "unexpected"):
+                      "is_starter", "starter_status", "unexpected", "mean", "q"):
                 if k in old and old[k] is not None:
                     r[k] = old[k]
             frozen += 1

@@ -30,6 +30,7 @@ from functools import lru_cache
 import numpy as np
 
 from .config import DK_SALARY_CAP, SIM
+from .distribution import U_SAMPLE as _U_SAMPLE
 
 log = logging.getLogger(__name__)
 
@@ -85,10 +86,12 @@ class SlatePool:
     kind: str = "classic"
     cpt_sal: np.ndarray | None = None   # showdown captain salary (1.5x)
     cpt_ids: np.ndarray | None = None   # showdown captain draftable ids
+    q: np.ndarray | None = None         # outcome percentiles per player at distribution.U_SAMPLE
+    med: np.ndarray | None = None       # median (what "Proj" shows)
 
 
 def build_pool(rows: list[dict], kind: str = "classic") -> SlatePool:
-    live = [r for r in rows if r.get("proj", 0) >= SIM["min_proj"] and r.get("salary", 0) > 0
+    live = [r for r in rows if r.get("mean", r.get("proj", 0)) >= SIM["min_proj"] and r.get("salary", 0) > 0
             and (pos_code(r.get("position", "")) or kind == "showdown")
             and (kind != "showdown" or r.get("cpt_id"))]
     teams = sorted({r["team_dk"] for r in live})
@@ -107,8 +110,11 @@ def build_pool(rows: list[dict], kind: str = "classic") -> SlatePool:
     return SlatePool(
         ids=np.array([r.get("draftable_id") or 0 for r in live], dtype=np.int64),
         names=[r["name"] for r in live],
-        mu=np.array([r["proj"] for r in live], dtype=np.float64),
-        sd=np.array([max(r.get("std_dev", 0), 0.15 * r["proj"]) for r in live], dtype=np.float64),
+        mu=np.array([r.get("mean", r["proj"]) for r in live], dtype=np.float64),
+        sd=np.array([max(r.get("std_dev", 0), 0.15 * r.get("mean", r["proj"])) for r in live], dtype=np.float64),
+        med=np.array([r["proj"] for r in live], dtype=np.float64),
+        q=(np.array([np.asarray(r["q"], dtype=np.float64) for r in live])
+           if live and all(r.get("q") is not None for r in live) else None),
         sal=np.array([r["salary"] for r in live], dtype=np.int64),
         code=np.array([pos_code(r["position"]) for r in live], dtype=np.int64),
         team=np.array([t_idx[r["team_dk"]] for r in live], dtype=np.int64),
@@ -126,6 +132,15 @@ def build_pool(rows: list[dict], kind: str = "classic") -> SlatePool:
 # ─────────────────────────────────────────────────────────────────────────────
 # correlated outcome simulation
 # ─────────────────────────────────────────────────────────────────────────────
+def _ndtr(z: np.ndarray) -> np.ndarray:
+    """Standard normal CDF (Abramowitz-Stegun 7.1.26, error < 2e-7), float32."""
+    x = np.abs(z, dtype=np.float32) / np.float32(math.sqrt(2.0))
+    t = 1.0 / (1.0 + 0.3275911 * x)
+    poly = t * (0.254829592 + t * (-0.284496736 + t * (1.421413741 + t * (-1.453152027 + t * 1.061405429))))
+    erf = 1.0 - poly * np.exp(-x * x)
+    return (0.5 * (1.0 + np.sign(z) * erf)).astype(np.float32)
+
+
 def sample_scores(pool: SlatePool, n: int, rng: np.random.Generator, corr: dict) -> np.ndarray:
     """n x P matrix of simulated DK points (float32)."""
     P = len(pool.mu)
@@ -138,6 +153,21 @@ def sample_scores(pool: SlatePool, n: int, rng: np.random.Generator, corr: dict)
         z += a * rng.standard_normal((n, pool.n_game), dtype=np.float32)[:, pool.game]
     if b > 0:
         z += b * rng.standard_normal((n, pool.n_team), dtype=np.float32)[:, pool.team]
+    if pool.q is not None:
+        # each player's own outcome distribution, learned from history (distribution.py):
+        # correlated normal -> percentile -> DK points, by linear interpolation of the curve
+        u = _ndtr(z)
+        grid = np.asarray(_U_SAMPLE, dtype=np.float32)
+        j = np.clip(np.searchsorted(grid, u, side="right") - 1, 0, len(grid) - 2)
+        w = (u - grid[j]) / (grid[j + 1] - grid[j])
+        w = np.minimum(w, 1.0)          # beyond the 99.9% point: hold at the far-tail value
+        Q = pool.q.astype(np.float32)
+        cols = np.arange(P)[None, :]
+        x = Q[cols, j] * (1 - w) + Q[cols, j + 1] * w
+        if (pool.p_play < 1).any():
+            sits = rng.random((n, P), dtype=np.float32) > pool.p_play.astype(np.float32)
+            x[sits] = 0.0
+        return x.astype(np.float32)
     # gamma marginals (right skew) via the Wilson-Hilferty transform
     mu = pool.mu.astype(np.float32)
     k = np.maximum((pool.mu / pool.sd) ** 2, 1.0).astype(np.float32)
@@ -582,7 +612,9 @@ def subpool(pool: SlatePool, idx: list[int]) -> SlatePool:
                      sal=pool.sal[ix], code=pool.code[ix], team=pool.team[ix], game=pool.game[ix],
                      own=pool.own[ix], p_play=pool.p_play[ix], start=pool.start[ix],
                      n_team=pool.n_team, n_game=pool.n_game, kind=pool.kind,
-                     cpt_sal=pool.cpt_sal[ix], cpt_ids=pool.cpt_ids[ix])
+                     cpt_sal=pool.cpt_sal[ix], cpt_ids=pool.cpt_ids[ix],
+                     q=pool.q[ix] if pool.q is not None else None,
+                     med=pool.med[ix] if pool.med is not None else None)
 
 
 def slot_order(lu: tuple, pool: SlatePool) -> list[int] | None:
@@ -630,19 +662,20 @@ def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: in
     order = np.argsort(-res["win"], kind="stable")
     picks, cover = portfolio(res.get("beats"), res.get("cover_sims", 0), SIM["portfolio_size"])
     pf_rank = {j: r for r, j in enumerate(picks, 1)}
+    med = pool.med if pool.med is not None else pool.mu      # lineup Proj = sum of player medians
     out = []
     for rank, j in enumerate(order, 1):
         lu = lineups[j]
         if kind == "showdown":
             ids = [int(pool.cpt_ids[lu[0]])] + [int(pool.ids[i]) for i in lu[1:]]
-            proj = 1.5 * pool.mu[lu[0]] + pool.mu[list(lu[1:])].sum()
+            proj = 1.5 * med[lu[0]] + med[list(lu[1:])].sum()
             salary = int(pool.cpt_sal[lu[0]] + pool.sal[list(lu[1:])].sum())
         else:
             slots = slot_order(lu, pool)
             if slots is None:
                 continue
             ids = [int(pool.ids[i]) for i in slots]
-            proj = pool.mu[list(lu)].sum()
+            proj = med[list(lu)].sum()
             salary = int(pool.sal[list(lu)].sum())
         out.append({
             "rank": rank,

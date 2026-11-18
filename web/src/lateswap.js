@@ -146,4 +146,50 @@ export function exportEntries(doc, results, chosen, players) {
   return lines.join("\n");
 }
 
+function csvCell(c) {
+  c = c == null ? "" : String(c);
+  return /[",\n]/.test(c) ? '"' + c.replace(/"/g, '""') + '"' : c;
+}
+
+// Fill DraftKings' own entries file (Contests -> Edit Entries -> Download) with
+// lineups: entry i gets lineup i. Only the position cells change; entry ids,
+// contest names, fees and DraftKings' player list stay exactly as downloaded,
+// which is what the Edit Entries upload checks. Cells are DraftKings player IDs.
+// lineups: [{ labels: ["PG",...], ids: [draftableId,...] }] in the file's slot order.
+export function fillEntries(text, lineups) {
+  const doc = parseEntries(text);
+  if (!doc) return { error: "This isn't a DraftKings entries file (no Entry ID / position header)." };
+  if (!doc.entries.length) return { error: "The entries file has no entries." };
+  // DraftKings lists every player of that slate (with IDs) in the same file: make sure
+  // the lineups belong to this slate before writing anything
+  const known = new Set();
+  for (const line of doc.lines) for (const c of splitLine(line)) {
+    const t = c.trim(), m = t.match(/\((\d+)\)$/);
+    if (m) known.add(m[1]); else if (/^\d{5,}$/.test(t)) known.add(t);
+  }
+  const foreign = lineups.slice(0, doc.entries.length).some((l) => l.ids.some((id) => !known.has(String(id))));
+  if (foreign && known.size > 50) return { error: "These lineups use players that aren't in this entries file. Download the entries file for the same slate (start time) as these lineups." };
+  const lines = doc.lines.slice();
+  let filled = 0;
+  for (let i = 0; i < doc.entries.length && i < lineups.length; i++) {
+    const e = doc.entries[i], lu = lineups[i];
+    const cols = splitLine(lines[e.row]);
+    const used = new Array(lu.labels.length).fill(false);
+    let ok = true;
+    const cells = doc.slotCols.map((s) => {
+      // match each column to the lineup's slot with the same label, in order
+      const k = lu.labels.findIndex((l, j) => !used[j] && l === s.label);
+      if (k < 0) { ok = false; return null; }
+      used[k] = true;
+      return String(lu.ids[k]);
+    });
+    if (!ok) return { error: "Lineup positions don't match the entries file (classic vs showdown?)." };
+    doc.slotCols.forEach((s, j) => { while (cols.length <= s.col) cols.push(""); cols[s.col] = cells[j]; });
+    lines[e.row] = cols.map(csvCell).join(",");
+    filled++;
+  }
+  return { csv: lines.join("\n"), filled, entries: doc.entries.length, extra: Math.max(0, lineups.length - doc.entries.length),
+           kind: doc.kind };
+}
+
 export { slotSalary };

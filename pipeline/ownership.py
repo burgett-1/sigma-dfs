@@ -80,15 +80,25 @@ def optimal_rates(rows: list[dict], sims: int | None = None, seed: int = 7) -> N
         return
     rng = np.random.default_rng(seed)
     n = len(live)
-    mu = np.array([r["proj"] for r in live])
+    mu = np.array([r.get("mean", r["proj"]) for r in live])
     sd = np.array([r["std_dev"] for r in live])
+    # each player's real outcome curve when available (distribution.py), else a normal
+    from .distribution import U_SAMPLE
+    qs = np.array([np.asarray(r["q"], float) for r in live]) if all(r.get("q") is not None for r in live) else None
+    grid = np.asarray(U_SAMPLE)
     sal = np.array([r["salary"] for r in live])
     pos = [set(r["position"].split("/")) for r in live]
     counts = np.zeros(n)
     min_sal = sal.min()
     done = 0
     for _ in range(sims):
-        score = np.maximum(0, rng.normal(mu, sd))
+        if qs is not None:
+            u = rng.random(n)
+            j = np.clip(np.searchsorted(grid, u, side="right") - 1, 0, len(grid) - 2)
+            w = (u - grid[j]) / (grid[j + 1] - grid[j])
+            score = qs[np.arange(n), j] * (1 - w) + qs[np.arange(n), j + 1] * w
+        else:
+            score = np.maximum(0, rng.normal(mu, sd))
         order = np.argsort(-score / sal)  # fill by value, then upgrade with swaps
         lu: list[int] = []
         spent = 0
