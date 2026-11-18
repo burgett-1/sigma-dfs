@@ -6,15 +6,14 @@ Data (all verifiable):
     a public record kept since 2014. A night is used only if RotoGuru's DK
     points agree with our NBA.com box-score points for >= 95% of players, so a
     bad or misaligned archive page can never enter the analysis.
-  * Your own DraftKings contest results (optional): drop the "contest
-    standings" CSVs you download from DraftKings into `contest_results/`. They
-    contain the real winning lineups and actual ownership.
+  * Your own DraftKings contest results are handled privately by
+    pipeline/contests.py and never published here.
 
 Public data does not include every winning lineup in every contest. What we
 do have is, for every night, the lineups that scored the most possible
 (found exactly with an integer program). Large-field GPPs are typically won
 by lineups close to these, so they're the large-sample proxy. Real winners
-from your contests are analysed separately and shown alongside.
+from your contests are analysed privately (pipeline/contests.py).
 
 For each top lineup we record its structure (salary used, price tiers, team
 and game stacks) and, for each player, the context that explains the score:
@@ -38,7 +37,7 @@ import numpy as np
 import pandas as pd
 
 from . import history, model
-from .config import DATA_DIR, DK_SALARY_CAP, ROOT
+from .config import DATA_DIR, DK_SALARY_CAP
 from .http import session
 from .names import norm_name, team_code
 from .sim import HALL_NEED, pos_code
@@ -49,18 +48,28 @@ ROTOGURU = "http://rotoguru1.com/cgi-bin/hyday.pl?game=dk&mon={m}&day={d}&year={
 CACHE = DATA_DIR / "history" / "salaries"
 NIGHTS = DATA_DIR / "patterns" / "nights"
 OUT = DATA_DIR / "patterns.json"
-CONTESTS = ROOT / "contest_results"
 TOP_K = 20
+PARSER_VERSION = 3
 
 
 # ── salaries ─────────────────────────────────────────────────────────────────
 def fetch_salaries(day: date) -> pd.DataFrame:
     path = CACHE / f"{day.isoformat()}.csv"
     if path.exists():
-        return pd.read_csv(path)
+        df = pd.read_csv(path)
+        if not df.empty:
+            return df
+        path.unlink()                      # an empty cache is a failed parse: fetch again
     r = session().get(ROTOGURU.format(m=day.month, d=day.day, y=day.year), timeout=30)
     r.raise_for_status()
     df = parse_rotoguru(r.text)
+    if df.empty:
+        # keep one raw page so the parser can be checked against what the site really sends
+        dbg = DATA_DIR / "debug" / "rotoguru_sample.html"
+        dbg.parent.mkdir(parents=True, exist_ok=True)
+        if not dbg.exists():
+            dbg.write_text(f"<!-- {r.url} status {r.status_code} -->\n" + r.text[:400_000])
+        return df
     CACHE.mkdir(parents=True, exist_ok=True)
     df.to_csv(path, index=False)
     return df
@@ -472,7 +481,10 @@ def run(max_new_nights: int = 400) -> dict:
             rec = json.loads(p.read_text())
         except ValueError:
             continue
-        if not rec.get("verified") or rec.get("version") == VERSION:
+        # verified nights are redone only when the analysis changes; unverified ones
+        # again when the salary parser changes (a parser bug must not stick forever)
+        if (rec.get("verified") and rec.get("version") == VERSION) or \
+                (not rec.get("verified") and rec.get("parser") == PARSER_VERSION):
             done.add(p.stem)
     new = 0
     for day in days:
@@ -487,7 +499,7 @@ def run(max_new_nights: int = 400) -> dict:
         tonight = prep[prep["d"] == day]
         joined, rate = verify_night(sal, tonight)
         rec = {"date": day.isoformat(), "verified": rate >= 0.95, "agreement": round(rate, 3),
-               "version": VERSION}
+               "version": VERSION, "parser": PARSER_VERSION, "salary_rows": int(len(sal))}
         if rec["verified"]:
             ctx = night_context(day, prep, base)
             res = analyse_night(day, joined, ctx)
@@ -502,12 +514,7 @@ def run(max_new_nights: int = 400) -> dict:
             continue
         if n.get("verified") and n.get("slates"):
             nights.append(n)
-    contests = []
-    if CONTESTS.exists():
-        for f in sorted(CONTESTS.glob("*.csv")):
-            res = parse_contest_standings(f.read_text(errors="ignore"))
-            if res:
-                contests.append({"file": f.name, **res})
+    contests = []   # your own contest results are private: see pipeline/contests.py
     summary = summarise(nights, contests)
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(summary, indent=1))

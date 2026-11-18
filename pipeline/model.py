@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 
 from .config import DK_SCORING, MODEL, NOT_PLAYING
-from . import factors
+from . import calibration, factors
 from .names import norm_name
 
 log = logging.getLogger(__name__)
@@ -53,6 +53,7 @@ class Context:
     factors: dict = field(default_factory=dict)               # fitted adjustments (factors.py)
     game_context: dict[str, dict] = field(default_factory=dict)  # team -> rest/travel/ref features
     props: dict[str, dict] = field(default_factory=dict)         # norm name -> {stat: {mean, line, ...}}
+    calibration: dict = field(default_factory=dict)              # fitted by calibration.fit (backtest)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -283,6 +284,8 @@ def rebalance_minutes(minutes: dict[str, float], caps: dict[str, float],
 # ─────────────────────────────────────────────────────────────────────────────
 def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]:
     """players: unique DK draftables for today (see sources.draftkings)."""
+    global _CAL
+    _CAL = ctx.calibration or {}
     hist = prepare_history(logs, ctx.today)
     season = season_of(ctx.today)
     pri = league_priors(hist, ctx.positions)
@@ -447,6 +450,12 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             r["dvp"] = dvp
             r["situational"] = situ
             r["proj"] = m * r["rate"] * (1 + bump) * env * dvp * home * situ
+            r["proj_raw"] = r["proj"]
+            if _CAL.get("used"):          # backtest-fitted level correction (calibration.py)
+                r["proj"] = float(calibration.apply_level([r["proj"]], _CAL)[0])
+                if _CAL.get("min_x"):     # minutes too: real minutes vs projected, by level
+                    r["proj_minutes"] = float(calibration.apply_level(
+                        [m], {"proj_x": _CAL["min_x"], "proj_y": _CAL["min_y"]})[0])
             r["proj_model"] = r["proj"]
             apply_market(r, ctx.props.get(norm_name(r["name"])))
 
@@ -496,24 +505,40 @@ def _norm_cdf(x: float) -> float:
     return 0.5 * (1.0 + math.erf(x / math.sqrt(2.0)))
 
 
+_CAL: dict = {}
+
+
 def finish(r: dict) -> None:
-    """Derived distribution columns the optimizer reads."""
+    """Derived distribution columns the optimizer reads.
+
+    With a fitted calibration (the normal case once history exists), the spread
+    of outcomes comes from the backtest and floor/ceiling/boom/bust from the same
+    right-skewed gamma distribution the simulator uses. Without one, a plain
+    normal approximation around the player's own volatility is used."""
     proj = max(0.0, r["proj"])
     r["proj"] = proj
+    k = r["salary"] / 1000.0
+    r["value"] = proj / k if r["salary"] else 0.0
+    r["fpts_min"] = proj / r["proj_minutes"] if r.get("proj_minutes") else 0.0
+    r["starting"] = bool(r.get("is_starter", r["start_rate"] >= 0.5)) and proj > 0
+    if proj <= 0:
+        r.update(std_dev=0.0, ceiling=0.0, floor=0.0, boom=0.0, bust=100.0 if k else 0.0)
+        return
+    if _CAL.get("used"):
+        cv = calibration.cv_for(proj, _CAL, r.get("cv"))
+        r["cv_final"] = cv
+        r["std_dev"] = proj * cv
+        r["floor"] = calibration.quantile(proj, cv, 0.10)
+        r["ceiling"] = calibration.quantile(proj, cv, 0.90)
+        r["boom"] = 100.0 * calibration.prob_at_least(proj, cv, MODEL["boom_multiple"] * k)
+        r["bust"] = 100.0 * (1.0 - calibration.prob_at_least(proj, cv, MODEL["bust_multiple"] * k))
+        return
     sd = proj * r["cv"]
     r["std_dev"] = sd
     r["ceiling"] = proj + 1.2816 * sd
     r["floor"] = max(0.0, proj - 1.2816 * sd)
-    r["value"] = proj / (r["salary"] / 1000.0) if r["salary"] else 0.0
-    r["fpts_min"] = proj / r["proj_minutes"] if r.get("proj_minutes") else 0.0
-    k = r["salary"] / 1000.0
-    if sd > 0:
-        r["boom"] = 100.0 * (1.0 - _norm_cdf((MODEL["boom_multiple"] * k - proj) / sd))
-        r["bust"] = 100.0 * _norm_cdf((MODEL["bust_multiple"] * k - proj) / sd)
-    else:
-        r["boom"] = 0.0
-        r["bust"] = 100.0 if proj < MODEL["bust_multiple"] * k else 0.0
-    r["starting"] = bool(r.get("is_starter", r["start_rate"] >= 0.5)) and proj > 0
+    r["boom"] = 100.0 * (1.0 - _norm_cdf((MODEL["boom_multiple"] * k - proj) / sd))
+    r["bust"] = 100.0 * _norm_cdf((MODEL["bust_multiple"] * k - proj) / sd)
 
 
 def yesterday(d: date) -> date:

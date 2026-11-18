@@ -24,7 +24,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-from . import patterns, run as runner
+from . import contests, patterns, run as runner
 from .config import DATA_DIR
 from .http import session
 
@@ -188,6 +188,21 @@ def main(argv=None) -> int:
             finally:
                 faulthandler.cancel_dump_traceback_later()
             last_patterns = time.time()
+            try:                      # your DraftKings contest exports (private, never published)
+                res = contests.refresh()
+                if res.get("new"):
+                    log.info("imported contests %s; report: %s", res["new"], contests.PRIVATE / "report.html")
+            except Exception as e:  # noqa: BLE001
+                log.warning("contest import failed: %s", e)
+            # once a day: re-check every projection column against real results
+            faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
+            try:
+                if runner.refresh_calibration(datetime.now(timezone.utc)):
+                    publish()
+            except Exception as e:  # noqa: BLE001
+                log.warning("calibration failed: %s", e)
+            finally:
+                faulthandler.cancel_dump_traceback_later()
         # wait for the next pass, answering "Run simulations" within a few seconds
         while time.time() - t0 < args.interval and time.time() < deadline:
             if control:

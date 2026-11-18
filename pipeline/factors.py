@@ -36,7 +36,7 @@ ARENAS = {
     "POR": (45.532, -122.667, -8, 15), "SAC": (38.580, -121.500, -8, 8), "SAS": (29.427, -98.437, -6, 200),
     "TOR": (43.643, -79.379, -5, 80), "UTA": (40.768, -111.901, -7, 1288), "WAS": (38.898, -77.021, -5, 10),
 }
-FEATURES = ["b2b", "rest3", "travel", "tz_east", "tz_west", "altitude", "home", "ref"]
+FEATURES = ["b2b", "rest3", "travel", "tz_east", "tz_west", "altitude", "home", "ref", "opp_def"]
 EFFECT_CAP = 0.08   # no single situational factor may move a projection more than 8%
 
 
@@ -92,21 +92,58 @@ def crew_factor(names, table: dict) -> float:
 
 
 # ── historical training set ──────────────────────────────────────────────────
-def team_game_context(hist: pd.DataFrame, refs: dict) -> pd.DataFrame:
-    """One row per (team, game) with the situational features."""
-    tg = hist.drop_duplicates(["game_id", "team"])[["game_id", "d", "team", "opp", "home", "officials"]].copy()
+def team_game_context(hist: pd.DataFrame, refs: dict, leave_one_out: bool = True) -> pd.DataFrame:
+    """One row per (team, game) with the situational features.
+
+    For training, each game's referee-crew and opponent-defense numbers are
+    computed WITHOUT that game (leave-one-out); otherwise the game's own result
+    leaks into its feature and inflates the fitted effect."""
+    tg = hist.drop_duplicates(["game_id", "team"])[["game_id", "d", "team", "opp", "home", "officials",
+                                                     "team_score", "opp_score", "season"]].copy()
     tg["arena"] = np.where(tg["home"].astype(bool), tg["team"], tg["opp"])
     tg = tg.sort_values(["team", "d"])
     tg["prev_d"] = tg.groupby("team")["d"].shift(1)
     tg["prev_arena"] = tg.groupby("team")["arena"].shift(1)
+    # game total relative to the season average (for referee tendencies)
+    games = tg.drop_duplicates("game_id")[["game_id", "season", "team_score", "opp_score", "officials"]].copy()
+    games = games[games["team_score"] > 0]
+    games["total"] = games["team_score"] + games["opp_score"]
+    games["ratio"] = games["total"] / games.groupby("season")["total"].transform("mean")
+    ratio_by_game = dict(zip(games["game_id"], games["ratio"]))
+    off_sum: dict[str, float] = {}
+    off_n: dict[str, int] = {}
+    for gid, offs, r in zip(games["game_id"], games["officials"], games["ratio"]):
+        for o in str(offs).split("|"):
+            if len(o) > 1:
+                off_sum[o] = off_sum.get(o, 0.0) + r
+                off_n[o] = off_n.get(o, 0) + 1
+    # opponent defense: points the opponent allows per game vs league, this season, without this game
+    allowed = tg[tg["team_score"] > 0].groupby(["opp", "season"])["team_score"].agg(["sum", "count"])
+    league = tg[tg["team_score"] > 0].groupby("season")["team_score"].mean()
     feats = []
     for r in tg.itertuples(index=False):
-        names = str(r.officials).split("|") if isinstance(r.officials, str) else []
+        names = [o for o in str(r.officials).split("|") if len(o) > 1] if isinstance(r.officials, str) else []
+        own = ratio_by_game.get(r.game_id)
+        vals = []
+        for o in names:
+            n, sm = off_n.get(o, 0), off_sum.get(o, 0.0)
+            if leave_one_out and own is not None:
+                n, sm = n - 1, sm - own
+            if n > 0:
+                vals.append(1.0 + (sm / n - 1.0) * n / (n + 30.0))
+        crew = float(np.mean(vals)) if vals else 1.0
         f = context_features(r.team, r.arena, r.prev_d if isinstance(r.prev_d, date) else None,
-                             r.prev_arena if isinstance(r.prev_arena, str) else None, r.d,
-                             crew_factor(names, refs))
+                             r.prev_arena if isinstance(r.prev_arena, str) else None, r.d, crew)
+        key = (r.opp, r.season)
+        if key in allowed.index and r.season in league.index:
+            sm, n = allowed.loc[key, "sum"], allowed.loc[key, "count"]
+            if leave_one_out and r.team_score > 0:
+                sm, n = sm - r.team_score, n - 1
+            f["opp_def"] = math.log(max((sm / n) / league[r.season], 0.5)) * (n / (n + 10.0)) if n > 0 else 0.0
+        else:
+            f["opp_def"] = 0.0
         feats.append(f)
-    tg = tg.drop(columns=["home"]).reset_index(drop=True)   # re-derived below as a feature
+    tg = tg.drop(columns=["home", "team_score", "opp_score", "season"]).reset_index(drop=True)
     return pd.concat([tg, pd.DataFrame(feats)], axis=1)
 
 
@@ -195,7 +232,9 @@ def residual_correlation(df: pd.DataFrame) -> dict:
 def situational_multiplier(features: dict, fit: dict) -> float:
     if not fit or not fit.get("used"):
         return 1.0
-    x = sum((features.get(f, 0.0) - fit["center"].get(f, 0.0)) * fit["coef"].get(f, 0.0) for f in FEATURES)
+    # a feature missing at prediction time (e.g. opp_def, a training-only control: defense
+    # already enters through Vegas totals / opponent factors) contributes nothing
+    x = sum((features[f] - fit["center"].get(f, 0.0)) * fit["coef"].get(f, 0.0) for f in FEATURES if f in features)
     return float(math.exp(max(-EFFECT_CAP, min(EFFECT_CAP, x))))
 
 

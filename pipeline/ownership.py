@@ -16,7 +16,7 @@ def _z(x: np.ndarray) -> np.ndarray:
     return (x - x.mean()) / sd if sd > 0 else np.zeros_like(x)
 
 
-def estimate_ownership(rows: list[dict], roster_size: int = 8) -> None:
+def estimate_ownership(rows: list[dict], roster_size: int = 8, own_cal: dict | None = None) -> None:
     live = [r for r in rows if r["proj"] > 0]
     for r in rows:
         r["own"] = 0.0
@@ -30,9 +30,18 @@ def estimate_ownership(rows: list[dict], roster_size: int = 8) -> None:
     w = np.exp(logit)
     total = 100.0 * roster_size          # each roster spot adds 100% of ownership
     own = w / w.sum() * total
+    # small correction learned from your own DraftKings contest exports (real %Drafted
+    # vs this model), shrunk toward no change while the sample is small (contests.py)
+    if own_cal is None:
+        from . import contests
+        own_cal = contests.load_own_calibration()
+    if own_cal.get("used") and own_cal.get("slope"):
+        own = np.exp(float(own_cal.get("intercept", 0.0)) + float(own_cal["slope"]) * np.log(own + 0.5)) - 0.5
+        own = np.maximum(own, 0.01)
+        own = own / own.sum() * total
     # a single player cannot exceed ~80% and a few rounds of capping keep the total at 800
-    for _ in range(5):
-        over = own > 80.0
+    for _ in range(25):
+        over = own > 80.0 + 1e-9
         if not over.any():
             break
         extra = (own[over] - 80.0).sum()

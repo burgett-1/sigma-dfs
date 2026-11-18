@@ -9,7 +9,12 @@
    (respecting DK rules plus the historical winning-lineup constraints).
 3. A field of opponent lineups is sampled from projected ownership.
 4. Your 10,000 lineups and the field play 1,000,000 simulated contests.
-   Win% = share of contests a lineup finishes first. Lineups are ranked by it.
+   Win% = share of contests a lineup finishes first (split with any identical
+   field lineup). Lineups are ranked by it.
+5. Portfolio: lineups are also ordered greedily by how many extra simulated
+   contests each adds in which at least one of your picks beats the whole field,
+   so "Like best N" builds around the chalk but spreads into the low-owned
+   outcomes that actually win contests.
 """
 from __future__ import annotations
 
@@ -373,9 +378,15 @@ def showdown_lineup(score: np.ndarray, pool: SlatePool, rules: dict) -> tuple | 
 
 
 def _gen_chunk(args) -> list[tuple]:
-    pool, rules, corr, n, seed, exact = args
+    pool, rules, corr, n, seed, exact, lev_share, lev_max = args
     rng = np.random.default_rng(seed)
     scores = sample_scores(pool, n, rng, corr).astype(np.float64)
+    # leverage candidates: for part of the simulated slates, points from players the
+    # field owns heavily are worth less (to win you must beat lineups that share them).
+    # These are only candidates; every lineup is then judged by the same contest sim.
+    lev = rng.random(n) < lev_share
+    lam = rng.uniform(0.0, lev_max, n) * lev
+    scores *= 1.0 - lam[:, None] * (pool.own / 100.0)[None, :]
     out = []
     for s in scores:
         if pool.kind == "showdown":
@@ -401,7 +412,8 @@ def generate_lineups(pool: SlatePool, target: int, rules: dict, corr: dict, seed
     ctx = mp.get_context("forkserver" if "forkserver" in mp.get_all_start_methods() else "spawn")
     with ProcessPoolExecutor(max_workers=workers, mp_context=ctx) as ex:
         while len(found) < target and time.time() - t0 < time_limit:
-            jobs = [(pool, rules, corr, chunk, seed * 1_000_003 + round_ * 97 + w, exact) for w in range(workers)]
+            jobs = [(pool, rules, corr, chunk, seed * 1_000_003 + round_ * 97 + w, exact,
+                     SIM["leverage_share"], SIM["leverage_max"]) for w in range(workers)]
             round_ += 1
             for res in ex.map(_gen_chunk, jobs):
                 for lu in res:
@@ -490,6 +502,15 @@ def run_contest(pool: SlatePool, lineups: list[tuple], field: list[tuple], sims:
         for i, w in lineup_weights(lu, kind):
             M[remap[i], j] = w
     L = len(lineups)
+    # duplicates: a field lineup identical to one of yours ties it, so the win is split
+    in_field: dict[tuple, int] = {}
+    for lu in field:
+        in_field[lu] = in_field.get(lu, 0) + 1
+    share = np.array([1.0 / (1 + in_field.get(lu, 0)) for lu in lineups])
+    # for portfolio selection: in the first `cover_sims` contests, which of your lineups
+    # outscore the whole field (bit-packed, sims x lineups)
+    cover_sims = min(sims, SIM["portfolio_sims"])
+    beats = []
     wins = np.zeros(len(allu), dtype=np.float64)
     xs = np.zeros(P, dtype=np.float64)        # sum of player scores
     xtx = np.zeros((P, P), dtype=np.float64)  # sum of player score products
@@ -502,6 +523,10 @@ def run_contest(pool: SlatePool, lineups: list[tuple], field: list[tuple], sims:
         S = X @ M
         w = S.argmax(axis=1)
         wins += np.bincount(w, minlength=len(allu))
+        if done < cover_sims and field:
+            k = min(n, cover_sims - done)
+            fmax = S[:k, L:].max(axis=1)
+            beats.append(np.packbits(S[:k, :L] > fmax[:, None], axis=0))
         xs += X.sum(axis=0, dtype=np.float64)
         xtx += (X.T @ X).astype(np.float64)
         done += n
@@ -511,8 +536,44 @@ def run_contest(pool: SlatePool, lineups: list[tuple], field: list[tuple], sims:
     ex2 = np.einsum("pl,pl->l", Ml, (xtx / sims) @ Ml)
     sd = np.sqrt(np.maximum(ex2 - mean ** 2, 0))
     log.info("contest: %d sims x %d lineups (+%d field) in %.1fs", sims, L, len(field), time.time() - t0)
-    return {"win": wins[:L] / sims * 100.0, "mean": mean, "sd": sd,
-            "field_win": float(wins[L:].sum() / sims * 100.0)}
+    mine = wins[:L] * share
+    return {"win": mine / sims * 100.0, "mean": mean, "sd": sd,
+            "field_win": float((wins[L:].sum() + (wins[:L] - mine).sum()) / sims * 100.0),
+            "dupes": np.array([in_field.get(lu, 0) for lu in lineups]),
+            "beats": np.concatenate(beats, axis=0) if beats else None, "cover_sims": cover_sims}
+
+
+_POP8 = np.array([bin(i).count("1") for i in range(256)], dtype=np.uint8)
+
+
+def _popcount(a: np.ndarray, axis=None):
+    if hasattr(np, "bitwise_count"):
+        return np.bitwise_count(a).sum(axis=axis, dtype=np.int64)
+    return _POP8[a].sum(axis=axis, dtype=np.int64)
+
+
+def portfolio(beats: np.ndarray | None, n_sims: int, k: int) -> tuple[list[int], list[float]]:
+    """Greedy portfolio: each pick is the lineup that adds the most simulated contests
+    in which at least one of your picks beats the entire field. Diversifies around the
+    best lineups exactly as far as it pays (no fixed exposure rules).
+    Returns (lineup indices in pick order, cumulative coverage % after each pick)."""
+    if beats is None or not beats.size:
+        return [], []
+    B = np.ascontiguousarray(beats.T)            # lineups x packed sims
+    covered = np.zeros(B.shape[1], dtype=np.uint8)
+    picks, cum = [], []
+    alive = np.ones(B.shape[0], dtype=bool)
+    for _ in range(min(k, B.shape[0])):
+        gain = _popcount(B & ~covered, axis=1)
+        gain[~alive] = -1
+        j = int(gain.argmax())
+        if gain[j] <= 0:
+            break
+        picks.append(j)
+        alive[j] = False
+        covered |= B[j]
+        cum.append(100.0 * int(_popcount(covered)) / n_sims)
+    return picks, cum
 
 
 def subpool(pool: SlatePool, idx: list[int]) -> SlatePool:
@@ -567,6 +628,8 @@ def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: in
     res = run_contest(pool, lineups, field, sims, corr, seed=seed + 9)
     t2 = time.time()
     order = np.argsort(-res["win"], kind="stable")
+    picks, cover = portfolio(res.get("beats"), res.get("cover_sims", 0), SIM["portfolio_size"])
+    pf_rank = {j: r for r, j in enumerate(picks, 1)}
     out = []
     for rank, j in enumerate(order, 1):
         lu = lineups[j]
@@ -590,9 +653,16 @@ def build_slate_lineups(rows: list[dict], rules: dict, corr: dict, n_lineups: in
             "proj": round(float(proj), 2),
             "salary": salary,
             "own": round(float(pool.own[list(lu)].sum()), 1),
+            "low_owned": int((pool.own[list(lu)] < 10.0).sum()),
+            "pf": pf_rank.get(int(j)),            # position in the win-coverage portfolio
+            "dupes": int(res["dupes"][j]),
         })
     log.info("built %d lineups in %.0fs, contest %.0fs", len(lineups), t1 - t0, t2 - t1)
     return {"lineups": out, "sims": sims, "field_size": len(field), "exact": exact, "kind": kind,
             "slots": ["CPT", "UTIL", "UTIL", "UTIL", "UTIL", "UTIL"] if kind == "showdown" else list(SLOTS), "field_win_pct": res["field_win"],
             "generate_seconds": round(t1 - t0, 1), "contest_seconds": round(t2 - t1, 1),
-            "correlation": corr, "rules": rules}
+            "correlation": corr, "rules": rules,
+            # chance at least one of the first N portfolio lineups beats the whole field
+            "portfolio_cover": {str(n): round(cover[n - 1], 3) for n in (1, 5, 20, 50, 150, 500)
+                                if len(cover) >= n},
+            "portfolio_sims": res.get("cover_sims", 0)}

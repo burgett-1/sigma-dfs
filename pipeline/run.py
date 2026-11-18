@@ -21,7 +21,7 @@ from datetime import datetime, timedelta, timezone
 
 import pandas as pd
 
-from . import factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
+from . import audit, calibration, contests, factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
 from .sources import draftkings, espn, espn_box, nba_cdn, odds_api, referees
@@ -166,6 +166,31 @@ def _fit(state: dict, logs, today) -> dict:
         _write_json(path, fit)
     _MEM["fit"] = fit
     return fit
+
+
+def refresh_calibration(now: datetime) -> bool:
+    """Once a day: replay ~40 past nights with the model and refit how projections,
+    spreads, floors and ceilings map to what really happened (pipeline/audit.py)."""
+    today = draftkings.dfs_day(now)
+    cur = calibration.load()
+    if cur.get("date") == today.isoformat():
+        return False
+    logs = history.load()
+    if logs.empty:
+        return False
+    cal, report = audit.calibrate(logs, 40)
+    cal["date"] = today.isoformat()
+    _write_json(calibration.PATH, cal)
+    _write_json(DATA_DIR / "audit.json", {"date": today.isoformat(), "calibration_used": cal.get("used"),
+                                          "cv_curve": cal.get("cv_table"), **report})
+    _MEM.pop("cal", None)
+    return True
+
+
+def _calibration() -> dict:
+    if "cal" not in _MEM:
+        _MEM["cal"] = calibration.load()
+    return _MEM["cal"]
 
 
 def _game_context(all_players, logs, refs_today: dict, fit: dict, today) -> dict[str, dict]:
@@ -370,7 +395,8 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
     game_ctx = _game_context(all_players, logs, refs_today, fit, today)
     ctx = model.Context(today=today, statuses=statuses, odds=odds, positions=positions,
                         teams_played_yesterday=played_yday, lineups=nba_lineups, factors=fit,
-                        game_context=game_ctx, props=mcache.get("props") or {})
+                        game_context=game_ctx, props=mcache.get("props") or {},
+                        calibration=_calibration())
 
     # 4) projections, freezing anyone whose game has started
     rows = model.project(all_players, logs, ctx)
@@ -514,6 +540,11 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
         all_locked = all(g["locked"] for g in games) if games else False
         contest_locked = any(g["locked"] for g in games)
         lfile = f"lineups/{s.draft_group_id}.json"
+        if not contest_locked:   # private copy of pre-lock ownership, compared with your contest exports
+            try:
+                contests.snapshot(s.draft_group_id, today_iso, srows)
+            except OSError as e:
+                log.debug("private snapshot failed: %s", e)
         # 10,000 lineups x 1,000,000 simulated contests: only when the user presses
         # "Run simulations" for this slate (sim_request), using the projections as they
         # stand at that moment. Once the first game tips, late swap takes over.
@@ -593,6 +624,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
         "factors": {"used": fit.get("used"), "backtest": fit.get("backtest"), "coef": fit.get("coef"),
                     "note": fit.get("note")},
         "correlation": corr,
+        "calibration": {k: _calibration().get(k) for k in ("used", "date", "n", "note")},
         "rules": patterns.load_rules(),
         "changes_this_run": len(changes),
         "lineup_events_this_run": len(lu_events),

@@ -68,7 +68,8 @@ function buildLiveLineups(doc,players){
     var ceil=0;for(var c=0;c<ps.length;c++)ceil+=ps[c].ceiling||0;
     out.push({id:l.ids.slice().sort(function(a,b){return a-b;}).join("-"),rank:l.rank,players:ps,assigned:asg,
       salary:l.salary,projTotal:l.proj,sumOwn:l.own,sumCeil:ceil,pWin:l.win,simMean:l.mean,simSd:l.sd,
-      simROI:0,compositeScore:l.win,live:true,slotLabels:labels,showdown:labels[0]==="CPT"});
+      simROI:0,compositeScore:l.win,live:true,slotLabels:labels,showdown:labels[0]==="CPT",
+      pf:l.pf||null,lowOwned:l.low_owned,dupes:l.dupes||0});
   }
   return out;
 }
@@ -596,12 +597,24 @@ function BulkLike(props){
     props.setLikedIds(function(prev){var ns=new Set(prev);for(var i2=0;i2<ids.length;i2++)ns.add(ids[i2]);return ns;});
     setOpen(false);
   }
+  // best portfolio: lineups in the order that most raises the chance at least one of
+  // them beats the whole simulated field (server-side greedy over the contest sims)
+  var hasPf=props.lineups.some(function(l){return l.pf;});
+  function likePortfolio(n){
+    var pf=props.lineups.filter(function(l){return l.pf&&l.pf<=n;});
+    props.setLikedIds(function(prev){var ns=new Set(prev);pf.forEach(function(l){ns.add(l.id);});return ns;});
+    setOpen(false);
+  }
   return(
     <div ref={ref} style={{position:"relative"}}>
       <button onClick={function(){setOpen(function(o){return !o;});}} style={{padding:"6px 13px",background:OH+"22",color:OH,border:"1px solid "+OH+"44",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>{"Like Top…"}<span style={{fontSize:10}}>{"▾"}</span></button>
       {open?(
         <div style={{position:"absolute",top:"110%",left:0,background:CARD,border:"1px solid "+BR,borderRadius:8,padding:8,zIndex:100,minWidth:160,boxShadow:"0 8px 24px #00000088"}}>
           {[20,50,150,500,props.lineups.length].map(function(n,ix){return(<div key={ix} onClick={function(){likeTop(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:"#e8e8f0",fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=OH+"22";}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{ix===4?"All "+n+" (current filters)":"Top "+n}</div>);})}
+          {hasPf?(<div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:4}}>
+            <div style={{padding:"4px 8px",fontSize:11,color:MU}}>{"Best portfolio (most contests won together)"}</div>
+            {[20,50,150].map(function(n){var c=props.cover&&props.cover[String(n)];return(<div key={"pf"+n} onClick={function(){likePortfolio(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:"#e8e8f0",fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=OH+"22";}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{"Portfolio "+n}{c!=null?<span style={{color:MU,fontWeight:400,fontSize:11}}>{"  · wins "+c.toFixed(2)+"% of sims"}</span>:null}</div>);})}
+          </div>):null}
           <div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:4}}>
             <div style={{padding:"4px 8px",fontSize:11,color:MU}}>{"Custom"}</div>
             <div style={{display:"flex",gap:4,padding:"0 8px 4px"}}>
@@ -855,6 +868,9 @@ function LineupCard(props){
           {lu.live?<span style={{fontWeight:800,color:GR}}>{"🏆 "+lu.pWin.toFixed(4)+"% win"}</span>:null}
           <span style={{fontWeight:700}}>{lu.projTotal.toFixed(2)}{" pts"}</span>
           {lu.live?<span style={{fontSize:11,color:MU}}>{"sim "+lu.simMean.toFixed(1)+" ± "+lu.simSd.toFixed(1)}</span>:null}
+          {lu.pf?<span title="Position in the best portfolio: picked in this order to maximise the chance at least one lineup beats the whole field" style={{background:GR+"22",color:GR,borderRadius:4,padding:"2px 6px",fontSize:11,fontWeight:700}}>{"Portfolio #"+lu.pf}</span>:null}
+          {lu.lowOwned!=null?<span title="Players under 10% projected ownership" style={{fontSize:11,color:MU}}>{lu.lowOwned+" low-owned"}</span>:null}
+          {lu.dupes>0?<span title="Copies of this exact lineup in the simulated field; its wins are split with them" style={{fontSize:11,color:RE}}>{"dupes "+lu.dupes}</span>:null}
         </div>
         <div style={{display:"flex",gap:10,alignItems:"center",flexWrap:"wrap"}}>
           <div style={{display:"flex",gap:8,color:MU,fontSize:12,flexWrap:"wrap",cursor:"pointer",alignItems:"center"}} onClick={function(){props.onToggleExpand(lu.id);}}>
@@ -978,7 +994,8 @@ export default function App(){
         setLineups(lus);setPage(0);
         if(isUpdate)setStaleInfo(function(si){return si&&doc.generated_at&&doc.generated_at>=si.at?null:si;});
         setPoolInfo({generated_at:doc.generated_at,phase:doc.phase,sims:doc.sims,field:doc.field_size,count:lus.length,
-          gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation,inputs:doc.inputs,slate_id:doc.slate_id});
+          gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation,inputs:doc.inputs,slate_id:doc.slate_id,
+          cover:doc.portfolio_cover||null,coverSims:doc.portfolio_sims||0});
         if(!isUpdate)setLikedIds(new Set());
       });
     });
@@ -1296,7 +1313,7 @@ export default function App(){
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
           <div style={{fontSize:12,color:MU}}>{likedLabel}</div>
           <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-            <BulkLike lineups={filteredLineups} likedIds={likedIds} setLikedIds={setLikedIds}/>
+            <BulkLike lineups={filteredLineups} likedIds={likedIds} setLikedIds={setLikedIds} cover={poolInfo&&poolInfo.cover}/>
             <EntryManager sport={sport} playerIdData={playerIdData} teamStartMap={teamStartMap} onAddLineups={function(addFn){addFn(likedLineups);}} entries={emEntries} setEntries={setEmEntries} capacity={emCapacity} setCapacity={setEmCapacity} emPid={emPid} setEmPid={setEmPid} csvOk={emCsvOk} setCsvOk={setEmCsvOk}/>
             <FiltersDropdown fOwnMin={fOwnMin} setFOwnMin={setFOwnMin} fOwnMax={fOwnMax} setFOwnMax={setFOwnMax} fProjMin={fProjMin} setFProjMin={setFProjMin} fProjMax={fProjMax} setFProjMax={setFProjMax} fUniqMin={fUniqMin} setFUniqMin={setFUniqMin} fUniqMax={fUniqMax} setFUniqMax={setFUniqMax} fTeam={fTeam} setFTeam={setFTeam} fTeamMin={fTeamMin} setFTeamMin={setFTeamMin} fTeamMax={fTeamMax} setFTeamMax={setFTeamMax} mustContain={mustContain} setMustContain={setMustContain} mustExclude={mustExclude} setMustExclude={setMustExclude} lineupType={lineupType} setLineupType={setLineupType} hasActiveFilters={hasActiveFilters} clearFilters={clearFilters} filteredCount={filteredLineups.length} totalCount={lineups.length} allPlayers={players} sport={sport}/>
             <PlayerROIBoost players={players} boosts={playerBoosts} setBoosts={setPlayerBoosts} onApply={setAppliedBoosts} exposureMap={exposureMap}/>

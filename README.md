@@ -151,6 +151,29 @@ position × situational factors:
   in `meta.json`).
 - **Minutes restrictions.** "Reconditioning" or "minutes restriction" in the injury report caps minutes.
 - Vegas implied totals, blowout risk, defense vs. position, returning-from-injury limits.
+- **Referee crews are measured leaving out the game being predicted**, and opponent
+  defense is a control in the fit, so neither can leak the result or pose as altitude/rest.
+
+**Every column is checked against real results (daily backtest).** Once a day the Mac
+replays ~40 past nights with only what was known before tip-off (earlier box scores, who
+sat, who started, the closing spread/total) and compares every column with what happened:
+projection, minutes, points per minute, std dev, floor, ceiling, boom and bust. From that
+it fits a calibration the live projections use:
+- projection level and projected minutes, by range (e.g. players projected ~34 that really
+  averaged ~37 are moved up);
+- the spread of outcomes by projection level (low projections vary far more, relatively);
+- floor = 10th percentile, ceiling = 90th percentile, boom/bust probabilities, all from
+  the same skewed distribution the contest simulator uses.
+
+It is fitted on half the nights and scored on the other half; the report is published
+as `audit.json`. On the current history (6,300 player-games), held-out nights:
+
+| | before | after |
+|---|---|---|
+| Results above the ceiling (target 10%) | 17.7% | 11.5% |
+| Results below the floor (target 10%; includes surprise DNPs) | 27.4% | 14.1% |
+| Spread of errors vs. stated std dev (target 1.0) | 2.57× | 1.05× |
+| DK points mean absolute error | 7.23 | 7.11 |
 
 **Lineups.** For every slate the optimizer:
 1. Builds **10,000 unique lineups**, each the exact best lineup for one simulated outcome of
@@ -160,7 +183,22 @@ position × situational factors:
    from projected ownership. Player scores are skewed (gamma) and correlated: teammates and
    opponents share game/team effects measured from history, and Questionable players
    sometimes sit.
-3. Ranks the lineups by **win probability** (share of the million contests won).
+3. Ranks the lineups by **win probability** (share of the million contests won). A win
+   tied with an identical field lineup is split with it (the card shows **dupes**).
+4. Orders a **best portfolio**: each pick is the lineup that adds the most simulated
+   contests in which at least one of your lineups beats the entire field. It still leans
+   on the chalk where the chalk wins, but spreads into the low-owned outcomes that
+   actually take down GPPs, exactly as far as that pays. **Like Top… → Portfolio 20 / 50 /
+   150** likes them, and shows the chance that set wins.
+
+**Why lineups were too concentrated before, and what the data says.** The backtest showed
+outcome variance was underestimated by about 2.5×, so every simulated slate looked alike
+and the same players kept being optimal. With the measured variance, on a real main slate
+the best 150 lineups use 122 different players instead of 82, the most-used player drops
+from 57% to 39%, average total ownership from 136% to 122%, and each lineup carries ~3.8
+players under 10% owned. Forcing extra low-owned "leverage" lineups was also tested: the
+contest sim scored them lower (top-150 win coverage 8.40% → 8.11% → 7.72%), so it is off
+(`SIM["leverage_share"]` in `pipeline/config.py`).
 
 When news hits, a fast pool is published in about a minute, then replaced by the exactly
 solved pool about 2–3 minutes later. Likes carry over as long as the lineup is still in
@@ -170,8 +208,8 @@ the pool.
 (solved exactly), their structure (salary used, price tiers, team/game stacks,
 bring-backs) and *why* each player hit (teammate out, surprise start, minutes spike,
 overtime, blowout, high-scoring game, actual vs. projection). The salary floor and stacking
-limits applied to your lineups come from this data. To add real winners with real
-ownership, drop DraftKings "contest standings" CSVs into `contest_results/`.
+limits applied to your lineups come from this data. Your own contest results are
+private: see **My contests (admin only)** below.
 
 **Using it on game day.**
 1. Open the site. The **Lineups** tab shows the pool ranked by win %, 50 per page.
@@ -225,6 +263,29 @@ fills the open spots with the highest projection that fits the salary cap. **Run
 plays the lineup through simulated contests and shows ROI, cash rate, top-1% rate, win % and
 average score.
 
+## My contests (admin only, private)
+
+On DraftKings open a finished contest and press **Export Lineups to CSV** (the file is
+`contest-standings-<id>.csv` or `.zip`). The Mac picks it up from **~/Downloads** within
+about 10 minutes and keeps a copy in **~/SigmaDFS-Private/** — outside the repository and
+never published, so users of the site never see it. (If macOS blocks the updater from
+reading Downloads, drop the file into `~/SigmaDFS-Private/drop/` instead.)
+
+Open your report on the Mac:
+
+    open ~/SigmaDFS-Private/report.html
+
+For each contest: entries, winning score, top-1% cutoff, the winning lineup with real
+ownership, how many sub-10%-owned players the top 1% had versus the field, and where your
+entries finished. Your username is detected as the one name present in every contest you
+export; to set it yourself add `SIGMA_DK_USERNAME=yourname` to `~/.sigma-dfs.env`.
+
+How it feeds lineup generation (a small factor, as it should be): before each lock the Mac
+privately saves the model's projected ownership; your exports' real %Drafted is compared
+with it and a correction is fitted, shrunk toward "no change" by sample size (weight =
+players / (players + 600), never more than half). The simulated field your lineups play
+against uses the corrected ownership, which is what shapes the game theory.
+
 ### Honest limits
 - GitHub's scheduler can start a run late (usually minutes). Inside a run, polling is every 60s.
 - An exact rebuild takes ~2–3 minutes of compute per slate; the fast pool covers that gap.
@@ -233,8 +294,11 @@ average score.
   2,000 sampled opponents scaled to your contest size) finish in seconds to a minute on a phone.
 - Historical patterns cover classic slates; showdown uses the same projections and simulation.
 - Public data has no complete archive of real contest winners. The pattern analysis uses
-  each night's top possible lineups (what large-field GPP winners approximate) and,
-  optionally, your own contest results.
+  each night's top possible lineups (what large-field GPP winners approximate); your own
+  contest results are analysed privately (above).
+- Historical DK salaries come from RotoGuru. If its pages can't be read, the Mac saves one
+  raw page to `debug/rotoguru_sample.html` so the parser can be fixed, and unverified nights
+  are retried after a parser update.
 
 ## Running locally
 

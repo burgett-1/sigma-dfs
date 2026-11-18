@@ -107,6 +107,15 @@ SIM = {
     "field_min_salary": 48_500,
     "min_proj": 4.0,            # players projected under this are left out of the pool
     "generate_time_limit": 240,
+    # share of candidate lineups built with ownership-discounted points, and the largest
+    # discount (points x (1 - d x own%)). Off: on real slates the contest sim scored these
+    # candidates lower (top-150 coverage 8.40% -> 8.11% at 0.4, 7.72% at 0.7). The spread
+    # comes from the calibrated outcome variance and the coverage portfolio instead.
+    "leverage_share": 0.0,
+    "leverage_max": 0.6,
+    # portfolio selection: contests used for the coverage greedy, and lineups ordered
+    "portfolio_sims": 40_000,
+    "portfolio_size": 500,
     # chance a player actually plays, by injury status (OUT/DOUBTFUL are projected 0)
     "play_prob": {"QUESTIONABLE": 0.70, "PROBABLE": 0.97, "": 1.0},
     # used until the box-score history is large enough to measure them
