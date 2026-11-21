@@ -1,0 +1,170 @@
+{
+ "date": "2026-11-21",
+ "calibration_used": true,
+ "cv_curve": [
+  [
+   7.3,
+   1.134
+  ],
+  [
+   11.7,
+   0.746
+  ],
+  [
+   16.3,
+   0.556
+  ],
+  [
+   20.0,
+   0.482
+  ],
+  [
+   23.4,
+   0.424
+  ],
+  [
+   27.8,
+   0.404
+  ],
+  [
+   32.7,
+   0.325
+  ],
+  [
+   42.4,
+   0.303
+  ]
+ ],
+ "nights": 40,
+ "player_games": 6740,
+ "held_out_before": {
+  "player_games": 3484,
+  "nights": 20,
+  "dk_points": {
+   "bias": -0.131,
+   "mae": 7.151,
+   "corr": 0.809
+  },
+  "minutes": {
+   "bias": -0.011,
+   "mae": 4.934,
+   "corr": 0.86
+  },
+  "fppm": {
+   "bias": 0.004,
+   "mae": 0.186,
+   "corr": 0.524
+  },
+  "below_floor_pct": 28.3,
+  "above_ceiling_pct": 16.9,
+  "z_mean": -0.125,
+  "z_sd": 2.274,
+  "outcome_ratio_p10": 0.0,
+  "outcome_ratio_p90": 1.701,
+  "boom_calibration": [
+   {
+    "predicted": "0-5%",
+    "n": 3088,
+    "mean_pred": 0.5,
+    "actual": 2.0
+   },
+   {
+    "predicted": "5-15%",
+    "n": 259,
+    "mean_pred": 8.8,
+    "actual": 8.5
+   },
+   {
+    "predicted": "15-30%",
+    "n": 93,
+    "mean_pred": 20.2,
+    "actual": 15.1
+   },
+   {
+    "predicted": "30-50%",
+    "n": 43,
+    "mean_pred": 36.9,
+    "actual": 34.9
+   }
+  ],
+  "bust_calibration": [
+   {
+    "predicted": "30-50%",
+    "n": 223,
+    "mean_pred": 42.0,
+    "actual": 51.1
+   },
+   {
+    "predicted": "50-101%",
+    "n": 3228,
+    "mean_pred": 86.2,
+    "actual": 81.1
+   }
+  ]
+ },
+ "held_out_after": {
+  "player_games": 3484,
+  "nights": 20,
+  "dk_points": {
+   "bias": 0.065,
+   "mae": 7.039,
+   "corr": 0.808
+  },
+  "minutes": {
+   "bias": -0.011,
+   "mae": 4.934,
+   "corr": 0.86
+  },
+  "fppm": {
+   "bias": 0.004,
+   "mae": 0.186,
+   "corr": 0.524
+  },
+  "below_floor_pct": 14.5,
+  "above_ceiling_pct": 10.4,
+  "z_mean": -0.011,
+  "z_sd": 1.0,
+  "outcome_ratio_p10": 0.0,
+  "outcome_ratio_p90": 1.737,
+  "boom_calibration": [
+   {
+    "predicted": "0-5%",
+    "n": 2627,
+    "mean_pred": 2.1,
+    "actual": 1.4
+   },
+   {
+    "predicted": "5-15%",
+    "n": 703,
+    "mean_pred": 8.1,
+    "actual": 6.1
+   },
+   {
+    "predicted": "15-30%",
+    "n": 122,
+    "mean_pred": 20.3,
+    "actual": 18.0
+   }
+  ],
+  "bust_calibration": [
+   {
+    "predicted": "15-30%",
+    "n": 54,
+    "mean_pred": 24.0,
+    "actual": 46.3
+   },
+   {
+    "predicted": "30-50%",
+    "n": 196,
+    "mean_pred": 41.5,
+    "actual": 43.9
+   },
+   {
+    "predicted": "50-101%",
+    "n": 3215,
+    "mean_pred": 82.7,
+    "actual": 81.5
+   }
+  ]
+ }
+}

@@ -1,0 +1,100 @@
+{
+ "slate_id": 157179,
+ "updated_at": "2026-11-21T18:36:42.882966+00:00",
+ "kind": "classic",
+ "games": 4,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Harrison Barnes",
+   "team": "SAS",
+   "salary": 3900,
+   "proj": 8.8,
+   "own": 0.3,
+   "headline": "Harrison Barnes without Dylan Harper",
+   "detail": "Averaged 22.4 DK pts in 14 games without them (vs 13.6 with). Hit 6x tonight's salary (23+ pts) in 5 of 14.",
+   "evidence": {
+    "games_without": 14,
+    "avg_without": 22.4,
+    "z": 3.22,
+    "avg_with": 13.6,
+    "hits_6x": 5,
+    "last_without": "2026-11-19"
+   },
+   "strength": 3.218,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Max Strus",
+   "team": "LAC",
+   "salary": 4700,
+   "proj": 21.5,
+   "own": 4.6,
+   "headline": "Max Strus is starting (1 starts in his last 10)",
+   "detail": "Projected 25 minutes now.",
+   "evidence": {
+    "start_rate": 0.125
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Taylor Hendricks",
+   "team": "MEM",
+   "salary": 4400,
+   "proj": 30.9,
+   "own": 80.0,
+   "headline": "Taylor Hendricks is starting (1 starts in his last 10)",
+   "detail": "Projected 29 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Jeremiah Fears",
+   "team": "NOP",
+   "salary": 7000,
+   "proj": 36.0,
+   "own": 21.2,
+   "headline": "Jeremiah Fears without Trey Murphy III",
+   "detail": "Averaged 34.3 DK pts in 23 games without them (vs 25.7 with). Hit 6x tonight's salary (42+ pts) in 5 of 23.",
+   "evidence": {
+    "games_without": 23,
+    "avg_without": 34.3,
+    "z": 2.98,
+    "avg_with": 25.7,
+    "hits_6x": 5,
+    "last_without": "2026-11-18"
+   },
+   "strength": 2.981,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Zach Edey",
+   "team": "MEM",
+   "salary": 4900,
+   "proj": 33.7,
+   "own": 80.0,
+   "headline": "Zach Edey without Cameron Boozer, Ty Jerome, Javon Small, Jerami Grant",
+   "detail": "Averaged 33.8 DK pts in 11 games without them (vs 17.7 with). Hit 6x tonight's salary (29+ pts) in 5 of 11.",
+   "evidence": {
+    "games_without": 11,
+    "avg_without": 33.8,
+    "z": 2.63,
+    "avg_with": 17.7,
+    "hits_6x": 5,
+    "last_without": "2025-12-07"
+   },
+   "strength": 2.633,
+   "strong": false
+  }
+ ],
+ "size_bucket": "medium",
+ "history_slates": 0
+}

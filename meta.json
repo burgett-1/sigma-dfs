@@ -1,0 +1,125 @@
+{
+ "updated_at": "2026-11-21T18:36:42.882966+00:00",
+ "date": "2026-11-21",
+ "slates": [
+  {
+   "id": 157174,
+   "name": "Main",
+   "main": true
+  },
+  {
+   "id": 157179,
+   "name": "Night",
+   "main": false
+  },
+  {
+   "id": 157172,
+   "name": "MIL @ PHI",
+   "main": false
+  },
+  {
+   "id": 157181,
+   "name": "BOS @ SAC",
+   "main": false
+  },
+  {
+   "id": 157178,
+   "name": "POR @ NYK",
+   "main": false
+  }
+ ],
+ "players": 210,
+ "frozen_players": 0,
+ "next_lock_utc": "2026-11-22T00:30:00+00:00",
+ "injury_report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-21_01_30PM.pdf",
+ "injury_report_fetched": "2026-11-21T18:36:42.882966+00:00",
+ "espn_injuries_fetched": "2026-11-21T18:36:42.882966+00:00",
+ "lineups_feed_ok_at": "2026-11-21T18:36:42.882966+00:00",
+ "teams_confirmed": [
+  "MIL",
+  "PHI"
+ ],
+ "referee_crews": 11,
+ "odds_games": 5,
+ "history_games": 1551,
+ "factors": {
+  "used": true,
+  "backtest": {
+   "test_games": 5578,
+   "mae_baseline": 7.978,
+   "mae_with_factors": 7.93
+  },
+  "coef": {
+   "b2b": 0.05245256826387908,
+   "rest3": -0.028673402829008786,
+   "travel": 0.007478578595515944,
+   "tz_east": -0.002838552350976016,
+   "tz_west": -0.010003555841312427,
+   "altitude": -0.02160965936043512,
+   "home": 0.007497996659698354,
+   "ref": 2.0246563025994826,
+   "opp_def": 1.5783919353939058
+  },
+  "note": null
+ },
+ "correlation": {
+  "team": 0.0466,
+  "opp": 0.0248,
+  "team_games": 2952
+ },
+ "calibration": {
+  "used": true,
+  "date": "2026-11-21",
+  "n": 6740,
+  "note": null
+ },
+ "rules": {
+  "min_salary": 48500,
+  "max_per_team": 4,
+  "max_per_game": 6
+ },
+ "changes_this_run": 0,
+ "lineup_events_this_run": 0,
+ "sims_this_run": [],
+ "sources": {
+  "DraftKings lobby": {
+   "ok": true,
+   "detail": "",
+   "at": "2026-11-21T18:36:44.259797+00:00"
+  },
+  "DraftKings salaries": {
+   "ok": true,
+   "detail": "35 players in group 157172",
+   "at": "2026-11-21T18:36:45.036044+00:00"
+  },
+  "NBA injury report": {
+   "ok": true,
+   "detail": "Injury-Report_2026-11-21_01_30PM.pdf",
+   "at": "2026-11-21T18:36:45.321103+00:00"
+  },
+  "ESPN injuries": {
+   "ok": true,
+   "detail": "106 listed",
+   "at": "2026-11-21T18:36:45.419272+00:00"
+  },
+  "NBA.com starting lineups": {
+   "ok": true,
+   "detail": "12 teams posted",
+   "at": "2026-11-21T18:36:45.468868+00:00"
+  },
+  "ESPN odds": {
+   "ok": true,
+   "detail": "5 games",
+   "at": "2026-11-21T18:27:09.998340+00:00"
+  },
+  "ESPN box scores": {
+   "ok": true,
+   "detail": "1551 games stored",
+   "at": "2026-11-21T18:36:43.729189+00:00"
+  }
+ },
+ "control": {
+  "server": "https://ntfy.sh",
+  "topic": "sigma-ctl-99d0abdbacc4ebbb"
+ }
+}

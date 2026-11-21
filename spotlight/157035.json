@@ -1,0 +1,195 @@
+{
+ "slate_id": 157035,
+ "updated_at": "2026-11-20T07:17:24.398098+00:00",
+ "kind": "classic",
+ "games": 4,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Gui Santos",
+   "team": "GSW",
+   "salary": 4300,
+   "proj": 25.1,
+   "own": 33.9,
+   "headline": "Gui Santos without Stephen Curry",
+   "detail": "Averaged 26.7 DK pts in 40 games without them (vs 11.9 with). Hit 6x tonight's salary (26+ pts) in 23 of 40.",
+   "evidence": {
+    "games_without": 40,
+    "avg_without": 26.7,
+    "z": 6.52,
+    "avg_with": 11.9,
+    "hits_6x": 23,
+    "last_without": "2026-11-18"
+   },
+   "strength": 6.518,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Harrison Barnes",
+   "team": "SAS",
+   "salary": 3900,
+   "proj": 7.8,
+   "own": 0.2,
+   "headline": "Harrison Barnes without Dylan Harper",
+   "detail": "Averaged 23.1 DK pts in 13 games without them (vs 13.6 with). Hit 6x tonight's salary (23+ pts) in 5 of 13.",
+   "evidence": {
+    "games_without": 13,
+    "avg_without": 23.1,
+    "z": 3.4,
+    "avg_with": 13.6,
+    "hits_6x": 5,
+    "last_without": "2026-03-16"
+   },
+   "strength": 3.403,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gary Payton II",
+   "team": "GSW",
+   "salary": 3100,
+   "proj": 14.8,
+   "own": 5.6,
+   "headline": "Gary Payton II without Stephen Curry",
+   "detail": "Averaged 19.6 DK pts in 40 games without them (vs 12.3 with). Hit 6x tonight's salary (19+ pts) in 24 of 40.",
+   "evidence": {
+    "games_without": 40,
+    "avg_without": 19.6,
+    "z": 3.34,
+    "avg_with": 12.3,
+    "hits_6x": 24,
+    "last_without": "2026-11-18"
+   },
+   "strength": 3.337,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Cam Spencer",
+   "team": "MEM",
+   "salary": 6000,
+   "proj": 31.1,
+   "own": 26.8,
+   "headline": "Cam Spencer without Ty Jerome",
+   "detail": "Averaged 26.6 DK pts in 63 games without them (vs 20.7 with). Hit 6x tonight's salary (36+ pts) in 12 of 63.",
+   "evidence": {
+    "games_without": 63,
+    "avg_without": 26.6,
+    "z": 3.04,
+    "avg_with": 20.7,
+    "hits_6x": 12,
+    "last_without": "2026-11-18"
+   },
+   "strength": 3.045,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Kel'el Ware",
+   "team": "MIL",
+   "salary": 5000,
+   "proj": 22.3,
+   "own": 6.9,
+   "headline": "Kel'el Ware is starting (1 starts in his last 10)",
+   "detail": "Projected 20 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Max Strus",
+   "team": "LAC",
+   "salary": 4700,
+   "proj": 19.0,
+   "own": 3.5,
+   "headline": "Max Strus is starting (0 starts in his last 10)",
+   "detail": "Projected 24 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Charles Bassey",
+   "team": "GSW",
+   "salary": 4100,
+   "proj": 23.0,
+   "own": 20.3,
+   "headline": "Charles Bassey is starting (2 starts in his last 10)",
+   "detail": "Projected 21 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Nate Ament",
+   "team": "MIL",
+   "salary": 4000,
+   "proj": 15.6,
+   "own": 2.3,
+   "headline": "Nate Ament is starting (1 starts in his last 10)",
+   "detail": "Projected 19 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Jayson Kent",
+   "team": "POR",
+   "salary": 3800,
+   "proj": 18.7,
+   "own": 8.4,
+   "headline": "Jayson Kent is starting (1 starts in his last 10)",
+   "detail": "Projected 21 minutes now.",
+   "evidence": {
+    "start_rate": 0.14285714285714285
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Taylor Hendricks",
+   "team": "MEM",
+   "salary": 3700,
+   "proj": 20.9,
+   "own": 20.4,
+   "headline": "Taylor Hendricks is starting (0 starts in his last 10)",
+   "detail": "Projected 21 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "De'Anthony Melton",
+   "team": "GSW",
+   "salary": 5500,
+   "proj": 23.5,
+   "own": 6.4,
+   "headline": "De'Anthony Melton is starting (2 starts in his last 10)",
+   "detail": "Projected 23 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "medium",
+ "history_slates": 0
+}

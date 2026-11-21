@@ -1,0 +1,190 @@
+{
+ "slate_id": 157002,
+ "updated_at": "2026-11-19T07:16:36.163365+00:00",
+ "kind": "classic",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Gui Santos",
+   "team": "GSW",
+   "salary": 4400,
+   "proj": 17.5,
+   "own": 1.6,
+   "headline": "Gui Santos without Stephen Curry",
+   "detail": "Averaged 26.7 DK pts in 39 games without them (vs 11.9 with). Hit 6x tonight's salary (26+ pts) in 23 of 39.",
+   "evidence": {
+    "games_without": 39,
+    "avg_without": 26.7,
+    "z": 6.45,
+    "avg_with": 11.9,
+    "hits_6x": 23,
+    "last_without": "2026-11-16"
+   },
+   "strength": 6.446,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Kenrich Williams",
+   "team": "OKC",
+   "salary": 4500,
+   "proj": 10.5,
+   "own": 0.2,
+   "headline": "Kenrich Williams without Alex Caruso",
+   "detail": "Averaged 20.4 DK pts in 24 games without them (vs 10.4 with). Hit 6x tonight's salary (27+ pts) in 7 of 24.",
+   "evidence": {
+    "games_without": 24,
+    "avg_without": 20.4,
+    "z": 4.16,
+    "avg_with": 10.4,
+    "hits_6x": 7,
+    "last_without": "2026-11-02"
+   },
+   "strength": 4.157,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Derik Queen",
+   "team": "NOP",
+   "salary": 5200,
+   "proj": 27.3,
+   "own": 8.9,
+   "headline": "Derik Queen without Dejounte Murray",
+   "detail": "Averaged 30.8 DK pts in 73 games without them (vs 22.6 with). Hit 6x tonight's salary (31+ pts) in 29 of 73.",
+   "evidence": {
+    "games_without": 73,
+    "avg_without": 30.8,
+    "z": 3.35,
+    "avg_with": 22.6,
+    "hits_6x": 29,
+    "last_without": "2026-11-16"
+   },
+   "strength": 3.347,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gary Payton II",
+   "team": "GSW",
+   "salary": 3000,
+   "proj": 15.6,
+   "own": 4.2,
+   "headline": "Gary Payton II without Stephen Curry",
+   "detail": "Averaged 19.5 DK pts in 39 games without them (vs 12.3 with). Hit 6x tonight's salary (18+ pts) in 23 of 39.",
+   "evidence": {
+    "games_without": 39,
+    "avg_without": 19.5,
+    "z": 3.23,
+    "avg_with": 12.3,
+    "hits_6x": 23,
+    "last_without": "2026-11-16"
+   },
+   "strength": 3.233,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Charles Bassey",
+   "team": "GSW",
+   "salary": 4000,
+   "proj": 24.4,
+   "own": 14.5,
+   "headline": "Charles Bassey is starting (1 starts in his last 10)",
+   "detail": "Projected 22 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "L.J. Cryer",
+   "team": "GSW",
+   "salary": 3800,
+   "proj": 20.8,
+   "own": 7.5,
+   "headline": "L.J. Cryer is starting (1 starts in his last 10)",
+   "detail": "Projected 23 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Javonte Green",
+   "team": "DET",
+   "salary": 3400,
+   "proj": 25.2,
+   "own": 64.4,
+   "headline": "Javonte Green is starting (0 starts in his last 10)",
+   "detail": "Projected 26 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 4900,
+   "proj": 34.6,
+   "own": 64.2,
+   "headline": "Kevin Huerter without Cade Cunningham, Duncan Robinson",
+   "detail": "Averaged 34.5 DK pts in 3 games without them (vs 16.4 with). Hit 6x tonight's salary (29+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 34.5,
+    "z": 6.9,
+    "avg_with": 16.4,
+    "hits_6x": 3,
+    "last_without": "2026-04-06"
+   },
+   "strength": 6.904,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Daniss Jenkins",
+   "team": "DET",
+   "salary": 6200,
+   "proj": 45.9,
+   "own": 80.0,
+   "headline": "Daniss Jenkins without Cade Cunningham, Duncan Robinson",
+   "detail": "Averaged 33.3 DK pts in 3 games without them (vs 16.8 with). Hit 6x tonight's salary (37+ pts) in 1 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 33.3,
+    "z": 6.13,
+    "avg_with": 16.8,
+    "hits_6x": 1,
+    "last_without": "2026-04-06"
+   },
+   "strength": 6.125,
+   "strong": false
+  },
+  {
+   "type": "surprise_start",
+   "player": "Aaron Wiggins",
+   "team": "ATL",
+   "salary": 5300,
+   "proj": 28.6,
+   "own": 11.7,
+   "headline": "Aaron Wiggins is starting (0 starts in his last 10)",
+   "detail": "Projected 30 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

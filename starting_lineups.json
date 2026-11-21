@@ -1,0 +1,636 @@
+{
+ "date": "2026-11-21",
+ "updated_at": "2026-11-21T18:36:42.882966+00:00",
+ "source": "NBA.com Today's Lineups (confirmed/expected); otherwise Sigma projection",
+ "feed_ok_at": "2026-11-21T18:36:42.882966+00:00",
+ "teams": [
+  {
+   "team": "MIL",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Tyler Herro",
+     "position": "PG/SG",
+     "proj": 30.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Jaime Jaquez Jr.",
+     "position": "SF",
+     "proj": 24.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Myles Turner",
+     "position": "C",
+     "proj": 20.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Kyle Kuzma",
+     "position": "PF",
+     "proj": 21.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Ryan Rollins",
+     "position": "PG/SG",
+     "proj": 28.6,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Ousmane Dieng"
+   ],
+   "questionable": [],
+   "referees": [
+    "Tre Maddox",
+    "Jason Goldenberg",
+    "Jonathan Sterling"
+   ],
+   "benched": [
+    "Brayden Burries",
+    "Pete Nance"
+   ]
+  },
+  {
+   "team": "PHI",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Tyrese Maxey",
+     "position": "PG",
+     "proj": 50.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Joel Embiid",
+     "position": "C",
+     "proj": 48.3,
+     "unexpected": ""
+    },
+    {
+     "name": "LeBron James",
+     "position": "PF",
+     "proj": 46.5,
+     "unexpected": ""
+    },
+    {
+     "name": "VJ Edgecombe",
+     "position": "PG/SG",
+     "proj": 37.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Kentavious Caldwell-Pope",
+     "position": "SG/SF",
+     "proj": 22.1,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Jaylen Brown",
+    "Dean Wade",
+    "Adem Bona",
+    "Ariel Hukporti"
+   ],
+   "questionable": [],
+   "referees": [
+    "Tre Maddox",
+    "Jason Goldenberg",
+    "Jonathan Sterling"
+   ]
+  },
+  {
+   "team": "NYK",
+   "opp": "POR",
+   "home": true,
+   "start_utc": "2026-11-22T00:30:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Karl-Anthony Towns",
+     "position": "PF/C",
+     "proj": 46.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Jalen Brunson",
+     "position": "PG",
+     "proj": 45.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Josh Hart",
+     "position": "SG/SF",
+     "proj": 25.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Mikal Bridges",
+     "position": "SF",
+     "proj": 20.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Landry Shamet",
+     "position": "PF",
+     "proj": 17.1,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Jordan Clarkson"
+   ],
+   "questionable": [
+    "Karl-Anthony Towns",
+    "OG Anunoby"
+   ],
+   "referees": [
+    "Gediminas Petraitis",
+    "John Butler",
+    "Matt Myers"
+   ],
+   "benched": [
+    "OG Anunoby"
+   ]
+  },
+  {
+   "team": "POR",
+   "opp": "NYK",
+   "home": false,
+   "start_utc": "2026-11-22T00:30:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Deni Avdija",
+     "position": "PG/SF",
+     "proj": 45.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Damian Lillard",
+     "position": "PG/SG",
+     "proj": 31.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Donovan Clingan",
+     "position": "C",
+     "proj": 31.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Toumani Camara",
+     "position": "SF",
+     "proj": 22.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Sidy Cissoko",
+     "position": "SG/SF",
+     "proj": 19.1,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Ja Morant",
+    "Chris Youngblood",
+    "Vit Krejci",
+    "Shaedon Sharpe"
+   ],
+   "questionable": [
+    "Deni Avdija"
+   ],
+   "referees": [
+    "Gediminas Petraitis",
+    "John Butler",
+    "Matt Myers"
+   ]
+  },
+  {
+   "team": "DAL",
+   "opp": "LAC",
+   "home": true,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Cooper Flagg",
+     "position": "SF",
+     "proj": 42.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Kyrie Irving",
+     "position": "PG/SG",
+     "proj": 34.8,
+     "unexpected": ""
+    },
+    {
+     "name": "PJ Washington",
+     "position": "PF",
+     "proj": 25.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Daniel Gafford",
+     "position": "C",
+     "proj": 20.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Caleb Martin",
+     "position": "SG/SF",
+     "proj": 17.7,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Sergio de Larrea",
+    "Dereck Lively II",
+    "Tobi Lawal",
+    "Tarik Biberovic"
+   ],
+   "questionable": [
+    "PJ Washington",
+    "Walter Clayton Jr."
+   ],
+   "referees": [
+    "Tony Brothers",
+    "Karl Lane",
+    "John Conley"
+   ]
+  },
+  {
+   "team": "LAC",
+   "opp": "DAL",
+   "home": false,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Darius Garland",
+     "position": "PG",
+     "proj": 35.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Brook Lopez",
+     "position": "C",
+     "proj": 26.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Rui Hachimura",
+     "position": "PF",
+     "proj": 23.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Derrick Jones Jr.",
+     "position": "SF",
+     "proj": 19.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Max Strus",
+     "position": "SF/PF",
+     "proj": 21.5,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Brandon Ingram",
+    "Bradley Beal",
+    "Jordan Miller"
+   ],
+   "questionable": [],
+   "referees": [
+    "Tony Brothers",
+    "Karl Lane",
+    "John Conley"
+   ],
+   "benched": [
+    "Kris Dunn"
+   ]
+  },
+  {
+   "team": "MEM",
+   "opp": "MIN",
+   "home": false,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Ty Jerome",
+     "position": "PG/SG",
+     "proj": 0.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Cedric Coward",
+     "position": "SG/SF",
+     "proj": 43.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Zach Edey",
+     "position": "C",
+     "proj": 33.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Taylor Hendricks",
+     "position": "PF/C",
+     "proj": 30.9,
+     "unexpected": "starting"
+    },
+    {
+     "name": "Jaylen Wells",
+     "position": "SF",
+     "proj": 27.9,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Cameron Boozer",
+    "Ty Jerome",
+    "Javon Small",
+    "Scotty Pippen Jr.",
+    "Jerami Grant",
+    "Richie Saunders"
+   ],
+   "questionable": [],
+   "referees": [
+    "JP Primm",
+    "Agon Abazi",
+    "Kenneth Arrick II"
+   ]
+  },
+  {
+   "team": "MIN",
+   "opp": "MEM",
+   "home": true,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "LaMelo Ball",
+     "position": "PG",
+     "proj": 40.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Jaden McDaniels",
+     "position": "SF/PF",
+     "proj": 34.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Ayo Dosunmu",
+     "position": "PG/SG",
+     "proj": 35.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Jonathan Kuminga",
+     "position": "SF/PF",
+     "proj": 31.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Rudy Gobert",
+     "position": "C",
+     "proj": 30.0,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Anthony Edwards",
+    "Jaylen Clark",
+    "Donte DiVincenzo"
+   ],
+   "questionable": [],
+   "referees": [
+    "Brian Forte",
+    "Kevin Cutler",
+    "Brandon Adair"
+   ]
+  },
+  {
+   "team": "NOP",
+   "opp": "SAS",
+   "home": false,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Zion Williamson",
+     "position": "PF",
+     "proj": 36.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Jeremiah Fears",
+     "position": "PG",
+     "proj": 36.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Saddiq Bey",
+     "position": "SF/PF",
+     "proj": 34.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Yves Missi",
+     "position": "C",
+     "proj": 24.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Herbert Jones",
+     "position": "SF/PF",
+     "proj": 20.0,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Trey Murphy III",
+    "Dejounte Murray",
+    "Bennedict Mathurin",
+    "Bryce McGowens",
+    "Trendon Watford"
+   ],
+   "questionable": [],
+   "referees": [
+    "Justin Van Duyne",
+    "Mousa Dagher",
+    "Suyash Mehta"
+   ]
+  },
+  {
+   "team": "SAS",
+   "opp": "NOP",
+   "home": true,
+   "start_utc": "2026-11-22T01:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Victor Wembanyama",
+     "position": "C",
+     "proj": 67.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Stephon Castle",
+     "position": "SG",
+     "proj": 38.6,
+     "unexpected": ""
+    },
+    {
+     "name": "De'Aaron Fox",
+     "position": "PG",
+     "proj": 31.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Devin Vassell",
+     "position": "SF/PF",
+     "proj": 28.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Julian Champagnie",
+     "position": "SG",
+     "proj": 24.7,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Dylan Harper",
+    "Tobias Harris",
+    "Jayden Quaintance"
+   ],
+   "questionable": [],
+   "referees": [
+    "Justin Van Duyne",
+    "Mousa Dagher",
+    "Suyash Mehta"
+   ]
+  },
+  {
+   "team": "BOS",
+   "opp": "SAC",
+   "home": false,
+   "start_utc": "2026-11-22T03:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Jayson Tatum",
+     "position": "SF/PF",
+     "proj": 43.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Paul George",
+     "position": "PF",
+     "proj": 31.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Derrick White",
+     "position": "PG/SG",
+     "proj": 26.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Neemias Queta",
+     "position": "C",
+     "proj": 23.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Jordan Walsh",
+     "position": "SG/SF",
+     "proj": 12.2,
+     "unexpected": ""
+    }
+   ],
+   "out": [],
+   "questionable": [
+    "Jayson Tatum",
+    "Derrick White"
+   ],
+   "referees": [
+    "Tyler Ford",
+    "Sean Corbin",
+    "Brett Nansel"
+   ],
+   "benched": [
+    "Devin Carter"
+   ]
+  },
+  {
+   "team": "SAC",
+   "opp": "BOS",
+   "home": true,
+   "start_utc": "2026-11-22T03:00:00+00:00",
+   "status": "expected",
+   "starters": [
+    {
+     "name": "Darius Acuff Jr.",
+     "position": "PG/SG",
+     "proj": 36.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Domantas Sabonis",
+     "position": "C",
+     "proj": 32.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Zach LaVine",
+     "position": "SG/SF",
+     "proj": 25.4,
+     "unexpected": ""
+    },
+    {
+     "name": "De'Andre Hunter",
+     "position": "SF/PF",
+     "proj": 23.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Keegan Murray",
+     "position": "PF",
+     "proj": 21.7,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Maxime Raynaud",
+    "Ben Simmons"
+   ],
+   "questionable": [
+    "Precious Achiuwa"
+   ],
+   "referees": [
+    "Tyler Ford",
+    "Sean Corbin",
+    "Brett Nansel"
+   ],
+   "benched": [
+    "Precious Achiuwa"
+   ]
+  }
+ ]
+}

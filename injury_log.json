@@ -1,0 +1,2312 @@
+[
+ {
+  "key": "trey murphy|NOP",
+  "name": "Trey Murphy III",
+  "team": "NOP",
+  "from": "",
+  "to": "OUT",
+  "reason": "Murphy chipped in 17 points (5-10 FG, 3-8 3Pt, 4-5 FT), four rebounds, one assist, one block and two steals over 29 minutes during Friday's 126-120 loss to the Thunder.",
+  "source": "ESPN",
+  "at": "2026-11-21T18:26:07.927252+00:00"
+ },
+ {
+  "key": "dominick barlow|PHI",
+  "name": "Dominick Barlow",
+  "team": "PHI",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T17:28:07.401980+00:00"
+ },
+ {
+  "key": "tyrese maxey|PHI",
+  "name": "Tyrese Maxey",
+  "team": "PHI",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T17:28:07.401980+00:00"
+ },
+ {
+  "key": "karlanthony towns|NYK",
+  "name": "Karl-Anthony Towns",
+  "team": "NYK",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Towns tallied 22 points (9-20 FG, 2-8 3Pt, 2-2 FT), 12 rebounds, four assists and three blocks across 33 minutes in Thursday's 102-99 win over the Timberwolves.",
+  "source": "ESPN",
+  "at": "2026-11-21T16:12:36.582848+00:00"
+ },
+ {
+  "key": "tobi lawal|DAL",
+  "name": "Tobi Lawal",
+  "team": "DAL",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Lawal (groin) is out for Saturday's game against the Clippers.",
+  "source": "ESPN",
+  "at": "2026-11-21T15:22:55.845114+00:00"
+ },
+ {
+  "key": "precious achiuwa|SAC",
+  "name": "Precious Achiuwa",
+  "team": "SAC",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Achiuwa (lower leg) has been ruled out for Friday's game against the Lakers.",
+  "source": "ESPN",
+  "at": "2026-11-21T15:07:25.826596+00:00"
+ },
+ {
+  "key": "derrick white|BOS",
+  "name": "Derrick White",
+  "team": "BOS",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "White (shoulder) is questionable to play in Saturday's game against Sacramento.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "jayson tatum|BOS",
+  "name": "Jayson Tatum",
+  "team": "BOS",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Tatum (rest) is listed as questionable for Saturday's game against Sacramento.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "pj washington|DAL",
+  "name": "PJ Washington",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Washington (shoulder) is listed as questionable for Saturday's game versus the Clippers.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "tobi lawal|DAL",
+  "name": "Tobi Lawal",
+  "team": "DAL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Lawal is out for Wednesday's game against the Warriors due to tightness in his right groin.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "walter clayton|DAL",
+  "name": "Walter Clayton Jr.",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Clayton (knee) is questionable for Saturday's game against the Clippers.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "cameron boozer|MEM",
+  "name": "Cameron Boozer",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Boozer is out for Saturday's game against Minnesota due to a right ankle sprain.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "javon small|MEM",
+  "name": "Javon Small",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Small won't play Saturday against the Timberwolves due to personal reasons.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "jerami grant|MEM",
+  "name": "Jerami Grant",
+  "team": "MEM",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Grant (calf) is out for Saturday's game against the Timberwolves.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "zach edey|MEM",
+  "name": "Zach Edey",
+  "team": "MEM",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "kyle kuzma|MIL",
+  "name": "Kyle Kuzma",
+  "team": "MIL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "myles turner|MIL",
+  "name": "Myles Turner",
+  "team": "MIL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "jordan clarkson|NYK",
+  "name": "Jordan Clarkson",
+  "team": "NYK",
+  "from": "",
+  "to": "OUT",
+  "reason": "Clarkson (foot) won't play in Saturday's game against Portland.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "og anunoby|NYK",
+  "name": "OG Anunoby",
+  "team": "NYK",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Anunoby (calf) is questionable for Saturday's game against Portland.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "tyrese maxey|PHI",
+  "name": "Tyrese Maxey",
+  "team": "PHI",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Maxey (foot) is questionable for Saturday's game against the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "robert williams|POR",
+  "name": "Robert Williams",
+  "team": "POR",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "key": "tj mcconnell|IND",
+  "name": "T.J. McConnell",
+  "team": "IND",
+  "from": "",
+  "to": "OUT",
+  "reason": "Rick Carlisle revealed during his postgame interview that McConnell exited Friday's 128-119 loss with a left hamstring issue, Tony East of Forbes.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-21T05:15:50.917294+00:00"
+ },
+ {
+  "key": "ryan dunn|PHX",
+  "name": "Ryan Dunn",
+  "team": "PHX",
+  "from": "",
+  "to": "OUT",
+  "reason": "Dunn won't return to Friday's game against the Jazz due to a right quad injury, Amanda Pflugrad of 3TV Phoenix reports.",
+  "source": "ESPN",
+  "at": "2026-11-21T04:09:09.822746+00:00"
+ },
+ {
+  "key": "brandon miller|CHA",
+  "name": "Brandon Miller",
+  "team": "CHA",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T03:14:25.146801+00:00"
+ },
+ {
+  "key": "nolan traore|BKN",
+  "name": "Nolan Traore",
+  "team": "BKN",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Traore (hamstring) won't return to Friday's game against Orlando, Meghan Triplett of YES Network reports. He finished with four points (2-6 FG, 0-2 3Pt) and two assists over 18 minutes.",
+  "source": "ESPN",
+  "at": "2026-11-21T02:40:04.513584+00:00"
+ },
+ {
+  "key": "nolan traore|BKN",
+  "name": "Nolan Traore",
+  "team": "BKN",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Traore chipped in 13 points (6-9 FG, 1-3 3Pt, 0-1 FT), one rebound and four assists in 23 minutes during Wednesday's 137-107 loss to Chicago.",
+  "source": "ESPN",
+  "at": "2026-11-21T02:24:30.275542+00:00"
+ },
+ {
+  "key": "deandre hunter|SAC",
+  "name": "De'Andre Hunter",
+  "team": "SAC",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T02:19:17.480749+00:00"
+ },
+ {
+  "key": "alperen sengun|HOU",
+  "name": "Alperen Sengun",
+  "team": "HOU",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T01:24:16.946229+00:00"
+ },
+ {
+  "key": "steven adams|HOU",
+  "name": "Steven Adams",
+  "team": "HOU",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T01:24:16.946229+00:00"
+ },
+ {
+  "key": "felix okpara|WAS",
+  "name": "Felix Okpara",
+  "team": "WAS",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Okpara (illness) is available for Friday's game against Toronto.",
+  "source": "ESPN",
+  "at": "2026-11-21T00:48:14.150805+00:00"
+ },
+ {
+  "key": "brandon miller|CHA",
+  "name": "Brandon Miller",
+  "team": "CHA",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Miller amassed 28 points (10-19 FG, 5-12 3Pt, 3-3 FT), two rebounds, four assists and one block in 32 minutes during Tuesday's 118-114 overtime loss to the Lakers.",
+  "source": "ESPN",
+  "at": "2026-11-21T00:47:08.452163+00:00"
+ },
+ {
+  "key": "noa essengue|CHI",
+  "name": "Noa Essengue",
+  "team": "CHI",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-21T00:04:22.290862+00:00"
+ },
+ {
+  "key": "peyton watson|CLE",
+  "name": "Peyton Watson",
+  "team": "CLE",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T23:58:12.041771+00:00"
+ },
+ {
+  "key": "tj mcconnell|IND",
+  "name": "T.J. McConnell",
+  "team": "IND",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T23:51:57.578842+00:00"
+ },
+ {
+  "key": "trey murphy|NOP",
+  "name": "Trey Murphy III",
+  "team": "NOP",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T23:37:10.707106+00:00"
+ },
+ {
+  "key": "jalen smith|CHI",
+  "name": "Jalen Smith",
+  "team": "CHI",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Smith (illness) is out for Friday's game against the Wizards, Joel Lorenzi of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T23:34:05.626537+00:00"
+ },
+ {
+  "key": "alex caruso|OKC",
+  "name": "Alex Caruso",
+  "team": "OKC",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Caruso (hip) is listed as out for Friday's game against the Pelicans.",
+  "source": "ESPN",
+  "at": "2026-11-20T23:28:14.968027+00:00"
+ },
+ {
+  "key": "andrew nembhard|IND",
+  "name": "Andrew Nembhard",
+  "team": "IND",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T23:21:59.186096+00:00"
+ },
+ {
+  "key": "braden smith|IND",
+  "name": "Braden Smith",
+  "team": "IND",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T23:21:59.186096+00:00"
+ },
+ {
+  "key": "kingston flemings|ATL",
+  "name": "Kingston Flemings",
+  "team": "ATL",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Flemings (back) is out for Friday's game against the Hornets, Brad Rowland of the Locked On Podcast Network reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T22:32:46.201577+00:00"
+ },
+ {
+  "key": "precious achiuwa|SAC",
+  "name": "Precious Achiuwa",
+  "team": "SAC",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Achiuwa (lower leg) has been ruled out for Friday's game against the Lakers.",
+  "source": "ESPN",
+  "at": "2026-11-20T22:32:46.201577+00:00"
+ },
+ {
+  "key": "jalen smith|CHI",
+  "name": "Jalen Smith",
+  "team": "CHI",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Smith (illness) has been downgraded to questionable for Friday's game against the Wizards.",
+  "source": "ESPN",
+  "at": "2026-11-20T17:51:51.815709+00:00"
+ },
+ {
+  "key": "ronald holland|DET",
+  "name": "Ronald Holland II",
+  "team": "DET",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Holland (knee) won't play in Friday's game against the Raptors, Blake Murphy of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T17:46:19.332286+00:00"
+ },
+ {
+  "key": "nikola topic|OKC",
+  "name": "Nikola Topic",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Topic (hip) is out for Friday's game against New Orleans.",
+  "source": "ESPN",
+  "at": "2026-11-20T17:11:46.860015+00:00"
+ },
+ {
+  "key": "kingston flemings|ATL",
+  "name": "Kingston Flemings",
+  "team": "ATL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Flemings (back) is questionable for Friday's game against the Hornets, Brad Rowland of the Locked On Podcast Network reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "grant nelson|BKN",
+  "name": "Grant Nelson",
+  "team": "BKN",
+  "from": "",
+  "to": "OUT",
+  "reason": "Nelson (ankle) has been ruled out for Friday's game against Orlando.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "grant williams|CHA",
+  "name": "Grant Williams",
+  "team": "CHA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Williams (hamstring) is listed as out for Friday's game versus the Hawks.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "noa essengue|CHI",
+  "name": "Noa Essengue",
+  "team": "CHI",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Essengue is listed as probable for Friday's game against Washington due to bilateral wrist soreness.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "peyton watson|CLE",
+  "name": "Peyton Watson",
+  "team": "CLE",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Watson (back) is questionable for Friday's game against the Pacers.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "ebuka okorie|DET",
+  "name": "Ebuka Okorie",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Okorie (oblique) has been ruled out for Friday's game against Toronto.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "cade cunningham|DET",
+  "name": "Cade Cunningham",
+  "team": "DET",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Cunningham (knee) is expected to play in Friday's game against the Raptors, Blake Murphy of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "ugonna onyenso|DET",
+  "name": "Ugonna Onyenso",
+  "team": "DET",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Onyenso agreed to a two-way contract with the Pistons on Thursday.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "steven adams|HOU",
+  "name": "Steven Adams",
+  "team": "HOU",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Adams (quadriceps) is listed as questionable for Friday's game against Denver.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "andrew nembhard|IND",
+  "name": "Andrew Nembhard",
+  "team": "IND",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Nembhard (hip) is questionable for Friday's game in Cleveland.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "tj mcconnell|IND",
+  "name": "T.J. McConnell",
+  "team": "IND",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "McConnell (hamstring) is listed as probable for Friday's game in Cleveland.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "alex caruso|OKC",
+  "name": "Alex Caruso",
+  "team": "OKC",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Caruso is questionable for Friday's game against the Pelicans due to right hip soreness, Justin Martinez of The Oklahoman reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "deandre hunter|SAC",
+  "name": "De'Andre Hunter",
+  "team": "SAC",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Hunter (hip) is listed as questionable for Friday's game against the Lakers.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "precious achiuwa|SAC",
+  "name": "Precious Achiuwa",
+  "team": "SAC",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Achiuwa is doubtful for Friday's game against the Lakers due to a left lower leg bruise.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "collin murrayboyles|TOR",
+  "name": "Collin Murray-Boyles",
+  "team": "TOR",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Murray-Boyles (concussion) has been ruled out for Friday's game against the Pistons.",
+  "source": "ESPN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "scottie barnes|TOR",
+  "name": "Scottie Barnes",
+  "team": "TOR",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "key": "draymond green|GSW",
+  "name": "Draymond Green",
+  "team": "GSW",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Green (elbow) is out for Thursday's game against the Grizzlies.",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "zach edey|MEM",
+  "name": "Zach Edey",
+  "team": "MEM",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Edey (hip) has been ruled out for Thursday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "kyle kuzma|MIL",
+  "name": "Kyle Kuzma",
+  "team": "MIL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Kuzma (shoulder) has been ruled out for Thursday's game against Portland due to a right shoulder contusion.",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "myles turner|MIL",
+  "name": "Myles Turner",
+  "team": "MIL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Turner (shoulder) has been ruled out for Thursday's game against Portland due to a left shoulder contusion,",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "deni avdija|POR",
+  "name": "Deni Avdija",
+  "team": "POR",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Avdija (foot) is listed as out for Thursday's game against the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "robert williams|POR",
+  "name": "Robert Williams",
+  "team": "POR",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Williams (rest) is listed as out for Thursday's game versus the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-20T04:09:29.715368+00:00"
+ },
+ {
+  "key": "jerami grant|MEM",
+  "name": "Jerami Grant",
+  "team": "MEM",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Grant won't return to Thursday's game against the Warriors due to a left calf injury. He'll finish with three points (1-2 FG, 1-1 3Pt) across five minutes.",
+  "source": "ESPN",
+  "at": "2026-11-20T02:06:48.545730+00:00"
+ },
+ {
+  "key": "jalen brunson|NYK",
+  "name": "Jalen Brunson",
+  "team": "NYK",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T01:50:08.904638+00:00"
+ },
+ {
+  "key": "jalen brunson|NYK",
+  "name": "Jalen Brunson",
+  "team": "NYK",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Brunson exited to the locker room in the first quarter of Thursday's game against Minnesota due to an apparent facial injury, Jared Schwartz of the New York Post reports.",
+  "source": "ESPN",
+  "at": "2026-11-20T01:27:58.639031+00:00"
+ },
+ {
+  "key": "lj cryer|GSW",
+  "name": "L.J. Cryer",
+  "team": "GSW",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "key": "isaiah stewart|MEM",
+  "name": "Isaiah Stewart",
+  "team": "MEM",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "key": "jonathan kuminga|MIN",
+  "name": "Jonathan Kuminga",
+  "team": "MIN",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "key": "deni avdija|POR",
+  "name": "Deni Avdija",
+  "team": "POR",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Avdija (foot) is listed as out for Thursday's game against the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "key": "toumani camara|POR",
+  "name": "Toumani Camara",
+  "team": "POR",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "key": "kyle kuzma|MIL",
+  "name": "Kyle Kuzma",
+  "team": "MIL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Kuzma (shoulder) has been ruled out for Thursday's game against Portland due to a right shoulder contusion.",
+  "source": "ESPN",
+  "at": "2026-11-19T19:43:41.253414+00:00"
+ },
+ {
+  "key": "myles turner|MIL",
+  "name": "Myles Turner",
+  "team": "MIL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Turner (shoulder) has been ruled out for Thursday's game against Portland due to a left shoulder contusion,",
+  "source": "ESPN",
+  "at": "2026-11-19T19:43:41.253414+00:00"
+ },
+ {
+  "key": "ryan rollins|MIL",
+  "name": "Ryan Rollins",
+  "team": "MIL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T19:43:41.253414+00:00"
+ },
+ {
+  "key": "draymond green|GSW",
+  "name": "Draymond Green",
+  "team": "GSW",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Green (elbow) is out for Thursday's game against the Grizzlies.",
+  "source": "ESPN",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "key": "lj cryer|GSW",
+  "name": "L.J. Cryer",
+  "team": "GSW",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Cryer (back) is questionable for Thursday's game against Memphis.",
+  "source": "ESPN",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "key": "al horford|GSW",
+  "name": "Al Horford",
+  "team": "GSW",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "key": "zach edey|MEM",
+  "name": "Zach Edey",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Edey finished with 11 points (5-7 FG, 1-1 FT), two rebounds, one assist and two steals in 21 minutes before fouling out of Wednesday's 124-121 victory over the Cavaliers.",
+  "source": "ESPN",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "key": "zyon pullin|MIN",
+  "name": "Zyon Pullin",
+  "team": "MIN",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T18:50:13.249786+00:00"
+ },
+ {
+  "key": "al horford|GSW",
+  "name": "Al Horford",
+  "team": "GSW",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Horford (back) is out for Wednesday's game against the Mavericks, but will play Thursday against the Grizzlies, Nick Friedell of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-19T15:13:08.999111+00:00"
+ },
+ {
+  "key": "draymond green|GSW",
+  "name": "Draymond Green",
+  "team": "GSW",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Green (elbow) is available for Wednesday's game against the Mavericks.",
+  "source": "ESPN",
+  "at": "2026-11-19T15:13:08.999111+00:00"
+ },
+ {
+  "key": "isaiah stewart|MEM",
+  "name": "Isaiah Stewart",
+  "team": "MEM",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Stewart (illness) won't play Wednesday against the Cavs.",
+  "source": "ESPN",
+  "at": "2026-11-19T14:56:58.760466+00:00"
+ },
+ {
+  "key": "ryan rollins|MIL",
+  "name": "Ryan Rollins",
+  "team": "MIL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Rollins (illness) has been ruled out for Wednesday's game at Miami.",
+  "source": "ESPN",
+  "at": "2026-11-19T14:56:58.760466+00:00"
+ },
+ {
+  "key": "yanic konan niederhauser|LAC",
+  "name": "Yanic Konan Niederhauser",
+  "team": "LAC",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "jonathan kuminga|MIN",
+  "name": "Jonathan Kuminga",
+  "team": "MIN",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Kuminga (shoulder) is questionable for Thursday's game against the Knicks, Charlie Walton of ZoneCoverage.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "zyon pullin|MIN",
+  "name": "Zyon Pullin",
+  "team": "MIN",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Pullin (quadriceps) is listed as questionable for Thursday's game against the Knicks.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "robert williams|POR",
+  "name": "Robert Williams",
+  "team": "POR",
+  "from": "",
+  "to": "OUT",
+  "reason": "Williams (rest) is listed as out for Thursday's game versus the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "deni avdija|POR",
+  "name": "Deni Avdija",
+  "team": "POR",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Avdija (foot) is listed as questionable ahead of Thursday's game against Milwaukee.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "toumani camara|POR",
+  "name": "Toumani Camara",
+  "team": "POR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Camara is questionable to play Thursday against the Bucks due to general soreness.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "dylan harper|SAS",
+  "name": "Dylan Harper",
+  "team": "SAS",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Harper (hip) won't play in Thursday's game against the Clippers, Jeff McDonald of the San Antonio Express-News reports.",
+  "source": "ESPN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "key": "alex caruso|OKC",
+  "name": "Alex Caruso",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Caruso totaled 11 points (3-6 FG, 1-3 3Pt, 4-4 FT), two rebounds, three assists, one block and four steals across 18 minutes off the bench during Sunday's 125-103 win over the Kings.",
+  "source": "ESPN",
+  "at": "2026-11-19T03:22:47.102208+00:00"
+ },
+ {
+  "key": "braden smith|IND",
+  "name": "Braden Smith",
+  "team": "IND",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Smith suffered a right ankle sprain during Wednesday's game against the Wizards, Tony East of Forbes.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-19T03:05:58.331125+00:00"
+ },
+ {
+  "key": "jaxson hayes|UTA",
+  "name": "Jaxson Hayes",
+  "team": "UTA",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T02:11:37.279911+00:00"
+ },
+ {
+  "key": "collin murrayboyles|TOR",
+  "name": "Collin Murray-Boyles",
+  "team": "TOR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Murray-Boyles ended Tuesday's 111-102 loss to New York with eight points (4-6 FG), one rebound, three assists, three blocks and one steal in 33 minutes.",
+  "source": "ESPN",
+  "at": "2026-11-19T01:36:21.895550+00:00"
+ },
+ {
+  "key": "alperen sengun|HOU",
+  "name": "Alperen Sengun",
+  "team": "HOU",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Sengun exited Wednesday's game against the Pacers for the locker room due to an apparent facial injury, Will Guillory of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-19T01:06:11.163571+00:00"
+ },
+ {
+  "key": "isaiah joe|DET",
+  "name": "Isaiah Joe",
+  "team": "DET",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T00:51:32.909144+00:00"
+ },
+ {
+  "key": "cade cunningham|DET",
+  "name": "Cade Cunningham",
+  "team": "DET",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Cunningham is questionable for Wednesday's game against the Pelicans due to right knee soreness",
+  "source": "ESPN",
+  "at": "2026-11-19T00:36:15.063590+00:00"
+ },
+ {
+  "key": "tobi lawal|DAL",
+  "name": "Tobi Lawal",
+  "team": "DAL",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Lawal is out for Wednesday's game against the Warriors due to tightness in his right groin.",
+  "source": "ESPN",
+  "at": "2026-11-19T00:06:07.894968+00:00"
+ },
+ {
+  "key": "max christie|DAL",
+  "name": "Max Christie",
+  "team": "DAL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T00:06:07.894968+00:00"
+ },
+ {
+  "key": "santi aldama|DAL",
+  "name": "Santi Aldama",
+  "team": "DAL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T00:06:07.894968+00:00"
+ },
+ {
+  "key": "walter clayton|DAL",
+  "name": "Walter Clayton Jr.",
+  "team": "DAL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T00:06:07.894968+00:00"
+ },
+ {
+  "key": "jaylin williams|OKC",
+  "name": "Jaylin Williams",
+  "team": "OKC",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-19T00:01:55.501167+00:00"
+ },
+ {
+  "key": "tyrese maxey|PHI",
+  "name": "Tyrese Maxey",
+  "team": "PHI",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Maxey (foot) is out for Wednesday's game in Orlando, Ky Carlin of USA Today reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:43:05.827341+00:00"
+ },
+ {
+  "key": "al horford|GSW",
+  "name": "Al Horford",
+  "team": "GSW",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Horford (back) is questionable for Wednesday's game against Dallas.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:42:01.808973+00:00"
+ },
+ {
+  "key": "draymond green|GSW",
+  "name": "Draymond Green",
+  "team": "GSW",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:42:01.808973+00:00"
+ },
+ {
+  "key": "peyton watson|CLE",
+  "name": "Peyton Watson",
+  "team": "CLE",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Watson (back) is out for Wednesday's game versus Memphis.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:32:18.961070+00:00"
+ },
+ {
+  "key": "dean wade|PHI",
+  "name": "Dean Wade",
+  "team": "PHI",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Wade (hamstring) is out for Wednesday's game in Orlando.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:28:25.343476+00:00"
+ },
+ {
+  "key": "sam merrill|CLE",
+  "name": "Sam Merrill",
+  "team": "CLE",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:17:09.805634+00:00"
+ },
+ {
+  "key": "patrick williams|CHI",
+  "name": "Patrick Williams",
+  "team": "CHI",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "amen thompson|HOU",
+  "name": "Amen Thompson",
+  "team": "HOU",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "andrew nembhard|IND",
+  "name": "Andrew Nembhard",
+  "team": "IND",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Nembhard (hip) won't play in Wednesday's game against the Rockets, Tony East of Forbes.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "tj mcconnell|IND",
+  "name": "T.J. McConnell",
+  "team": "IND",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "austin reaves|LAL",
+  "name": "Austin Reaves",
+  "team": "LAL",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Reaves (heel) is out for Wednesday's game against the Jazz.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "walker kessler|LAL",
+  "name": "Walker Kessler",
+  "team": "LAL",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "tyrese maxey|PHI",
+  "name": "Tyrese Maxey",
+  "team": "PHI",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Maxey is questionable for Wednesday's game in Orlando due to right foot soreness, Gina Mizell of The Philadelphia Inquirer reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "deandre hunter|SAC",
+  "name": "De'Andre Hunter",
+  "team": "SAC",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "precious achiuwa|SAC",
+  "name": "Precious Achiuwa",
+  "team": "SAC",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "rj barrett|TOR",
+  "name": "RJ Barrett",
+  "team": "TOR",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Barrett (hamstring) is out for Wednesday's game against the Wizards, Michael Grange of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "key": "kevin mccullar|TOR",
+  "name": "Kevin McCullar Jr.",
+  "team": "TOR",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T20:05:09.315675+00:00"
+ },
+ {
+  "key": "taurean prince|DET",
+  "name": "Taurean Prince",
+  "team": "DET",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Prince (knee) is out for Wednesday's game against the Pelicans.",
+  "source": "ESPN",
+  "at": "2026-11-18T19:20:42.865625+00:00"
+ },
+ {
+  "key": "cade cunningham|DET",
+  "name": "Cade Cunningham",
+  "team": "DET",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Cunningham is questionable for Wednesday's game against the Pelicans due to right knee soreness",
+  "source": "ESPN",
+  "at": "2026-11-18T19:20:42.865625+00:00"
+ },
+ {
+  "key": "ronald holland|DET",
+  "name": "Ronald Holland II",
+  "team": "DET",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Holland is out for Tuesday's game against San Antonio due to a left knee contusion.",
+  "source": "ESPN",
+  "at": "2026-11-18T19:11:25.144171+00:00"
+ },
+ {
+  "key": "jaylon tyson|CLE",
+  "name": "Jaylon Tyson",
+  "team": "CLE",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Tyson (ankle) has been ruled out for Wednesday's game against Memphis.",
+  "source": "ESPN",
+  "at": "2026-11-18T18:35:51.700881+00:00"
+ },
+ {
+  "key": "dean wade|PHI",
+  "name": "Dean Wade",
+  "team": "PHI",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Wade (hamstring) has been downgraded to questionable for Wednesday's game against the Magic.",
+  "source": "ESPN",
+  "at": "2026-11-18T18:35:51.700881+00:00"
+ },
+ {
+  "key": "myron gardner|MIA",
+  "name": "Myron Gardner",
+  "team": "MIA",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Gardner (hamstring) is out for Wednesday's game against the Bucks.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "bam adebayo|MIA",
+  "name": "Bam Adebayo",
+  "team": "MIA",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "nikola jovic|MIA",
+  "name": "Nikola Jovic",
+  "team": "MIA",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "ryan rollins|MIL",
+  "name": "Ryan Rollins",
+  "team": "MIL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Rollins (illness) has been ruled out for Wednesday's game at Miami.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "scottie barnes|TOR",
+  "name": "Scottie Barnes",
+  "team": "TOR",
+  "from": "",
+  "to": "OUT",
+  "reason": "Barnes (injury management) has been ruled out for Wednesday's game against Washington, Esfandiar Baraheni of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "rj barrett|TOR",
+  "name": "RJ Barrett",
+  "team": "TOR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Barrett is questionable for Wednesday's game against the Wizards due to hamstring tightness, Esfandiar Baraheni of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "key": "ronald holland|DET",
+  "name": "Ronald Holland II",
+  "team": "DET",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Holland is out for Tuesday's game against San Antonio due to a left knee contusion.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "taurean prince|DET",
+  "name": "Taurean Prince",
+  "team": "DET",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Prince (knee) has been ruled out for Tuesday's game against the Spurs.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "julian phillips|HOU",
+  "name": "Julian Phillips",
+  "team": "HOU",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "austin reaves|LAL",
+  "name": "Austin Reaves",
+  "team": "LAL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Reaves (heel) is out for Tuesday's game against the Hornets, Dave McMenamin of ESPN.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "walker kessler|LAL",
+  "name": "Walker Kessler",
+  "team": "LAL",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Head coach JJ Redick said he expects Walker (leg) to be available for Wednesday's game against the Jazz, Thuc Nhi Nguyen of the Los Angeles Times reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "jaxson hayes|UTA",
+  "name": "Jaxson Hayes",
+  "team": "UTA",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Hayes (knee) has been ruled out for Tuesday's game against the Clippers.",
+  "source": "ESPN",
+  "at": "2026-11-18T16:20:47.352162+00:00"
+ },
+ {
+  "key": "asa newell|ATL",
+  "name": "Asa Newell",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Newell underwent surgery Tuesday for a plantar plate tear in his left great toe, and he will be re-evaluated in approximately four months, Brad Rowland of the Locked On Podcast Network reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "cj mccollum|ATL",
+  "name": "CJ McCollum",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "McCollum (calf) will miss at least four weeks, per Brad Rowland of the Locked On Podcast Network.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "henri veesaar|ATL",
+  "name": "Henri Veesaar",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Veesaar was diagnosed with a torn right ACL and is expected to miss the 2026-27 season, the Hawks announced Monday.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jock landale|ATL",
+  "name": "Jock Landale",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Landale (hip) won't play Wednesday in Oklahoma City.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "kingston flemings|ATL",
+  "name": "Kingston Flemings",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Flemings (back) is out for Wednesday's game against the Thunder.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "mouhamed gueye|ATL",
+  "name": "Mouhamed Gueye",
+  "team": "ATL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Gueye (foot) is ready to begin on-court activities and will be re-evaluated in four weeks, Brad Rowland of the Locked On Podcast Network reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "caleb wilson|CHI",
+  "name": "Caleb Wilson",
+  "team": "CHI",
+  "from": "",
+  "to": "OUT",
+  "reason": "Wilson (hand) is expected to miss four to six weeks, Shams Charania of ESPN reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tobe awaka|CHI",
+  "name": "Tobe Awaka",
+  "team": "CHI",
+  "from": "",
+  "to": "OUT",
+  "reason": "Awaka (back) has been ruled out for Wednesday's game against the Nets.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "patrick williams|CHI",
+  "name": "Patrick Williams",
+  "team": "CHI",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Williams (finger) is listed as probable for Wednesday's game against Brooklyn.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "evan mobley|CLE",
+  "name": "Evan Mobley",
+  "team": "CLE",
+  "from": "",
+  "to": "OUT",
+  "reason": "Mobley will receive treatment and participate in rehab after the team confirmed a diagnosis of a right great toe sprain, and he'll be re-evaluated in the next 7-to-10 days.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "naeqwan tomlin|CLE",
+  "name": "Nae'Qwan Tomlin",
+  "team": "CLE",
+  "from": "",
+  "to": "OUT",
+  "reason": "Tomlin (back) will remain on the inactive list for Wednesday's game against the Grizzlies.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "sam merrill|CLE",
+  "name": "Sam Merrill",
+  "team": "CLE",
+  "from": "",
+  "to": "OUT",
+  "reason": "Merrill (elbow) is questionable to face the Grizzlies on Wednesday.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jaylon tyson|CLE",
+  "name": "Jaylon Tyson",
+  "team": "CLE",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Tyson (ankle) is listed as doubtful for Wednesday's game against the Grizzlies.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "peyton watson|CLE",
+  "name": "Peyton Watson",
+  "team": "CLE",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Watson (back) is listed as questionable for Wednesday's game against Memphis.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "dereck lively|DAL",
+  "name": "Dereck Lively II",
+  "team": "DAL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Lively (foot) is out for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "sergio de larrea|DAL",
+  "name": "Sergio de Larrea",
+  "team": "DAL",
+  "from": "",
+  "to": "OUT",
+  "reason": "De Larrea (knee) is listed as out for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tarik biberovic|DAL",
+  "name": "Tarik Biberovic",
+  "team": "DAL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Biberovic (heel) is out for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "max christie|DAL",
+  "name": "Max Christie",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Christie (ankle) is questionable for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "santi aldama|DAL",
+  "name": "Santi Aldama",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Aldama (ankle) is probable for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tobi lawal|DAL",
+  "name": "Tobi Lawal",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Lawal is doubtful for Wednesday's game against the Warriors due to tightness in his right groin.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "walter clayton|DAL",
+  "name": "Walter Clayton Jr.",
+  "team": "DAL",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Clayton (ankle) is listed as probable for Wednesday's game against the Warriors.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "al horford|GSW",
+  "name": "Al Horford",
+  "team": "GSW",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Horford (back) is questionable for Wednesday's game against Dallas.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "draymond green|GSW",
+  "name": "Draymond Green",
+  "team": "GSW",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Green is questionable for Wednesday's game in Dallas due to inflammation in his right elbow.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "amen thompson|HOU",
+  "name": "Amen Thompson",
+  "team": "HOU",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Thompson (knee) is questionable for Wednesday's game against the Pacers.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "marcus smart|HOU",
+  "name": "Marcus Smart",
+  "team": "HOU",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "steven adams|HOU",
+  "name": "Steven Adams",
+  "team": "HOU",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "ben sheppard|IND",
+  "name": "Ben Sheppard",
+  "team": "IND",
+  "from": "",
+  "to": "OUT",
+  "reason": "Head coach Rick Carlise confirmed Sheppard will miss \"months\" after undergoing surgery to repair a torn meniscus in his left knee, Tony East of Forbes.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "johnny furphy|IND",
+  "name": "Johnny Furphy",
+  "team": "IND",
+  "from": "",
+  "to": "OUT",
+  "reason": "Furphy (knee) is practicing with the G League's Noblesville Boom, per Alex Golden of SI.com.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tyrese haliburton|IND",
+  "name": "Tyrese Haliburton",
+  "team": "IND",
+  "from": "",
+  "to": "OUT",
+  "reason": "Head coach Rick Carlisle said Tuesday that Haliburton (hamstring) is \"getting there,\" but there's still no definitive timetable for his return to game action, Dustin Dopirak of The Indianapolis Star reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "andrew nembhard|IND",
+  "name": "Andrew Nembhard",
+  "team": "IND",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Nembhard (hip) is questionable for Wednesday's game against Houston.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tj mcconnell|IND",
+  "name": "T.J. McConnell",
+  "team": "IND",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "McConnell (hamstring) is probable to play Wednesday against the Rockets.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "isaiah stewart|MEM",
+  "name": "Isaiah Stewart",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Stewart (illness) won't play Wednesday against the Cavs.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "richie saunders|MEM",
+  "name": "Richie Saunders",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Saunders signed a two-way contract with the Grizzlies on Saturday, Shams Charania of ESPN reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "scotty pippen|MEM",
+  "name": "Scotty Pippen Jr.",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Pippen (back) is progressing in his recovery but is still considered week-to-week.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "ty jerome|MEM",
+  "name": "Ty Jerome",
+  "team": "MEM",
+  "from": "",
+  "to": "OUT",
+  "reason": "Jerome (hip) has been ruled out for Wednesday's game in Cleveland.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "bam adebayo|MIA",
+  "name": "Bam Adebayo",
+  "team": "MIA",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Adebayo (hip) is probable for Wednesday's game against the Bucks, per Ira Winderman of the South Florida Sun Sentinel.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "myron gardner|MIA",
+  "name": "Myron Gardner",
+  "team": "MIA",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Gardner (hamstring) is questionable for Wednesday's game against the Bucks, per Ira Winderman of the South Florida Sun Sentinel.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "nikola jovic|MIA",
+  "name": "Nikola Jovic",
+  "team": "MIA",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Jovic (illness) is listed as probable for Wednesday's game against Milwaukee, Ira Winderman of the South Florida Sun Sentinel reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "pelle larsson|MIA",
+  "name": "Pelle Larsson",
+  "team": "MIA",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "ousmane dieng|MIL",
+  "name": "Ousmane Dieng",
+  "team": "MIL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Dieng will undergo a procedure to repair a fractured left finger Monday, Justin Garcia of the Milwaukee Bucks Radio Network reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "cason wallace|OKC",
+  "name": "Cason Wallace",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Wallace underwent surgery Friday to repair a torn labrum in his left shoulder and will be re-evaluated before the end of the regular season, Clemente Almanza of USA Today reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "chet holmgren|OKC",
+  "name": "Chet Holmgren",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Holmgren underwent a biological treatment Friday to address a small patellar tendon tear and will miss at least 8-10 weeks, Nick Crain of Slam reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jalen williams|OKC",
+  "name": "Jalen Williams",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Williams (leg) underwent successful surgery Wednesday to \"address a fractured left fibula and reconstruction of ankle ligaments following a fracture and dislocation.\" He will be re-evaluated before the end of the regular season, Tim MacMahon of ESPN.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jaylin williams|OKC",
+  "name": "Jaylin Williams",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Williams (back) is listed as questionable for Wednesday's game against the Hawks, Clemente Almanza of USA Today reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "thomas sorber|OKC",
+  "name": "Thomas Sorber",
+  "team": "OKC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Sorber underwent an arthroscopic knee procedure Tuesday to address inflammation at the patellofemoral joint in his right knee, and he's expected to return to on-court activities in 6-8 weeks, Steve McGehee of News 9 Oklahoma City reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "izaiyah nelson|ORL",
+  "name": "Izaiyah Nelson",
+  "team": "ORL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Nelson (ankle) has been ruled out for Wednesday's game against the 76ers.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jonathan isaac|ORL",
+  "name": "Jonathan Isaac",
+  "team": "ORL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Isaac (knee) has been ruled out for Monday's game against the Celtics.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "noah penda|ORL",
+  "name": "Noah Penda",
+  "team": "ORL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Penda (hamstring) is making progress but remains without a timetable to return to game action, Jason Beede of the Orlando Sentinel reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "paolo banchero|ORL",
+  "name": "Paolo Banchero",
+  "team": "ORL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Banchero is expected to be sidelined for the next four-to-six weeks due to a right high-ankle sprain, Shams Charania of ESPN reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jaylen brown|PHI",
+  "name": "Jaylen Brown",
+  "team": "PHI",
+  "from": "",
+  "to": "OUT",
+  "reason": "Brown is out for Wednesday's game against the Magic with a left hamstring strain.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "lebron james|PHI",
+  "name": "LeBron James",
+  "team": "PHI",
+  "from": "OUT",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "ryan dunn|PHX",
+  "name": "Ryan Dunn",
+  "team": "PHX",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "ben simmons|SAC",
+  "name": "Ben Simmons",
+  "team": "SAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Simmons underwent successful surgery Tuesday to repair a torn right Achilles tendon, James Ham of ESPN 1320 Sacramento reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "maxime raynaud|SAC",
+  "name": "Maxime Raynaud",
+  "team": "SAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Raynaud (knee) will remain on the inactive list for Wednesday's game against the Suns.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "deandre hunter|SAC",
+  "name": "De'Andre Hunter",
+  "team": "SAC",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Hunter (hip) is questionable for Wednesday's game against the Suns, James Ham of ESPN 1320 Sacramento reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "precious achiuwa|SAC",
+  "name": "Precious Achiuwa",
+  "team": "SAC",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Achiuwa (ankle) is questionable for Wednesday's game against the Suns, James Ham of ESPN 1320 Sacramento reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "jamir watkins|WAS",
+  "name": "Jamir Watkins",
+  "team": "WAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "The Wizards announced Thursday that Watkins has undergone surgery for a torn ACL.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "justin champagnie|WAS",
+  "name": "Justin Champagnie",
+  "team": "WAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "Champagnie (foot) is expected to miss several months, per Josh Robbins of The Athletic.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "reece beekman|WAS",
+  "name": "Reece Beekman",
+  "team": "WAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "The Wizards announced Monday that Beekman sustained a right acromioclavicular joint injury and will be re-evaluated in approximately three weeks.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "tristan vukcevic|WAS",
+  "name": "Tristan Vukcevic",
+  "team": "WAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "Vukcevic (hip) has been ruled out for Monday's game against Memphis.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "felix okpara|WAS",
+  "name": "Felix Okpara",
+  "team": "WAS",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Okpara (illness) is available for Friday's game against Toronto.",
+  "source": "ESPN",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "key": "dylan harper|SAS",
+  "name": "Dylan Harper",
+  "team": "SAS",
+  "from": "OUT",
+  "to": "QUESTIONABLE",
+  "reason": "Harper left Tuesday's game against the Spurs due to an undisclosed injury after an awkward fall, Chris Mannix reports.",
+  "source": "ESPN",
+  "at": "2026-11-18T05:36:51.658714+00:00"
+ },
+ {
+  "key": "dylan harper|SAS",
+  "name": "Dylan Harper",
+  "team": "SAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "Harper recorded 31 points (12-23 FG, 2-7 3Pt, 5-5 FT), nine rebounds, four assists and one steal across 34 minutes during Sunday's 110-102 win over the Jazz.",
+  "source": "ESPN",
+  "at": "2026-11-18T03:55:24.765290+00:00"
+ },
+ {
+  "key": "grayson allen|CHA",
+  "name": "Grayson Allen",
+  "team": "CHA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Allen (concussion-like symptoms) has been ruled out for Tuesday's game against the Lakers.",
+  "source": "ESPN",
+  "at": "2026-11-18T02:30:15.198278+00:00"
+ },
+ {
+  "key": "deni avdija|POR",
+  "name": "Deni Avdija",
+  "team": "POR",
+  "from": "QUESTIONABLE",
+  "to": "OUT",
+  "reason": "Avdija (foot) is questionable for Tuesday's game against the Timberwolves.",
+  "source": "ESPN",
+  "at": "2026-11-18T00:31:18.024466+00:00"
+ },
+ {
+  "key": "scottie barnes|TOR",
+  "name": "Scottie Barnes",
+  "team": "TOR",
+  "from": "QUESTIONABLE",
+  "to": "",
+  "reason": "",
+  "source": "",
+  "at": "2026-11-17T23:50:56.512088+00:00"
+ },
+ {
+  "key": "dennis schroder|CHA",
+  "name": "Dennis Schroder",
+  "team": "CHA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Schroder has been diagnosed with a left hamstring strain and will be reevaluated in two weeks, Michael Scotto of HoopsHype.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "kon knueppel|CHA",
+  "name": "Kon Knueppel",
+  "team": "CHA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Knueppel (hamstring) was diagnosed with a left hamstring strain Sunday and will be re-evaluated in four weeks.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "duncan robinson|DET",
+  "name": "Duncan Robinson",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Robinson will be re-evaluated in one week due to a left quadriceps strain, Coty M. Davis of The Detroit News reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "isaiah joe|DET",
+  "name": "Isaiah Joe",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Joe (hip) is out for Tuesday's game against the Spurs.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jalen duren|DET",
+  "name": "Jalen Duren",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Duren (hamstring) has begun on-court activity and will be re-evaluated in two weeks, Hunter Patterson of The Athletic reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "ronald holland|DET",
+  "name": "Ronald Holland II",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Holland is out for Tuesday's game against San Antonio due to a left knee contusion.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "taurean prince|DET",
+  "name": "Taurean Prince",
+  "team": "DET",
+  "from": "",
+  "to": "OUT",
+  "reason": "Prince (knee) has been ruled out for Tuesday's game against the Spurs.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "bradley beal|LAC",
+  "name": "Bradley Beal",
+  "team": "LAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Beal (knee) will not be ready for the start of the regular season, NBA writer Justin Russo reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "brandon ingram|LAC",
+  "name": "Brandon Ingram",
+  "team": "LAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Ingram (Achilles) won't play in Friday's game against the Thunder, per Law Murray of The Athletic.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jordan miller|LAC",
+  "name": "Jordan Miller",
+  "team": "LAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Miller underwent surgery Wednesday to repair a torn left rotator cuff and will be re-evaluated in six months, per Law Murray of The Athletic.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "yanic konan niederhauser|LAC",
+  "name": "Yanic Konan Niederhauser",
+  "team": "LAC",
+  "from": "",
+  "to": "OUT",
+  "reason": "Niederhauser (foot) has been ruled out for Tuesday's game against the Jazz.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "austin reaves|LAL",
+  "name": "Austin Reaves",
+  "team": "LAL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Reaves (heel) is out for Tuesday's game against the Hornets, Dave McMenamin of ESPN.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "walker kessler|LAL",
+  "name": "Walker Kessler",
+  "team": "LAL",
+  "from": "",
+  "to": "OUT",
+  "reason": "Walker (leg) has been ruled out for Tuesday's game against the Hornets.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jonathan kuminga|MIN",
+  "name": "Jonathan Kuminga",
+  "team": "MIN",
+  "from": "",
+  "to": "OUT",
+  "reason": "Kuminga (shoulder) is out for Tuesday's game against Portland.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "zyon pullin|MIN",
+  "name": "Zyon Pullin",
+  "team": "MIN",
+  "from": "",
+  "to": "OUT",
+  "reason": "Pullin (quadriceps) has been ruled out for Tuesday's game against Portland.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "deni avdija|POR",
+  "name": "Deni Avdija",
+  "team": "POR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Avdija (foot) is questionable for Tuesday's game against the Timberwolves.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jayden quaintance|SAS",
+  "name": "Jayden Quaintance",
+  "team": "SAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "Quaintance has been around the team but has not yet been cleared for basketball activities, Matt Guzman of SI.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "tobias harris|SAS",
+  "name": "Tobias Harris",
+  "team": "SAS",
+  "from": "",
+  "to": "OUT",
+  "reason": "Harris (calf) is likely to be sidelined until early December, per Jeff Garcia of KENS 5 San Antonio.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "kawhi leonard|TOR",
+  "name": "Kawhi Leonard",
+  "team": "TOR",
+  "from": "",
+  "to": "OUT",
+  "reason": "Head coach Darko Rajakovic said Wednesday that Leonard (knee) is doing individual on-court work and is progressing well, Michael Grange of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "nate bittle|TOR",
+  "name": "Nate Bittle",
+  "team": "TOR",
+  "from": "",
+  "to": "OUT",
+  "reason": "Bittle (foot) has been ruled out for Sunday's game against the Knicks, Zulfi Sheikh of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "kevin mccullar|TOR",
+  "name": "Kevin McCullar Jr.",
+  "team": "TOR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "McCullar signed a two-way contract with the Raptors on Thursday, Michael Scotto of HoopsHype.com reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "scottie barnes|TOR",
+  "name": "Scottie Barnes",
+  "team": "TOR",
+  "from": "",
+  "to": "QUESTIONABLE",
+  "reason": "Barnes (illness) has been downgraded to questionable for Tuesday's game against the Knicks, Blake Murphy of Sportsnet.ca reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jaren jackson|UTA",
+  "name": "Jaren Jackson Jr.",
+  "team": "UTA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Jackson has been diagnosed with a torn MCL in his right knee and will be sidelined for 6-to-8 weeks, per Shams Charania of ESPN.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jaxson hayes|UTA",
+  "name": "Jaxson Hayes",
+  "team": "UTA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Hayes (knee) has been ruled out for Tuesday's game against the Clippers.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "jusuf nurkic|UTA",
+  "name": "Jusuf Nurkic",
+  "team": "UTA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Nurkic (toe) has begun participating in on-court activities as he continues recovering from a right foot injury sustained during an Oct. 4 preseason game against Denver. He will be re-evaluated in two weeks, the Jazz announced Friday.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ },
+ {
+  "key": "lauri markkanen|UTA",
+  "name": "Lauri Markkanen",
+  "team": "UTA",
+  "from": "",
+  "to": "OUT",
+  "reason": "Markkanen has been diagnosed with a non-displaced fracture in his right hand and will be sidelined for at least one month, Shams Charania of ESPN reports.",
+  "source": "ESPN",
+  "at": "2026-11-17T21:16:35.552432+00:00"
+ }
+]

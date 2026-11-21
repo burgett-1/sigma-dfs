@@ -1,0 +1,80 @@
+{
+ "slate_id": 156855,
+ "updated_at": "2026-11-18T07:21:16.375878+00:00",
+ "kind": "classic",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Jayson Kent",
+   "team": "POR",
+   "salary": 3100,
+   "proj": 18.5,
+   "own": 25.8,
+   "headline": "Jayson Kent is starting (0 starts in his last 10)",
+   "detail": "Projected 19 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Cody Williams",
+   "team": "MIN",
+   "salary": 3000,
+   "proj": 22.7,
+   "own": 80.0,
+   "headline": "Cody Williams is starting (0 starts in his last 10)",
+   "detail": "Projected 31 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 4700,
+   "proj": 27.6,
+   "own": 37.1,
+   "headline": "Kevin Huerter without Duncan Robinson",
+   "detail": "Averaged 34.5 DK pts in 3 games without them (vs 16.9 with). Hit 6x tonight's salary (28+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 34.5,
+    "z": 7.51,
+    "avg_with": 16.9,
+    "hits_6x": 3,
+    "last_without": "2026-04-06"
+   },
+   "strength": 7.512,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Robert Williams",
+   "team": "POR",
+   "salary": 4300,
+   "proj": 23.0,
+   "own": 20.2,
+   "headline": "Robert Williams without Deni Avdija",
+   "detail": "Averaged 28.3 DK pts in 11 games without them (vs 19.9 with). Hit 6x tonight's salary (26+ pts) in 6 of 11.",
+   "evidence": {
+    "games_without": 11,
+    "avg_without": 28.3,
+    "z": 2.64,
+    "avg_with": 19.9,
+    "hits_6x": 6,
+    "last_without": "2026-03-06"
+   },
+   "strength": 2.64,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

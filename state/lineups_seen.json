@@ -1,0 +1,233 @@
+{
+ "date": "2026-11-21",
+ "teams": {
+  "PHI": {
+   "status": "confirmed",
+   "starters": [
+    "VJ Edgecombe",
+    "Kentavious Caldwell-Pope",
+    "Tyrese Maxey",
+    "LeBron James",
+    "Joel Embiid"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600274",
+   "source": "NBA.com"
+  },
+  "MIL": {
+   "status": "confirmed",
+   "starters": [
+    "Tyler Herro",
+    "Jaime Jaquez Jr.",
+    "Ryan Rollins",
+    "Kyle Kuzma",
+    "Myles Turner"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600274",
+   "source": "NBA.com"
+  },
+  "NYK": {
+   "status": "expected",
+   "starters": [
+    "Mikal Bridges",
+    "Landry Shamet",
+    "Jalen Brunson",
+    "Josh Hart",
+    "Karl-Anthony Towns"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600275",
+   "source": "NBA.com"
+  },
+  "POR": {
+   "status": "expected",
+   "starters": [
+    "Sidy Cissoko",
+    "Toumani Camara",
+    "Damian Lillard",
+    "Deni Avdija",
+    "Donovan Clingan"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600275",
+   "source": "NBA.com"
+  },
+  "DAL": {
+   "status": "expected",
+   "starters": [
+    "Caleb Martin",
+    "Cooper Flagg",
+    "Kyrie Irving",
+    "P.J. Washington",
+    "Daniel Gafford"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600276",
+   "source": "NBA.com"
+  },
+  "LAC": {
+   "status": "expected",
+   "starters": [
+    "Max Strus",
+    "Derrick Jones Jr.",
+    "Darius Garland",
+    "Rui Hachimura",
+    "Brook Lopez"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600276",
+   "source": "NBA.com"
+  },
+  "MIN": {
+   "status": "expected",
+   "starters": [
+    "Ayo Dosunmu",
+    "Jonathan Kuminga",
+    "LaMelo Ball",
+    "Jaden McDaniels",
+    "Rudy Gobert"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600277",
+   "source": "NBA.com"
+  },
+  "MEM": {
+   "status": "expected",
+   "starters": [
+    "Cedric Coward",
+    "Jaylen Wells",
+    "Ty Jerome",
+    "Taylor Hendricks",
+    "Zach Edey"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600277",
+   "source": "NBA.com"
+  },
+  "SAS": {
+   "status": "expected",
+   "starters": [
+    "Stephon Castle",
+    "Julian Champagnie",
+    "De'Aaron Fox",
+    "Devin Vassell",
+    "Victor Wembanyama"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600278",
+   "source": "NBA.com"
+  },
+  "NOP": {
+   "status": "expected",
+   "starters": [
+    "Herbert Jones",
+    "Saddiq Bey",
+    "Jeremiah Fears",
+    "Zion Williamson",
+    "Yves Missi"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600278",
+   "source": "NBA.com"
+  },
+  "SAC": {
+   "status": "expected",
+   "starters": [
+    "Zach LaVine",
+    "De'Andre Hunter",
+    "Darius Acuff Jr.",
+    "Keegan Murray",
+    "Domantas Sabonis"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600279",
+   "source": "NBA.com"
+  },
+  "BOS": {
+   "status": "expected",
+   "starters": [
+    "Jordan Walsh",
+    "Jayson Tatum",
+    "Derrick White",
+    "Paul George",
+    "Neemias Queta"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600279",
+   "source": "NBA.com"
+  }
+ }
+}

@@ -1,0 +1,181 @@
+[
+ {
+  "id": 157174,
+  "name": "Main",
+  "main": true,
+  "kind": "classic",
+  "contest_locked": false,
+  "start_utc": "2026-11-22T00:30:00+00:00",
+  "game_count": 4,
+  "file": "slates/157174.csv",
+  "lineups_file": null,
+  "spotlight_file": "spotlight/157174.json",
+  "size_bucket": "medium",
+  "lineups_phase": null,
+  "inputs": "620b232434cfdf7d",
+  "games": [
+   {
+    "name": "POR @ NYK",
+    "home": "NYK",
+    "away": "POR",
+    "start_utc": "2026-11-22T00:30:00+00:00",
+    "start_et": "7:30 PM",
+    "start_minutes": 1170,
+    "locked": false
+   },
+   {
+    "name": "NOP @ SAS",
+    "home": "SAS",
+    "away": "NOP",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   },
+   {
+    "name": "LAC @ DAL",
+    "home": "DAL",
+    "away": "LAC",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   },
+   {
+    "name": "MEM @ MIN",
+    "home": "MIN",
+    "away": "MEM",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   }
+  ],
+  "locked": false
+ },
+ {
+  "id": 157179,
+  "name": "Night",
+  "main": false,
+  "kind": "classic",
+  "contest_locked": false,
+  "start_utc": "2026-11-22T01:00:00+00:00",
+  "game_count": 4,
+  "file": "slates/157179.csv",
+  "lineups_file": null,
+  "spotlight_file": "spotlight/157179.json",
+  "size_bucket": "medium",
+  "lineups_phase": null,
+  "inputs": "a6108fa1c1f65691",
+  "games": [
+   {
+    "name": "NOP @ SAS",
+    "home": "SAS",
+    "away": "NOP",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   },
+   {
+    "name": "LAC @ DAL",
+    "home": "DAL",
+    "away": "LAC",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   },
+   {
+    "name": "MEM @ MIN",
+    "home": "MIN",
+    "away": "MEM",
+    "start_utc": "2026-11-22T01:00:00+00:00",
+    "start_et": "8:00 PM",
+    "start_minutes": 1200,
+    "locked": false
+   },
+   {
+    "name": "BOS @ SAC",
+    "home": "SAC",
+    "away": "BOS",
+    "start_utc": "2026-11-22T03:00:00+00:00",
+    "start_et": "10:00 PM",
+    "start_minutes": 1320,
+    "locked": false
+   }
+  ],
+  "locked": false
+ },
+ {
+  "id": 157172,
+  "name": "MIL @ PHI",
+  "main": false,
+  "kind": "showdown",
+  "contest_locked": false,
+  "start_utc": "2026-11-21T18:00:00+00:00",
+  "game_count": 0,
+  "file": "slates/157172.csv",
+  "lineups_file": null,
+  "spotlight_file": "spotlight/157172.json",
+  "size_bucket": "small",
+  "lineups_phase": null,
+  "inputs": "3080961edf618acd",
+  "games": [],
+  "locked": false
+ },
+ {
+  "id": 157181,
+  "name": "BOS @ SAC",
+  "main": false,
+  "kind": "showdown",
+  "contest_locked": false,
+  "start_utc": "2026-11-22T03:00:00+00:00",
+  "game_count": 1,
+  "file": "slates/157181.csv",
+  "lineups_file": null,
+  "spotlight_file": "spotlight/157181.json",
+  "size_bucket": "small",
+  "lineups_phase": null,
+  "inputs": "bde6836e2d5b63c8",
+  "games": [
+   {
+    "name": "BOS @ SAC",
+    "home": "SAC",
+    "away": "BOS",
+    "start_utc": "2026-11-22T03:00:00+00:00",
+    "start_et": "10:00 PM",
+    "start_minutes": 1320,
+    "locked": false
+   }
+  ],
+  "locked": false
+ },
+ {
+  "id": 157178,
+  "name": "POR @ NYK",
+  "main": false,
+  "kind": "showdown",
+  "contest_locked": false,
+  "start_utc": "2026-11-22T00:30:00+00:00",
+  "game_count": 1,
+  "file": "slates/157178.csv",
+  "lineups_file": null,
+  "spotlight_file": "spotlight/157178.json",
+  "size_bucket": "small",
+  "lineups_phase": null,
+  "inputs": "35a6d937943bbecb",
+  "games": [
+   {
+    "name": "POR @ NYK",
+    "home": "NYK",
+    "away": "POR",
+    "start_utc": "2026-11-22T00:30:00+00:00",
+    "start_et": "7:30 PM",
+    "start_minutes": 1170,
+    "locked": false
+   }
+  ],
+  "locked": false
+ }
+]

@@ -1,0 +1,10 @@
+{
+ "nights": 0,
+ "rules": {
+  "min_salary": 48500,
+  "max_per_team": 4,
+  "max_per_game": 6
+ },
+ "buckets": {},
+ "note": "No verified historical nights yet; using default rules."
+}

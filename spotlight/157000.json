@@ -1,0 +1,45 @@
+{
+ "slate_id": 157000,
+ "updated_at": "2026-11-19T07:16:36.163365+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Jericho Sims",
+   "team": "MIL",
+   "salary": 2000,
+   "proj": 13.8,
+   "own": 53.1,
+   "headline": "Jericho Sims without Ryan Rollins",
+   "detail": "Averaged 24.6 DK pts in 9 games without them (vs 12.2 with). Hit 6x tonight's salary (12+ pts) in 8 of 9.",
+   "evidence": {
+    "games_without": 9,
+    "avg_without": 24.6,
+    "z": 3.19,
+    "avg_with": 12.2,
+    "hits_6x": 8,
+    "last_without": "2026-11-15"
+   },
+   "strength": 3.189,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Pelle Larsson",
+   "team": "MIA",
+   "salary": 6800,
+   "proj": 22.0,
+   "own": 8.8,
+   "headline": "Pelle Larsson is starting (2 starts in his last 10)",
+   "detail": "Projected 28 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

@@ -1,0 +1,30 @@
+{
+ "slate_id": 156856,
+ "updated_at": "2026-11-18T07:21:16.375878+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 4400,
+   "proj": 27.6,
+   "own": 35.8,
+   "headline": "Kevin Huerter without Duncan Robinson",
+   "detail": "Averaged 34.5 DK pts in 3 games without them (vs 16.9 with). Hit 6x tonight's salary (26+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 34.5,
+    "z": 7.51,
+    "avg_with": 16.9,
+    "hits_6x": 3,
+    "last_without": "2026-04-06"
+   },
+   "strength": 7.512,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}
