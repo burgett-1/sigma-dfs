@@ -142,15 +142,34 @@ def dfs_day(now: datetime):
     return local.date()
 
 
+def _salary_cache(dg: int):
+    from ..config import STATE_DIR
+    return STATE_DIR / "salaries" / f"{dg}.csv"
+
+
 def load_draftables(slate: Slate) -> Slate:
-    """Players for a draft group from DraftKings' salary CSV."""
+    """Players for a draft group from DraftKings' salary CSV.
+
+    A draft group's salaries never change once released, so the last good copy is
+    kept; if DraftKings can't be reached for a moment (network drop, timeout), that
+    copy is used instead of dropping the slate from the site."""
+    cache = _salary_cache(slate.draft_group_id)
     try:
         text = get_text(SALARY_CSV_URL.format(ct=slate.contest_type, dg=slate.draft_group_id))
         load_salary_csv(slate, text)
         health.ok("DraftKings salaries", f"{len(slate.players)} players in group {slate.draft_group_id}")
+        try:
+            cache.parent.mkdir(parents=True, exist_ok=True)
+            cache.write_text(text)
+        except OSError:
+            pass
     except Exception as e:  # noqa: BLE001
         health.fail("DraftKings salaries", e)
-        raise
+        if not cache.exists():
+            raise
+        log.warning("salaries for %s unavailable (%s); using the saved copy", slate.draft_group_id, e)
+        slate.players = []
+        load_salary_csv(slate, cache.read_text())
     return slate
 
 
