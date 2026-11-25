@@ -45,6 +45,18 @@ def candidate_urls(now: datetime, hours_back: float = 30.0) -> list[tuple[dateti
     return out
 
 
+def latest_link(now: datetime) -> str | None:
+    """Newest report link on the league's index page (cheap: no PDF download)."""
+    y1 = now.astimezone(ET).year if now.astimezone(ET).month >= 8 else now.astimezone(ET).year - 1
+    for page in INDEX_PAGES:
+        r = session().get(page.format(y1=y1, y2=y1 + 1), timeout=HTTP_TIMEOUT)
+        if r.ok:
+            links = re.findall(r"https://ak-static\.cms\.nba\.com/referee/injury/Injury-Report_[\w-]+\.pdf", r.text)
+            if links:
+                return max(set(links), key=_url_time)
+    return None
+
+
 def find_latest(now: datetime, last_known_url: str | None = None) -> tuple[str, bytes] | None:
     """Return (url, pdf_bytes) for the newest report available."""
     # 1) the league's index page links the latest PDFs directly

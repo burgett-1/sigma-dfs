@@ -9,29 +9,29 @@ from tests import synthetic as syn
 DAY = date(2026, 11, 15)
 
 
-def _rotoguru_page(logs, day, corrupt=False):
+def _salaries(logs, day, corrupt=False):
     tonight = logs[logs["date"] == day.isoformat()]
     sal = {0: 10400, 1: 8200, 2: 8800, 3: 7000, 4: 8000, 5: 5200, 6: 4600, 7: 3900, 8: 3400, 9: 3000}
-    lines = ["Date;GID;Pos;Name;Starter;DK Pts;DK Salary;Team;H/A;Oppt;Team Score;Oppt Score;Minutes;Stat line"]
+    rows = []
     for _, r in tonight.iterrows():
-        first, last = r["name"].rsplit(" ", 1)
-        slot = "ABCDEFGHJK".index(last)
-        pts = r["dk_fp"] + (7 if corrupt else 0)
-        lines.append(f"{day:%Y%m%d};1;{syn.POS[slot]};{last}, {first};1;{pts};${sal[slot]:,};{r['team']};H;{r['opp']};1;1;30;x")
-    return "<html><pre>" + "\n".join(lines) + "</pre></html>"
+        slot = "ABCDEFGHJK".index(r["name"].rsplit(" ", 1)[1])
+        if corrupt and slot % 3 == 0:
+            continue                      # a partial / wrong file: players missing
+        rows.append({"name": r["name"], "position": syn.POS[slot], "salary": sal[slot], "dk_pts": np.nan,
+                     "team": r["team"], "opp": r["opp"], "minutes": ""})
+    return pd.DataFrame(rows)
 
 
-def test_rotoguru_parse_verify_and_optimal():
+def test_archive_salaries_verify_and_optimal():
     logs = syn.season_logs(date(2026, 11, 20), n_games=8)
     day = date.fromisoformat(sorted(logs["date"].unique())[-1])
-    sal = patterns.parse_rotoguru(_rotoguru_page(logs, day))
-    assert len(sal) == 40 and sal["salary"].max() == 10400 and (sal["name"].str.contains(",")).sum() == 0
+    sal = _salaries(logs, day)
+    assert len(sal) == 40 and sal["salary"].max() == 10400
     prep = model.prepare_history(logs, date(2027, 1, 1))
     joined, rate = patterns.verify_night(sal, prep[prep["d"] == day])
     assert rate == 1.0 and len(joined) == 40
-    bad, rate_bad = patterns.verify_night(patterns.parse_rotoguru(_rotoguru_page(logs, day, corrupt=True)),
-                                          prep[prep["d"] == day])
-    assert rate_bad == 0.0    # wrong archive data is rejected
+    bad, rate_bad = patterns.verify_night(_salaries(logs, day, corrupt=True), prep[prep["d"] == day])
+    assert rate_bad < 0.95    # a partial file is rejected
     base = factors.baseline_predictions(prep)
     ctx = patterns.night_context(day, prep, base)
     res = patterns.analyse_night(day, joined, ctx)

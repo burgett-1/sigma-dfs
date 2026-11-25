@@ -2,10 +2,11 @@
 
 Data (all verifiable):
   * Actual DK points for every player-game: computed from NBA.com box scores.
-  * Historical DK salaries: RotoGuru's daily DraftKings archive (rotoguru1.com),
-    a public record kept since 2014. A night is used only if RotoGuru's DK
-    points agree with our NBA.com box-score points for >= 95% of players, so a
-    bad or misaligned archive page can never enter the analysis.
+  * Historical DK salaries: DraftKings' own salary files, archived by the Mac
+    every day it runs (slates/<draft group>.csv). A night is used only if >= 95%
+    of the players who played for those teams are found in the file, so a
+    partial or mismatched file can never enter the analysis. (RotoGuru, used
+    before, is a paid file and stopped covering the NBA after 2020-21.)
   * Your own DraftKings contest results are handled privately by
     pipeline/contests.py and never published here.
 
@@ -30,91 +31,126 @@ import json
 import logging
 import re
 import sys
-from datetime import date, timedelta
-from pathlib import Path
+from datetime import date
 
 import numpy as np
 import pandas as pd
 
 from . import history, model
-from .config import DATA_DIR, DK_SALARY_CAP
-from .http import session
+from .config import DATA_DIR, DK_SALARY_CAP, ET, SLATES_DIR
 from .names import norm_name, team_code
 from .sim import HALL_NEED, pos_code
 
 log = logging.getLogger(__name__)
 
-ROTOGURU = "http://rotoguru1.com/cgi-bin/hyday.pl?game=dk&mon={m}&day={d}&year={y}&scsv=1"
-CACHE = DATA_DIR / "history" / "salaries"
 NIGHTS = DATA_DIR / "patterns" / "nights"
 OUT = DATA_DIR / "patterns.json"
 TOP_K = 20
-PARSER_VERSION = 3
+PARSER_VERSION = 4   # 4: salaries from our own DraftKings archive
 
 
 # ── salaries ─────────────────────────────────────────────────────────────────
 def fetch_salaries(day: date) -> pd.DataFrame:
-    path = CACHE / f"{day.isoformat()}.csv"
-    if path.exists():
-        df = pd.read_csv(path)
-        if not df.empty:
-            return df
-        path.unlink()                      # an empty cache is a failed parse: fetch again
-    r = session().get(ROTOGURU.format(m=day.month, d=day.day, y=day.year), timeout=30)
-    r.raise_for_status()
-    df = parse_rotoguru(r.text)
-    if df.empty:
-        # keep one raw page so the parser can be checked against what the site really sends
-        dbg = DATA_DIR / "debug" / "rotoguru_sample.html"
-        dbg.parent.mkdir(parents=True, exist_ok=True)
-        if not dbg.exists():
-            dbg.write_text(f"<!-- {r.url} status {r.status_code} -->\n" + r.text[:400_000])
-        return df
-    CACHE.mkdir(parents=True, exist_ok=True)
-    df.to_csv(path, index=False)
-    return df
-
-
-def parse_rotoguru(page: str) -> pd.DataFrame:
-    text = re.sub(r"<[^>]+>", "\n", page)
-    lines = [l.strip() for l in text.splitlines() if ";" in l]
-    header_i = next((i for i, l in enumerate(lines) if "Name" in l and "Sal" in l), None)
+    """DraftKings salaries for a past night from our own archive: the salary file of
+    every slate the Mac has loaded is kept (slates/<draft group>.csv). The night's
+    largest classic slate is used (most teams). Real DraftKings data, no third party."""
     cols = ["name", "position", "salary", "dk_pts", "team", "opp", "minutes"]
-    if header_i is None:
-        return pd.DataFrame(columns=cols)
-    head = [h.strip().lower() for h in lines[header_i].split(";")]
-
-    def col(*keys):
-        for k in keys:
-            for i, h in enumerate(head):
-                if k in h:
-                    return i
-        return None
-
-    i_name, i_pos, i_sal = col("name"), col("pos"), col("sal")
-    i_pts, i_team, i_opp, i_min = col("pts", "points"), col("team"), col("oppt", "opp"), col("min")
-    rows = []
-    for l in lines[header_i + 1:]:
-        c = [x.strip() for x in l.split(";")]
-        if len(c) < len(head) or not c[i_name]:
-            continue
-        sal = re.sub(r"[^\d]", "", c[i_sal]) if i_sal is not None else ""
-        if not sal:
-            continue
-        name = c[i_name]
-        if "," in name:
-            last, first = name.split(",", 1)
-            name = f"{first.strip()} {last.strip()}"
+    raw = _raw_salary_file(day)
+    if raw is not None:
+        return raw[cols]
+    best, best_teams = None, 0
+    played = _played_by_day()
+    for f in SLATES_DIR.glob("*.csv"):
         try:
-            pts = float(c[i_pts]) if i_pts is not None and c[i_pts] not in ("", "DNP", "NA") else np.nan
-        except ValueError:
-            pts = np.nan
-        rows.append({"name": name, "position": (c[i_pos] if i_pos is not None else "").upper(),
-                     "salary": int(sal), "dk_pts": pts,
-                     "team": team_code(c[i_team]) if i_team is not None else "",
-                     "opp": team_code(c[i_opp].replace("@", "").replace("v ", "").strip()) if i_opp is not None else "",
-                     "minutes": c[i_min] if i_min is not None else ""})
-    return pd.DataFrame(rows, columns=cols)
+            df = pd.read_csv(f, usecols=lambda c: c in ("Name", "Salary", "Position", "Team", "Opp",
+                                                         "GameStartUTC", "CptID", "Injury", "Proj"))
+        except (OSError, ValueError, pd.errors.ParserError):
+            continue
+        if df.empty or "GameStartUTC" not in df or ("CptID" in df and df["CptID"].notna().any()):
+            continue                                   # showdown files list captains
+        if _file_day(df, played) != day:
+            continue
+        teams = df["Team"].nunique()
+        if teams > best_teams:
+            best, best_teams = df, teams
+    if best is None:
+        return pd.DataFrame(columns=cols)
+    return pd.DataFrame({"name": best["Name"], "position": best["Position"].astype(str).str.upper(),
+                         "salary": best["Salary"].astype(int), "dk_pts": np.nan,
+                         "team": best["Team"].map(team_code), "opp": best["Opp"].fillna("").map(team_code),
+                         "minutes": ""})[cols]
+
+
+def _raw_salary_file(day: date) -> pd.DataFrame | None:
+    """DraftKings' own salary download for the night (kept by the Mac since it began
+    saving them); its Game Info column dates every game exactly."""
+    from .config import STATE_DIR
+    from .sources import draftkings
+    best, best_teams = None, 0
+    for f in (STATE_DIR / "salaries").glob("*.csv"):
+        sl = draftkings.Slate(draft_group_id=0, name="", start_utc=None, game_count=0, featured=False)
+        try:
+            draftkings.load_salary_csv(sl, f.read_text())
+        except (OSError, ValueError):
+            continue
+        if sl.kind != "classic" or not sl.games:
+            continue
+        if {g["start_utc"].astimezone(ET).date() for g in sl.games} != {day}:
+            continue
+        if len(sl.games) > best_teams:
+            best, best_teams = sl, len(sl.games)
+    if best is None:
+        return None
+    return pd.DataFrame([{"name": p["name"], "position": p["position"].upper(), "salary": p["salary"],
+                          "dk_pts": np.nan, "team": p["team"], "opp": p["opp"], "minutes": ""}
+                         for p in best.players])
+
+
+_PLAYED: dict = {}
+
+
+def _played_by_day() -> dict:
+    """{date: {(normalised name, team): played?}} from the box scores (cached per process)."""
+    if not _PLAYED:
+        logs = history.load()
+        if not logs.empty:
+            logs = logs.assign(k=logs["name"].map(norm_name), on=logs["minutes"] > 0)
+            for d, g in logs.groupby(logs["date"].astype(str)):
+                _PLAYED[date.fromisoformat(d)] = dict(zip(zip(g["k"], g["team"]), g["on"]))
+    return _PLAYED
+
+
+def _file_day(df: pd.DataFrame, played: dict):
+    """The night a salary file belongs to. Its game start times when present; older
+    files lack them, so the night is found from the evidence in the file itself:
+    every team must have played that night, the players it marked Out must not have
+    played, and the players it projected for real minutes must have played. Only a
+    clear winner is accepted."""
+    start = pd.to_datetime(df["GameStartUTC"], utc=True, errors="coerce").dropna()
+    if len(start):
+        days = set(start.dt.tz_convert(ET).dt.date)
+        return days.pop() if len(days) == 1 else None
+    teams = set(df["Team"].map(team_code))
+    keys = list(zip(df["Name"].map(norm_name), df["Team"].map(team_code)))
+    out = (df.get("Injury", pd.Series("", index=df.index)).fillna("") == "Out").to_numpy()
+    proj = pd.to_numeric(df.get("Proj"), errors="coerce").fillna(0).to_numpy()
+    scored = []
+    for d, pl in played.items():
+        if not teams <= {t for _, t in pl}:
+            continue
+        on = [pl.get(k) for k in keys]
+        o = [not v for v, x in zip(on, out) if x and v is not None]
+        p = [bool(v) for v, x, pr in zip(on, out, proj) if not x and pr >= 15]
+        if len(p) < 5:
+            continue
+        scored.append((float(np.mean(p)) + (float(np.mean(o)) if o else 0.5), d))
+    if not scored:
+        return None
+    scored.sort(reverse=True)
+    best, d = scored[0]
+    if best >= 1.7 and (len(scored) == 1 or best - scored[1][0] >= 0.2):
+        return d
+    return None
 
 
 def verify_night(sal: pd.DataFrame, logs: pd.DataFrame) -> tuple[pd.DataFrame, float]:
@@ -128,10 +164,13 @@ def verify_night(sal: pd.DataFrame, logs: pd.DataFrame) -> tuple[pd.DataFrame, f
     j["position"] = j["position_rg"]   # DraftKings eligibility, not the box-score position
     if j.empty:
         return j, 0.0
-    agree = (j["dk_pts"] - j["dk_fp"]).abs() <= 0.26
     checked = j["dk_pts"].notna()
-    rate = float(agree[checked].mean()) if checked.any() else 0.0
-    return j, rate
+    if checked.any():               # a source with its own DK points: they must agree with ours
+        agree = (j["dk_pts"] - j["dk_fp"]).abs() <= 0.26
+        return j, float(agree[checked].mean())
+    # DraftKings' own salary file: every player who played for these teams must be found
+    played = logs[logs["played"] & logs["team"].isin(set(s["team"]))]
+    return j, (len(j) / len(played)) if len(played) else 0.0
 
 
 # ── exact top-K lineups for a night ──────────────────────────────────────────

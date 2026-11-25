@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import numpy as np
 
-from .config import DK_ROSTER_SLOTS, DK_SALARY_CAP, DK_SLOT_OK, MODEL
+from .config import DK_ROSTER_SLOTS, DK_SLOT_OK, MODEL
 
 
 def _z(x: np.ndarray) -> np.ndarray:
@@ -68,79 +68,40 @@ def _assignable(pos_lists: list[set[str]]) -> bool:
     return all(try_slot(i, set()) for i in range(len(pos_lists)))
 
 
-def optimal_rates(rows: list[dict], sims: int | None = None, seed: int = 7) -> None:
-    """Fraction of simulated slates in which each player is in the best lineup
-    (greedy value fill + one-swap improvement — fast and close to optimal)."""
+def optimal_rates(rows: list[dict], kind: str = "classic", rules: dict | None = None,
+                  corr: dict | None = None, sims: int | None = None, seed: int = 7) -> None:
+    """opt% = share of simulated slates in which the player is in the best lineup;
+    leverage = opt% - projected ownership (negative = more popular than he is optimal).
+
+    Uses the same engine as lineup building: correlated outcomes drawn from each
+    player's learned distribution (questionable players sometimes sit), the slate's
+    DraftKings rules (classic positions / showdown captain), solved per simulation.
+    Every player gets a value, including those never optimal (opt 0, leverage -own)."""
+    from . import sim
+    from .config import SIM
+    rules = rules or {}
+    corr = corr or SIM["default_corr"]
     sims = sims or MODEL["opt_sims"]
-    live = [r for r in rows if r["proj"] > 0 and r["salary"] > 0]
     for r in rows:
         r["opt_pct"] = 0.0
-        r["lev"] = 0.0
-    if len(live) < 8:
+        r["lev"] = -float(r.get("own", 0.0))
+    pool = sim.build_pool(rows, kind)
+    if len(pool.mu) < (6 if kind == "showdown" else 8):
         return
     rng = np.random.default_rng(seed)
-    n = len(live)
-    mu = np.array([r.get("mean", r["proj"]) for r in live])
-    sd = np.array([r["std_dev"] for r in live])
-    # each player's real outcome curve when available (distribution.py), else a normal
-    from .distribution import U_SAMPLE
-    qs = np.array([np.asarray(r["q"], float) for r in live]) if all(r.get("q") is not None for r in live) else None
-    grid = np.asarray(U_SAMPLE)
-    sal = np.array([r["salary"] for r in live])
-    pos = [set(r["position"].split("/")) for r in live]
-    counts = np.zeros(n)
-    min_sal = sal.min()
+    counts = np.zeros(len(pool.mu))
     done = 0
-    for _ in range(sims):
-        if qs is not None:
-            u = rng.random(n)
-            j = np.clip(np.searchsorted(grid, u, side="right") - 1, 0, len(grid) - 2)
-            w = (u - grid[j]) / (grid[j + 1] - grid[j])
-            score = qs[np.arange(n), j] * (1 - w) + qs[np.arange(n), j + 1] * w
-        else:
-            score = np.maximum(0, rng.normal(mu, sd))
-        order = np.argsort(-score / sal)  # fill by value, then upgrade with swaps
-        lu: list[int] = []
-        spent = 0
-        for i in order:
-            left = 8 - len(lu) - 1
-            if spent + sal[i] + left * min_sal > DK_SALARY_CAP:
+    for start in range(0, sims, 250):
+        X = sim.sample_scores(pool, min(250, sims - start), rng, corr).astype(np.float64)
+        for score in X:
+            lu = sim.showdown_lineup(score, pool, rules) if kind == "showdown" else sim.best_lineup(score, pool, rules)
+            if not lu:
                 continue
-            if not _assignable([pos[j] for j in lu] + [pos[i]]):
-                continue
-            lu.append(i)
-            spent += sal[i]
-            if len(lu) == 8:
-                break
-        if len(lu) < 8:
-            continue
-        # one pass of best single swaps
-        improved = True
-        passes = 0
-        while improved and passes < 6:
-            improved = False
-            passes += 1
-            for a_idx in range(8):
-                a = lu[a_idx]
-                budget = DK_SALARY_CAP - spent + sal[a]
-                gain = score - score[a]
-                ok = (sal <= budget) & (gain > 1e-9)
-                ok[lu] = False
-                cand = np.nonzero(ok)[0]
-                if not len(cand):
-                    continue
-                for b in cand[np.argsort(-gain[cand])][:12]:
-                    trial = [pos[j] for j in lu]
-                    trial[a_idx] = pos[b]
-                    if _assignable(trial):
-                        spent += sal[b] - sal[a]
-                        lu[a_idx] = int(b)
-                        improved = True
-                        break
-        counts[lu] += 1
-        done += 1
-    if done == 0:
+            counts[list(lu)] += 1
+            done += 1
+    if not done:
         return
-    for r, c in zip(live, counts):
-        r["opt_pct"] = float(100.0 * c / done)
-        r["lev"] = r["opt_pct"] - r["own"]
+    pct = {int(i): 100.0 * c / done for i, c in zip(pool.ids, counts)}
+    for r in rows:
+        r["opt_pct"] = float(pct.get(int(r.get("draftable_id") or 0), 0.0))
+        r["lev"] = r["opt_pct"] - float(r.get("own", 0.0))

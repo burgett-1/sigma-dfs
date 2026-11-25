@@ -98,6 +98,49 @@ class Control:
         return out
 
 
+class NewsWatch:
+    """Between full passes, checks the news feeds every ~20 seconds (a few small
+    requests) and ends the wait as soon as anything changes, so a status change or
+    lineup announcement is projected and pushed to your phone right away instead of
+    at the next scheduled pass."""
+    EVERY = 20.0
+
+    def __init__(self):
+        self.last = None
+        self.at = 0.0
+
+    def fingerprint(self) -> str:
+        import hashlib
+        from .sources import draftkings, espn, injury_report, lineups
+        parts = []
+        try:
+            parts.append(sorted((i["name"], i["team"], i["status"]) for i in espn.injuries()))
+        except Exception:  # noqa: BLE001
+            parts.append("espn?")
+        try:
+            day = draftkings.dfs_day(datetime.now(timezone.utc))
+            parts.append(sorted((t, v.get("status"), tuple(v.get("starters") or []))
+                                for t, v in lineups.fetch(day).items()))
+        except Exception:  # noqa: BLE001
+            parts.append("lineups?")
+        try:   # newest official injury report link (index page only, no PDF download)
+            parts.append(injury_report.latest_link(datetime.now(timezone.utc)))
+        except Exception:  # noqa: BLE001
+            parts.append("nba?")
+        return hashlib.sha1(json.dumps(parts, default=str).encode()).hexdigest()
+
+    def changed(self) -> bool:
+        if time.time() - self.at < self.EVERY:
+            return False
+        self.at = time.time()
+        fp = self.fingerprint()
+        moved = self.last is not None and fp != self.last
+        self.last = fp
+        if moved:
+            log.info("news changed: starting a pass now")
+        return moved
+
+
 def write_status(**kw) -> None:
     kw["at"] = datetime.now(timezone.utc).isoformat()
     path = DATA_DIR / "run_status.json"
@@ -143,6 +186,7 @@ def main(argv=None) -> int:
     control = Control(os.environ.get("NTFY_SERVER", "https://ntfy.sh"), topic) if topic else None
     deadline = time.time() + args.minutes * 60
     last_patterns = 0.0
+    watch = NewsWatch()
     status = 0
     first = True
     while time.time() < deadline:
@@ -203,8 +247,14 @@ def main(argv=None) -> int:
                 log.warning("calibration failed: %s", e)
             finally:
                 faulthandler.cancel_dump_traceback_later()
-        # wait for the next pass, answering "Run simulations" within a few seconds
+        # wait for the next pass, answering "Run simulations" within a few seconds and
+        # starting the pass early when the news feeds change
         while time.time() - t0 < args.interval and time.time() < deadline:
+            try:
+                if watch.changed():
+                    break
+            except Exception as e:  # noqa: BLE001
+                log.debug("news watch failed: %s", e)
             if control:
                 reqs = control.poll()
                 if reqs:

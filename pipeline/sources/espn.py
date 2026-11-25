@@ -97,20 +97,28 @@ def parse_injuries(data: dict) -> list[dict]:
             out.append({
                 "name": ath.get("displayName") or "",
                 "team": t,
-                "status": normalize_status(inj.get("status")),
+                "status": normalize_status(inj.get("status"), inj.get("shortComment") or ""),
                 "reason": inj.get("shortComment") or (inj.get("details") or {}).get("type") or "",
                 "source": "ESPN",
             })
     return out
 
 
-def normalize_status(raw) -> str:
+_NOTE_STATUS = re.compile(r"\b(probable|questionable|doubtful)\b", re.I)
+
+
+def normalize_status(raw, comment: str = "") -> str:
     s = (raw or "").strip().lower()
     if s.startswith("out") or "suspen" in s or "inactive" in s:
         return "OUT"
     if s.startswith("doubt"):
         return "DOUBTFUL"
-    if s.startswith("question") or "day-to-day" in s or s == "gtd":
+    if "day-to-day" in s or s == "gtd":
+        # ESPN uses Day-To-Day for probable, questionable and doubtful alike; its own
+        # note on the player says which ("Smith is probable for Wednesday's game ...")
+        m = _NOTE_STATUS.search(comment or "")
+        return m.group(1).upper() if m else "QUESTIONABLE"
+    if s.startswith("question"):
         return "QUESTIONABLE"
     if s.startswith("prob"):
         return "PROBABLE"

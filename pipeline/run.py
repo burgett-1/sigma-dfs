@@ -23,7 +23,7 @@ import numpy as np
 import pandas as pd
 
 from . import audit, calibration, contests, factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
-from .config import DATA_DIR, ET, SIM, SLATES_DIR, STATE_DIR
+from .config import DATA_DIR, ET, MODEL, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
 from .sources import draftkings, espn, espn_box, nba_cdn, odds_api, referees
 from .sources import lineups as lineups_src
@@ -531,9 +531,19 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
                 model.finish(r)
             srows.append(r)
         ownership.estimate_ownership(srows, 6 if s.kind == "showdown" else 8)
-        if s.kind == "classic":
-            ownership.optimal_rates(srows)
         rules = patterns.load_rules(s.game_count)
+        # optimal % / leverage: re-solved only when this slate's inputs change
+        okey = hashlib.sha1(json.dumps([(r.get("draftable_id"), round(r.get("mean", r["proj"]), 2),
+                                         round(r.get("own", 0), 1), r.get("status", ""))
+                                        for r in srows], sort_keys=True).encode()).hexdigest()
+        cached = _MEM.setdefault("opt", {}).get(s.draft_group_id)
+        if cached and cached[0] == okey:
+            for r in srows:
+                r["opt_pct"], r["lev"] = cached[1].get(r.get("draftable_id"), (0.0, -r.get("own", 0.0)))
+        else:
+            ownership.optimal_rates(srows, s.kind, rules, corr,
+                                    sims=MODEL["opt_sims_showdown"] if s.kind == "showdown" else None)
+            _MEM["opt"][s.draft_group_id] = (okey, {r.get("draftable_id"): (r["opt_pct"], r["lev"]) for r in srows})
         spotlight.tag_exposure(srows, s.game_count, exp_model)
         try:
             _write_json(DATA_DIR / "spotlight" / f"{s.draft_group_id}.json",

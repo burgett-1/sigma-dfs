@@ -82,6 +82,7 @@ MODEL = {
     "market_weight": 0.7,
     # optimal-lineup simulation used for opt% / leverage
     "opt_sims": 1500,
+    "opt_sims_showdown": 600,   # each showdown simulation is an exact captain-mode solve
 }
 
 # injury statuses, ordered from most to least severe
