@@ -285,6 +285,49 @@ fills the open spots with the highest projection that fits the salary cap. **Run
 plays the lineup through simulated contests and shows ROI, cash rate, top-1% rate, win % and
 average score.
 
+## Breaking news from X (Newzgod) and speed tracking
+
+The verifiable sources (the NBA's official injury report, ESPN, NBA.com lineups) are
+checked every ~20 seconds between passes; any change starts a pass at once. On top of
+them the Mac can follow fast news accounts on X (default **@Newzgod_dfs**):
+
+1. In the X Developer Console (developer.x.com) create an app, buy pay-per-use credits,
+   and copy its **Bearer Token**. X charges $0.005 per post read; the Mac only asks for
+   posts newer than the last one, so the cost is about $0.005 × the posts he makes.
+2. On the Mac add one line to `~/.sigma-dfs.env`:  `X_BEARER_TOKEN=...` (more accounts:
+   `NEWS_X_ACCOUNTS=Newzgod_dfs,OtherAccount`), then restart the updater.
+
+Then: every post that names a slate player reaches your phone within ~5 seconds, as
+written. A post that clearly gives one player one status ("ruled out", "questionable",
+"will play"…) changes his projection right away; ambiguous posts never do. When the
+official report or ESPN later changes that player, the newest information wins.
+**Who was faster** is logged privately for every item (`~/SigmaDFS-Private/news/speed.json`):
+when his post went up versus when our official sources showed the same thing.
+
+## Industry yardstick and live accuracy (private)
+
+Before lock each day the Mac saves DailyFantasyFuel's free DraftKings projections
+(the 25 players on their public page; their paid tier is never touched) to
+`~/SigmaDFS-Private/benchmark/`. They are never shown on the site. Every morning it scores
+**our published projections** and theirs against the real box scores
+(`~/SigmaDFS-Private/benchmark/accuracy.json`): error, bias and the share of real results
+below our median, by projection level. Corrections follow the data only:
+
+- a level correction is applied only after at least 10 nights and 150 players at that
+  level show real results landing below (or above) our median significantly more than
+  half the time (sign test, p < 0.01);
+- the industry number is blended in only if, over 10+ nights, blending would have lowered
+  the error on nights it was not fitted to.
+
+## Ownership and leverage
+
+Opt% is the share of simulated slates in which a player is in the best lineup, solved
+with the same correlated simulation and DraftKings rules as lineup building (classic and
+showdown). **Leverage = opt% − ownership** for every player, negative when he is more
+popular than he is optimal. Ownership itself is still a model estimate: no free source
+publishes real or projected ownership; the only real ownership is in DraftKings contest
+exports (see *My contests*), which fit the correction automatically as they accumulate.
+
 ## My contests (admin only, private)
 
 On DraftKings open a finished contest and press **Export Lineups to CSV** (the file is

@@ -24,7 +24,7 @@ TEAMS = {
 
 _ALIASES = {
     "GS": "GSW", "GOS": "GSW", "NO": "NOP", "NOR": "NOP", "NY": "NYK", "SA": "SAS",
-    "PHO": "PHX", "UTAH": "UTA", "UTH": "UTA", "WSH": "WAS", "BRK": "BKN", "BKLYN": "BKN",
+    "PHO": "PHX", "UTAH": "UTA", "UTH": "UTA", "WSH": "WAS", "BRK": "BKN", "BKLYN": "BKN", "BK": "BKN",
     "CHO": "CHA", "LA": "LAC", "NJN": "BKN",
 }
 

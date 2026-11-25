@@ -22,7 +22,7 @@ from datetime import date, datetime, timedelta, timezone
 import numpy as np
 import pandas as pd
 
-from . import audit, calibration, contests, factors, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
+from . import audit, benchmark, calibration, contests, factors, news, health, history, injuries, markets, model, notify, ownership, patterns, sim, spotlight
 from .config import DATA_DIR, ET, MODEL, SIM, SLATES_DIR, STATE_DIR
 from .names import norm_name, player_key
 from .sources import draftkings, espn, espn_box, nba_cdn, odds_api, referees
@@ -34,7 +34,7 @@ CSV_HEADER = ["Name", "Salary", "Position", "Team", "Opp", "Minutes", "FptsPerMi
               "Value", "Own", "OptPct", "Leverage", "DKID", "StdDev", "Boom", "Bust",
               "Ceiling", "Floor", "Injury", "Starting", "BatOrder", "StarterStatus", "Unexpected",
               "GameStartUTC", "MinutesRestricted", "CptID", "CptSalary", "LiveFP", "GameProgress",
-              "OptExposure", "CorrGame", "Mean", "Quantiles"]
+              "OptExposure", "CorrGame", "Mean", "Quantiles", "ProjBase"]
 
 
 # ── state helpers ────────────────────────────────────────────────────────────
@@ -78,6 +78,7 @@ def csv_row(r: dict) -> list:
         f"{r.get('mean', r['proj']):.2f}",
         # outcome percentiles at distribution.U_SAMPLE (the simulator draws from these)
         ";".join(f"{v:.2f}" for v in r["q"]) if r.get("q") is not None else "",
+        f"{r.get('proj_base', r['proj']):.2f}",
     ]
 
 
@@ -100,7 +101,7 @@ PUBLIC_FIELDS = [
     "ceiling", "floor", "boom", "bust", "value", "starting", "games_cur", "games_prev",
     "has_history", "absence_streak", "is_starter", "starter_status", "unexpected", "start_rate",
     "restricted", "situational", "ww_evidence", "proj_model", "market_delta", "market_stats",
-    "mean", "q",
+    "mean", "q", "proj_base",
 ]
 
 
@@ -202,6 +203,62 @@ def refresh_calibration(now: datetime) -> bool:
         {"date": today.isoformat(), "calibration_used": cal.get("used"), **report}))
     _MEM.pop("cal", None)
     return True
+
+
+def live_rows(logs) -> pd.DataFrame:
+    """Our published projections (largest classic slate archived for each past night)
+    joined to the real DK points."""
+    played = patterns._played_by_day()
+    logs = logs.assign(k=logs["name"].map(norm_name))
+    best: dict = {}
+    for f in SLATES_DIR.glob("*.csv"):
+        try:
+            df = pd.read_csv(f)
+        except (OSError, ValueError, pd.errors.ParserError):
+            continue
+        if df.empty or ("CptID" in df and df["CptID"].notna().any()):
+            continue
+        d = patterns._file_day(df, played)
+        if d is None or d >= draftkings.dfs_day(datetime.now(timezone.utc)):
+            continue
+        if len(df) > len(best.get(d, [])):
+            best[d] = df
+    out = []
+    for d, df in best.items():
+        box = logs[logs["date"].astype(str) == d.isoformat()]
+        act = dict(zip(zip(box["k"], box["team"]), box["dk_fp"]))
+        for r in df.itertuples():
+            k = (norm_name(r.Name), r.Team)
+            base = getattr(r, "ProjBase", None)
+            proj = float(base) if base is not None and base == base else float(r.Proj)
+            if k in act and proj >= 10:
+                out.append({"day": d.isoformat(), "name": r.Name, "team": r.Team, "proj": proj,
+                            "act": float(act[k])})
+    return pd.DataFrame(out, columns=["day", "name", "team", "proj", "act"])
+
+
+def refresh_benchmark(now: datetime) -> bool:
+    """Once a day: score our live projections and the industry's against real results
+    (private report; corrections only when the evidence clears the bar, benchmark.py)."""
+    today = draftkings.dfs_day(now).isoformat()
+    cur = benchmark.load()
+    if cur.get("date") == today:
+        return False
+    logs = history.load()
+    rows = live_rows(logs) if not logs.empty else pd.DataFrame()
+    rep = benchmark.evaluate(rows) if len(rows) else {"nights": 0}
+    rep["date"] = today
+    benchmark.DIR.mkdir(parents=True, exist_ok=True)
+    benchmark.REPORT.write_text(json.dumps(rep, indent=1, default=str))
+    _MEM.pop("bench", None)
+    return True
+
+
+def snapshot_industry(now: datetime) -> int:
+    slates_doc = _read_json(DATA_DIR / "slates.json", [])
+    starts = [g.get("start_utc") for s in slates_doc for g in s.get("games", []) if g.get("start_utc")]
+    first = min((datetime.fromisoformat(t) for t in starts), default=None)
+    return benchmark.snapshot_industry(now, first)
 
 
 def _calibration() -> dict:
@@ -365,6 +422,7 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
     # 3) injuries, odds, starting lineups, referees
     src = injuries.fetch_sources(now, state)
     statuses = injuries.merge(all_players, src, today_iso)
+    statuses = news.apply(statuses, state, now)        # clear posts from fast X accounts, if newer
     odds = (state.get("odds") or {}).get(today_iso, {})
     if not odds or _due(state, "odds_at", now, 10):
         try:
@@ -413,7 +471,8 @@ def run(now: datetime, do_notify: bool = True, force: bool = False,
     ctx = model.Context(today=today, statuses=statuses, odds=odds, positions=positions,
                         teams_played_yesterday=played_yday, lineups=nba_lineups, factors=fit,
                         game_context=game_ctx, props=mcache.get("props") or {},
-                        calibration=_calibration())
+                        calibration=_calibration(), benchmark=_MEM.setdefault("bench", benchmark.load()),
+                        industry=benchmark.industry_today(today))
 
     # 4) projections, freezing anyone whose game has started
     rows = model.project(all_players, logs, ctx)

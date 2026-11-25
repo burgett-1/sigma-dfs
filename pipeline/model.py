@@ -53,6 +53,8 @@ class Context:
     factors: dict = field(default_factory=dict)               # fitted adjustments (factors.py)
     game_context: dict[str, dict] = field(default_factory=dict)  # team -> rest/travel/ref features
     props: dict[str, dict] = field(default_factory=dict)         # norm name -> {stat: {mean, line, ...}}
+    benchmark: dict = field(default_factory=dict)               # live accuracy report (benchmark.py)
+    industry: dict = field(default_factory=dict)                # key -> industry projection (private)
     calibration: dict = field(default_factory=dict)              # fitted by calibration.fit (backtest)
 
 
@@ -469,8 +471,34 @@ def project(players: list[dict], logs: pd.DataFrame, ctx: Context) -> list[dict]
             apply_market(r, ctx.props.get(norm_name(r["name"])))
 
     for r in rows:
+        apply_benchmark(r, ctx)
         finish(r)
     return rows
+
+
+def apply_benchmark(r: dict, ctx: Context) -> None:
+    """Corrections learned from how our published projections and the industry's
+    really did (benchmark.py). Both stay off until the data supports them."""
+    r["proj_base"] = r.get("proj", 0.0)          # before any live correction (what gets scored)
+    if r.get("q") is None or r.get("proj", 0) <= 0:
+        return
+    b = ctx.benchmark or {}
+    q = np.asarray(r["q"], dtype=float)
+    for c in b.get("level_correction") or []:
+        if c["lo"] < r["proj"] <= c["hi"] and c["ratio"] != 1.0:
+            q = q * c["ratio"]
+            r["live_correction"] = c["ratio"]
+            break
+    w = float(b.get("blend_weight") or 0.0)
+    ind = (ctx.industry or {}).get(norm_name(r["name"]) + "|" + r["team"])
+    med = float(np.interp(0.5, distribution.U_SAMPLE, q))
+    if w > 0 and ind is not None:
+        shift = w * (ind - med)
+        q = np.maximum(q + shift, 0.0)
+        q[0] = 0.0
+        r["industry_blend"] = round(shift, 2)
+    r["q"] = np.maximum.accumulate(q)
+    r["proj"] = float(np.interp(0.5, distribution.U_SAMPLE, r["q"]))
 
 
 STAT_KEYS = ("pts", "reb", "ast", "fg3m", "stl", "blk", "tov")

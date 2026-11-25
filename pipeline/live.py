@@ -105,9 +105,10 @@ class NewsWatch:
     at the next scheduled pass."""
     EVERY = 20.0
 
-    def __init__(self):
+    def __init__(self, poller=None):
         self.last = None
         self.at = 0.0
+        self.poller = poller
 
     def fingerprint(self) -> str:
         import hashlib
@@ -130,6 +131,10 @@ class NewsWatch:
         return hashlib.sha1(json.dumps(parts, default=str).encode()).hexdigest()
 
     def changed(self) -> bool:
+        if self.poller is not None and self.poller.event.is_set():   # a post from X
+            self.poller.event.clear()
+            log.info("news post: starting a pass now")
+            return True
         if time.time() - self.at < self.EVERY:
             return False
         self.at = time.time()
@@ -186,7 +191,15 @@ def main(argv=None) -> int:
     control = Control(os.environ.get("NTFY_SERVER", "https://ntfy.sh"), topic) if topic else None
     deadline = time.time() + args.minutes * 60
     last_patterns = 0.0
-    watch = NewsWatch()
+    last_industry = 0.0
+    poller = None
+    from .sources import x_news
+    if x_news.token():       # X API key set: follow the fast news accounts (news.py)
+        from . import news, notify
+        poller = news.Poller(lambda title, msg: notify.send("⚡ " + title, msg, 4, ["zap"]))
+        poller.start()
+        log.info("following X accounts %s", x_news.accounts())
+    watch = NewsWatch(poller)
     status = 0
     first = True
     while time.time() < deadline:
@@ -238,6 +251,16 @@ def main(argv=None) -> int:
                     log.info("imported contests %s; report: %s", res["new"], contests.PRIVATE / "report.html")
             except Exception as e:  # noqa: BLE001
                 log.warning("contest import failed: %s", e)
+            try:                      # industry yardstick (private), until the first lock
+                if time.time() - last_industry > 1800:
+                    runner.snapshot_industry(datetime.now(timezone.utc))
+                    last_industry = time.time()
+            except Exception as e:  # noqa: BLE001
+                log.info("industry snapshot failed: %s", e)
+            try:                      # score yesterday's projections, ours and the industry's
+                runner.refresh_benchmark(datetime.now(timezone.utc))
+            except Exception as e:  # noqa: BLE001
+                log.warning("benchmark failed: %s", e)
             # once a day: re-check every projection column against real results
             faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
             try:

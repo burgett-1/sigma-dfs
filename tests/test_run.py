@@ -73,7 +73,7 @@ def test_three_runs(env, monkeypatch):
     assert len(sent) == 1 and "live" in sent[0][0]
     rows = _csv(tmp / "projections.csv")
     assert rows[0][:8] == runmod.CSV_HEADER[:8] and len(rows) == 41
-    assert all(len(r) == len(runmod.CSV_HEADER) == 33 for r in rows)
+    assert all(len(r) == len(runmod.CSV_HEADER) == 34 for r in rows)
     by = {r[0]: r for r in rows[1:]}
     assert by[star][18] == "Questionable" and float(by[star][7]) > 30
     assert by[gsw][3] == "GS" and by[gsw][4] == "NY"  # DK abbreviations kept
