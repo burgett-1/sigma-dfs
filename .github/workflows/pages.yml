@@ -10,6 +10,7 @@ on:
 
 permissions:
   contents: read
+  actions: read      # deploy-pages looks up the uploaded site through the artifacts API
   pages: write
   id-token: write
 
