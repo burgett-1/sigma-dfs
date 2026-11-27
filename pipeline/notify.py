@@ -23,7 +23,10 @@ def _label(s: str) -> str:
 
 
 def send(title: str, message: str, priority: int = 3, tags: list[str] | None = None,
-         click: str | None = None) -> bool:
+         click: str | None = None, actions: list[dict] | None = None, markdown: bool = False) -> bool:
+    """Push one notification. `actions` (at most 3 ntfy action buttons, e.g.
+    {"action": "view", "label": ..., "url": ...}) and `markdown` are optional;
+    without them the payload is exactly as before."""
     topic = os.environ.get("NTFY_TOPIC", "").strip()
     if not topic:
         log.info("[notify disabled] %s | %s", title, message.replace("\n", " / "))
@@ -33,6 +36,10 @@ def send(title: str, message: str, priority: int = 3, tags: list[str] | None = N
                "priority": priority, "tags": tags or []}
     if click:
         payload["click"] = click
+    if actions:
+        payload["actions"] = list(actions)[:3]
+    if markdown:
+        payload["markdown"] = True
     headers = {}
     if os.environ.get("NTFY_TOKEN"):
         headers["Authorization"] = f"Bearer {os.environ['NTFY_TOKEN']}"

@@ -20,20 +20,35 @@ class _Sess:
         return _Resp(self.text)
 
 
-def test_control_poll_parses_run_requests(monkeypatch):
+def test_control_poll_parses_run_requests(monkeypatch, tmp_path):
+    """Only signed (hmac-v1) requests come back; the old unsigned format is rejected."""
+    import time
+    from pipeline import owner
+    key = bytes(range(32))
+    cfg = {"server": "https://ntfy.sh", "topic": "sigma-own-" + "0f" * 16, "key": key}
+    now = int(time.time())
+    req = "00000000000000a2"
+    signed = {"v": 1, "action": "run", "slate_id": 156751, "req": req, "ts": now,
+              "sig": owner.sign(key, 156751, req, now)}
+    unsigned = {"action": "run", "slate_id": 156751, "req": "x"}        # what old sites sent
     lines = [
         {"id": "a1", "event": "open"},
-        {"id": "a2", "event": "message", "message": json.dumps({"action": "run", "slate_id": 156751, "req": "x"})},
+        {"id": "a2", "event": "message", "message": json.dumps(signed)},
+        {"id": "a2b", "event": "message", "message": json.dumps(unsigned)},
         {"id": "a3", "event": "message", "message": "not json"},
         {"id": "a4", "event": "message", "message": json.dumps({"action": "other"})},
     ]
     sess = _Sess("\n".join(json.dumps(l) for l in lines))
     monkeypatch.setattr(live, "session", lambda: sess)
-    c = live.Control("https://ntfy.sh", "sigma-ctl-test")
+    c = live.Control(cfg, nonces=owner.NonceStore(tmp_path / "nonces.json"))
     reqs = c.poll()
-    assert reqs == [{"action": "run", "slate_id": 156751, "req": "x"}]
+    assert reqs == [{"slate_id": 156751, "req": req, "ts": now}]
     assert c.since == "a4"                         # next poll continues after the last message
-    assert sess.calls[0][0] == "https://ntfy.sh/sigma-ctl-test/json" and sess.calls[0][1]["poll"] == "1"
+    assert sess.calls[0][0] == "https://ntfy.sh/" + cfg["topic"] + "/json" and sess.calls[0][1]["poll"] == "1"
+    # the old unsigned run message on its own is now rejected
+    sess.text = json.dumps({"id": "a5", "event": "message", "message": json.dumps(unsigned)})
+    assert c.poll() == []
+    assert owner.verify(json.dumps(unsigned), cfg, now, owner.NonceStore(tmp_path / "n2.json"))[:2] == (False, "bad_format")
 
 
 def test_handle_request_runs_fast_then_exact(tmp_path, monkeypatch):
