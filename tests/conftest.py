@@ -18,19 +18,23 @@ from pathlib import Path
 
 # ── 1. environment, before anything imports pipeline ───────────────────────────
 TEST_ROOT = Path(tempfile.mkdtemp(prefix="sigma-test-"))
-for _name, _sub in (("SIGMA_PRIVATE_DIR", "private"), ("SIGMA_DATA_DIR", "data"), ("SIGMA_CONTEST_IMPORT", "import")):
+for _name, _sub in (("SIGMA_PRIVATE_DIR", "private"), ("SIGMA_DATA_DIR", "data"), ("SIGMA_CONTEST_IMPORT", "import"),
+                    ("SIGMA_CACHE_DIR", "cache")):
     (TEST_ROOT / _sub).mkdir(parents=True, exist_ok=True)
     os.environ[_name] = str(TEST_ROOT / _sub)
 SECRET_ENV = ("CONTROL_TOPIC", "NTFY_TOPIC", "NTFY_TOKEN", "NTFY_SERVER", "X_BEARER_TOKEN", "ODDS_API_KEY",
               "SIGMA_DK_USERNAME")
 for _name in SECRET_ENV:
     os.environ.pop(_name, None)
+# other sports stay off unless a test turns them on (no scheduler, no NFL network in NBA tests)
+os.environ["SIGMA_SPORTS"] = "NBA"
 # read-only real sample folders used by skip-if-absent tests (overridable)
 os.environ.setdefault("SIGMA_TEST_REAL_CONTESTS", str(Path.home() / "Downloads" / "DK DFS Post Contest Results"))
 os.environ.setdefault("SIGMA_TEST_REAL_SNAPSHOTS", str(Path.home() / "SigmaDFS-Private" / "projections"))
 
 # ── 3. write guard ─────────────────────────────────────────────────────────────
-FORBIDDEN = [os.path.realpath(str(Path.home() / "SigmaDFS-Private")), os.path.realpath(str(Path.home() / "sigma-dfs"))]
+FORBIDDEN = [os.path.realpath(str(Path.home() / "SigmaDFS-Private")), os.path.realpath(str(Path.home() / "sigma-dfs")),
+             os.path.realpath(str(Path.home() / ".cache" / "sigma-dfs"))]
 _REPO = os.path.realpath(str(Path(__file__).resolve().parent.parent))
 if _REPO == FORBIDDEN[1] or _REPO.startswith(FORBIDDEN[1] + os.sep):
     raise SystemExit("run tests from the dev checkout, not the live clone (~/sigma-dfs)")
@@ -120,9 +124,10 @@ import pytest  # noqa: E402
 def _isolate_paths(tmp_path, monkeypatch):
     """Point every module-level path constant at tmp_path (per-test patches still win)."""
     data, priv = tmp_path / "_data", tmp_path / "_private"
-    for d in (data, priv, tmp_path / "_import"):
+    for d in (data, priv, tmp_path / "_import", tmp_path / "_cache"):
         d.mkdir(exist_ok=True)
     monkeypatch.setenv("SIGMA_CONTEST_IMPORT", str(tmp_path / "_import"))
+    monkeypatch.setenv("SIGMA_SPORTS", "NBA")
     from pipeline import benchmark, calibration, config, contest_history, contests, history, live, markets, news, \
         patterns, run
     for mod in (config, run, patterns, markets, contest_history, contests, live, news):
@@ -146,6 +151,7 @@ def _isolate_paths(tmp_path, monkeypatch):
     monkeypatch.setattr(news, "NEWS_DIR", priv / "news", raising=False)
     monkeypatch.setattr(news, "ITEMS", priv / "news" / "x_items.json", raising=False)
     monkeypatch.setattr(news, "SPEED", priv / "news" / "speed.json", raising=False)
+    monkeypatch.setattr(config, "CACHE_DIR", tmp_path / "_cache", raising=False)
     for name in SECRET_ENV:
         monkeypatch.delenv(name, raising=False)
     yield

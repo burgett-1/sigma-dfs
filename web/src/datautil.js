@@ -1,4 +1,5 @@
 // Pure data helpers for the Sigma HUD tools. No React, no DOM: testable under Node.
+import { sportsIndex } from "./sports.js";
 
 // The 25 percentiles each player's outcome curve is published at (same order as
 // engine.js U_SAMPLE / pipeline distribution.U_SAMPLE).
@@ -90,8 +91,9 @@ export function rowsToObjects(columns, rows) {
 }
 
 // A slate object (same shape as slates.json entries) for a slate that is no longer
-// listed, built from its projection rows (parsed players).
-export function synthSlate(id, players) {
+// listed, built from its projection rows (parsed players). Paths stay relative to
+// the sport's data base ("" for NBA, "nfl/" ...); only NBA publishes spotlight files.
+export function synthSlate(id, players, base) {
   const nid = Number(id);
   const ps = players || [];
   const games = {}, order = [];
@@ -114,7 +116,8 @@ export function synthSlate(id, players) {
   return {
     id: nid, name: "Slate " + nid + " (archived)", main: false,
     kind: showdown ? "showdown" : "classic",
-    file: "slates/" + nid + ".csv", lineups_file: "lineups/" + nid + ".json", spotlight_file: "spotlight/" + nid + ".json",
+    file: "slates/" + nid + ".csv", lineups_file: "lineups/" + nid + ".json",
+    spotlight_file: base ? null : "spotlight/" + nid + ".json",
     games: gl, game_count: gl.length, start_utc: first,
     size_bucket: gl.length <= 3 ? "small" : gl.length <= 6 ? "medium" : "large",
     contest_locked: true, locked: true, archived: true,
@@ -138,4 +141,9 @@ export function fmtCompact(n) {
   const k = Math.round(a / 1e3);
   if (k < 1000) return sign + k + "k";
   return sign + (a / 1e6).toFixed(1) + "M";
+}
+
+// data/sports.json -> the sport switcher's list; absent/empty/malformed -> NBA only
+export function parseSportsIndex(doc, reg) {
+  return sportsIndex(doc, reg);
 }

@@ -163,13 +163,17 @@ export function StaleBanner({ meta, archived, fmtClock, minsAgo }) {
 }
 
 // main-area hero for days with no DraftKings slate open
-export function SlateOffline({ meta, lastSlateId, onReplay, onGo, err }) {
+export function SlateOffline({ meta, lastSlateId, onReplay, onGo, err, sport, seasonNote, nbaTools }) {
   const next = meta && meta.next_lock_utc;
+  const code = sport || "NBA";
+  const fallback = code === "NBA" ? "No NBA slate is open on DraftKings right now."
+    : seasonNote || "No DraftKings " + code + " slate in the next 6 days.";
+  const showNba = nbaTools !== false;
   return (
     <div className="panel grid-bg anim-in" style={{ padding: "32px 22px", textAlign: "center", borderColor: "var(--line-strong)" }} role="status">
       <div className="hud-label" style={{ color: ACC }}>{"Slate offline"}</div>
       <div className="logo" style={{ fontSize: 56, margin: "8px 0" }}>{"Σ"}</div>
-      <div style={{ fontSize: 20, fontWeight: 700 }}>{(meta && meta.message) || "No NBA slate is open on DraftKings right now."}</div>
+      <div style={{ fontSize: 20, fontWeight: 700 }}>{(meta && meta.message) || fallback}</div>
       <div className="muted" style={{ fontSize: 13, marginTop: 6, maxWidth: 560, marginLeft: "auto", marginRight: "auto" }}>
         {next ? "Next lock " + new Date(next).toLocaleString([], { weekday: "short", hour: "numeric", minute: "2-digit" }) + ". " : ""}
         {"Projections appear automatically once the next slate is posted. Meanwhile, the history tools still work."}
@@ -179,13 +183,54 @@ export function SlateOffline({ meta, lastSlateId, onReplay, onGo, err }) {
         {lastSlateId ? <button className="btn btn-brand" onClick={() => onReplay(lastSlateId)}>{"Replay last slate"}</button> : null}
         <button className="btn btn-accent" onClick={() => onGo("ownership")}>{"Ownership Lab"}</button>
         <button className="btn" onClick={() => onGo("accuracy")}>{"Model accuracy"}</button>
-        <button className="btn" onClick={() => onGo("patterns")}>{"Winning patterns"}</button>
-        <button className="btn" onClick={() => onGo("markets")}>{"Betting markets"}</button>
-        <button className="btn" onClick={() => onGo("starters")}>{"Starting lineups"}</button>
+        {showNba ? <button className="btn" onClick={() => onGo("patterns")}>{"Winning patterns"}</button> : null}
+        {showNba ? <button className="btn" onClick={() => onGo("markets")}>{"Betting markets"}</button> : null}
+        {showNba ? <button className="btn" onClick={() => onGo("starters")}>{"Starting lineups"}</button> : null}
       </div>
       <div className="muted" style={{ fontSize: 11, marginTop: 14 }}>
         {"Tip: open any past slate with "}<span className="num" style={{ color: ACC2 }}>{"?slate=<id>"}</span>{" in the address bar."}
       </div>
     </div>
   );
+}
+
+// ── sport switcher ───────────────────────────────────────────────────────────
+// One chip per sport in data/sports.json (DK code + status dot). Hidden when the
+// index is absent or lists only NBA, so a single-sport site looks as before.
+const STATUS_DOT = { live: "var(--pos)", no_slate: "var(--warn)", off_season: "var(--text-muted)" };
+const STATUS_TEXT = { live: "slate open", no_slate: "no slate right now", off_season: "off-season" };
+export function SportSwitcher({ sports, current, onPick }) {
+  if (!sports || sports.length < 2) return null;
+  function onKey(e, i) {
+    if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
+    e.preventDefault();
+    const n = sports.length, j = (i + (e.key === "ArrowRight" ? 1 : n - 1)) % n;
+    onPick(sports[j].code);
+    const el = e.currentTarget.parentNode && e.currentTarget.parentNode.children[j];
+    if (el) el.focus();
+  }
+  return (
+    <div className="sport-switch" role="tablist" aria-label="Sport">
+      {sports.map((s, i) => {
+        const on = s.code === current;
+        const tip = s.label + ": " + (STATUS_TEXT[s.status] || s.status) + (s.season_note ? " · " + s.season_note : "");
+        return (
+          <button key={s.code} role="tab" aria-selected={on} tabIndex={on ? 0 : -1} title={tip} aria-label={tip}
+            className={"sport-chip" + (on ? " on" : "") + (s.status === "off_season" ? " dim" : "")}
+            onClick={() => onPick(s.code)} onKeyDown={(e) => onKey(e, i)}>
+            <span className="sport-dot" style={{ background: STATUS_DOT[s.status] || "var(--text-muted)" }} aria-hidden="true" />
+            {s.code === "GOLF" ? "PGA" : s.code}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// shown next to the sport chip (and in Model Accuracy) while a sport's scoring
+// table is not yet confirmed against the DraftKings client
+export function ScoringBadge({ verified }) {
+  if (verified !== false) return null;
+  return <span className="chip" style={{ background: alpha(YE, 14), color: YE, alignSelf: "center" }}
+    title="This sport's DraftKings scoring comes from published guides and has not been confirmed in the DraftKings client yet.">{"Scoring unverified"}</span>;
 }

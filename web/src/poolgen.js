@@ -4,7 +4,7 @@
 // ownership-drawn field (engine.simulateContest). The shared Mac pool uses exactly
 // solved lineups and 1,000,000 contests. Output has the same shape as
 // lineups/{id}.json so every Lineups feature (filters, likes, export) works on it.
-import { buildSim, sampleScores, bestFill, simulateContest, rngFrom, slotsFor, slotSalary, slotId, SALARY_CAP } from "./engine.js";
+import { buildSim, sampleScores, bestFill, simulateContest, rngFrom, slotsFor, slotSalary, slotId, rulesOk, SALARY_CAP } from "./engine.js";
 
 export const SIZES = {
   quick: { lineups: 1000, sims: 5000, fieldSample: 1000 },
@@ -19,7 +19,9 @@ export function lineupKey(ids) {
 }
 
 // DraftKings legality plus the slate's own rules (min salary, max per team / game)
-export function validLineup(idx, players, sim, slots, rules) {
+// and, with a sport spec, its game/team minimums and stack rules
+export function validLineup(idx, players, sim, slots, rules, spec) {
+  spec = spec || sim.spec;
   if (!idx || idx.length !== slots.length) return false;
   const r = rules || {};
   const showdown = slots.some((s) => s.mult);
@@ -36,11 +38,12 @@ export function validLineup(idx, players, sim, slots, rules) {
     teams[sim.team[p]] = (teams[sim.team[p]] || 0) + 1;
     games[sim.game[p]] = (games[sim.game[p]] || 0) + 1;
   }
-  const minSal = r.min_salary != null ? r.min_salary : showdown ? 45000 : 48500;
-  if (salary > SALARY_CAP || salary < minSal) return false;
+  const minSal = r.min_salary != null ? r.min_salary : spec ? spec.poolMinSalary : showdown ? 45000 : 48500;
+  if (salary > (spec ? spec.cap : SALARY_CAP) || salary < minSal) return false;
   const tc = Object.values(teams), gc = Object.values(games);
   if (showdown) return tc.length >= 2;
-  if (gc.length < 2) return false;
+  if (gc.length < (spec ? spec.minGames : 2)) return false;
+  if (spec && spec.enforceRules && !rulesOk(idx, sim)) return false;
   if (r.max_per_team && Math.max(...tc) > r.max_per_team) return false;
   if (r.max_per_game && Math.max(...gc) > r.max_per_game) return false;
   return true;
@@ -60,9 +63,10 @@ export function generatePool(allPlayers, opts, onProgress) {
   const rules = o.rules || {};
   const prog = typeof onProgress === "function" ? onProgress : () => {};
   const t0 = Date.now();
-  const sim = buildSim(players, o.now || Date.now());
+  const spec = o.spec || null;
+  const sim = buildSim(players, o.now || Date.now(), spec || undefined);
   const rng = rngFrom(seed);
-  const slots = slotsFor(kind);
+  const slots = slotsFor(kind, spec);
   const fillOpts = kind === "showdown" ? {} : { maxPerTeam: rules.max_per_team || undefined };
 
   // 1. generate: one greedy best lineup per simulated outcome
@@ -76,7 +80,7 @@ export function generatePool(allPlayers, opts, onProgress) {
       tries++;
       const score = X.subarray(s * sim.P, (s + 1) * sim.P);
       const idx = bestFill(score, sim, players, [], slots, fillOpts);
-      if (!validLineup(idx, players, sim, slots, rules)) continue;
+      if (!validLineup(idx, players, sim, slots, rules, spec)) continue;
       const key = lineupKey(idx.map((p, k) => slotId(players[p], slots[k])));
       if (seenKeys.has(key)) continue;
       seenKeys.add(key);
@@ -90,7 +94,7 @@ export function generatePool(allPlayers, opts, onProgress) {
   // 2. contest-simulate every lineup against an ownership-drawn field
   const cand = lus.map((idx) => idx.map((p, k) => [p, slots[k].mult || 1]));
   const res = simulateContest(sim, players, cand, {
-    sims, fieldSize, fieldSample, kind, corr: o.corr, seed: seed + 1, entryFee: o.entryFee || 20, firstPct: o.firstPct || 20,
+    sims, fieldSize, fieldSample, kind, corr: o.corr, seed: seed + 1, entryFee: o.entryFee || 20, firstPct: o.firstPct || 20, spec,
   }, (f) => prog(0.4 + 0.6 * f));
   const t2 = Date.now();
 

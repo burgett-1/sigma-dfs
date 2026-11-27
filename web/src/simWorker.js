@@ -9,7 +9,7 @@ self.onmessage = (ev) => {
   try {
     if (type === "single") {
       const { players, lineup, opts } = payload;
-      const sim = buildSim(players, opts.now || Date.now());
+      const sim = buildSim(players, opts.now || Date.now(), opts.spec || undefined);   // spec: sports.js specFor
       const [res] = simulateContest(sim, players, [lineup], opts, progress);
       self.postMessage({ id, result: res });
     } else if (type === "lateswap") {

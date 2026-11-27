@@ -245,3 +245,13 @@ table { font-variant-numeric: tabular-nums; }
   .kpi-value { font-size: 20px; }
   .chart-scatter { max-height: 260px; }
 }
+
+/* ── sport switcher (Phase 3) ─────────────────────────────────────────────── */
+.sport-switch{display:flex;gap:6px;align-items:center;overflow-x:auto;max-width:100%;scrollbar-width:none;padding:2px}
+.sport-switch::-webkit-scrollbar{display:none}
+.sport-chip{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--text-muted);font:700 12px var(--font-mono);letter-spacing:.06em;cursor:pointer}
+.sport-chip.on{color:var(--accent);border-color:var(--line-strong);background:color-mix(in srgb,var(--accent) 12%,transparent)}
+.sport-chip.dim{opacity:.55}
+.sport-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sport-dot{width:7px;height:7px;border-radius:50%;display:inline-block}
+@media (max-width:480px){.sport-chip{padding:4px 8px;font-size:11px}}

@@ -20,7 +20,10 @@ function Kpi({ label, value, sub, primary }) {
 }
 
 // ── Leverage Radar ───────────────────────────────────────────────────────────
-export function LeverageRadar({ players }) {
+// pc / positions: the sport's position colours and filter chips (default NBA)
+export function LeverageRadar({ players, pc, positions }) {
+  const PC = pc || POS_COLORS;
+  const POSL = positions || ["ALL", "PG", "SG", "SF", "PF", "C"];
   const [pos, setPos] = useState("ALL"), [search, setSearch] = useState(""), [teamSel, setTeamSel] = useState([]);
   const [sel, setSel] = useState(null);
   const teams = useMemo(() => Array.from(new Set((players || []).map((p) => (p.team || "").toUpperCase()))).filter(Boolean).sort(), [players]);
@@ -28,7 +31,7 @@ export function LeverageRadar({ players }) {
     && matchesQuick([p.name], [p.team], search, teamSel));
   if (!players || !players.length) return <EmptyState title="No slate loaded" text="Pick a slate (or replay an archived one) to see leverage." />;
   const hasOpt = pool.some((p) => p.optPct > 0);
-  const pts = pool.map((p) => ({ id: p.name, x: p.own || 0, y: hasOpt ? (p.optPct || 0) : p.proj, r: p.salary, color: POS_COLORS[posOf(p)] || ACC,
+  const pts = pool.map((p) => ({ id: p.name, x: p.own || 0, y: hasOpt ? (p.optPct || 0) : p.proj, r: p.salary, color: PC[posOf(p)] || ACC,
     label: p.name + " · own " + fmtNum(p.own) + "% · " + (hasOpt ? "optimal " + fmtNum(p.optPct) + "%" : "proj " + fmtNum(p.proj)) + " · $" + (p.salary || 0).toLocaleString() }));
   const lev = pool.filter((p) => fin(p.lev)).map((p) => ({ id: p.name, label: p.name, note: posOf(p) + " · " + (p.team || ""), value: p.lev,
     color: p.lev >= 0 ? GR : RE }));
@@ -43,14 +46,14 @@ export function LeverageRadar({ players }) {
           sub={hasOpt ? "Optimal % = how often a player is in the simulation-optimal lineups. Above the diagonal the field is under-owning him." : "Optimal % appears after simulations run. Showing projection instead."}
           right={<span className="chip" style={{ background: alpha(ACC, 12), color: ACC }}>{pool.length + " players"}</span>} />
         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
-          {["ALL", "PG", "SG", "SF", "PF", "C"].map((p) => <button key={p} className="tab" aria-selected={pos === p} onClick={() => setPos(p)}>{p}</button>)}
+          {POSL.map((p) => <button key={p} className="tab" aria-selected={pos === p} onClick={() => setPos(p)}>{p}</button>)}
         </div>
         <QuickFilters search={search} setSearch={setSearch} teams={teams} selTeams={teamSel} setSelTeams={setTeamSel} />
         <Scatter points={pts} diagonal={hasOpt} selected={sel} onSelect={setSel} className="chart-scatter"
           xLabel="Projected ownership %" yLabel={hasOpt ? "Optimal %" : "Projection (pts)"}
           quadrants={["Under-owned vs optimal", "Over-owned"]} label="Leverage scatter: ownership against optimal percentage" />
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 6, fontSize: 11 }} className="muted">
-          {Object.keys(POS_COLORS).map((k) => <span key={k}><span className="live-dot" style={{ background: POS_COLORS[k], marginRight: 4 }} />{k}</span>)}
+          {Object.keys(PC).map((k) => <span key={k}><span className="live-dot" style={{ background: PC[k], marginRight: 4 }} />{k}</span>)}
           <span>{"· bubble size = salary · click a player to highlight"}</span>
         </div>
       </div>
@@ -120,7 +123,7 @@ export function PoolInsights({ lineups, likedIds, poolInfo }) {
 const SIZE_LABEL = { "single-entry": "Single entry", small: "Small (<1k)", mid: "Mid (1k–20k)", large: "Large (20k+)" };
 function avgOf(list, f) { const v = list.map(f).filter(fin); return v.length ? v.reduce((a, b) => a + b, 0) / v.length : null; }
 
-export function OwnershipLab({ doc, players }) {
+export function OwnershipLab({ doc, players, sport }) {
   const [q, setQ] = useState("");
   const check = useMemo(() => (doc && !doc.error ? validateContestHistory(doc) : null), [doc]);
   const rows = useMemo(() => (check && check.ok ? rowsToObjects(doc.players.columns, doc.players.rows) : []), [doc, check]);
@@ -187,7 +190,7 @@ export function OwnershipLab({ doc, players }) {
               </div>
             );
           })}
-        </div> : <ChartEmpty text="No NBA contests yet." />}
+        </div> : <ChartEmpty text={"No " + (sport || "NBA") + " contests yet."} />}
       </div>
 
       <div className="grid-2">
@@ -254,6 +257,7 @@ export function OwnershipLab({ doc, players }) {
 // ── Model Accuracy ───────────────────────────────────────────────────────────
 export function ModelAccuracy({ audit, meta }) {
   if (!audit) return <div className="panel"><div className="skeleton" style={{ height: 160 }} /></div>;
+  if (audit.sport && audit.sport !== "NBA") return <SportAccuracy audit={audit} />;
   if (audit.error || !audit.raw_model) return <EmptyState title="Accuracy report not available yet." text="The Mac publishes a backtest of the projection model (audit.json) after its nightly run." />;
   const rm = audit.raw_model || {}, dk = rm.dk_points || {}, mn = rm.minutes || {};
   const sb = (audit.distribution && audit.distribution.held_out && audit.distribution.held_out.share_below) || {};
@@ -297,6 +301,47 @@ export function ModelAccuracy({ audit, meta }) {
           : <ChartEmpty text="No factor backtest published yet." height={60} />}
         {bt ? <div className="muted" style={{ fontSize: 11 }}>{(bt.test_games || 0).toLocaleString() + " test games"}</div> : null}
         {corr ? <div className="muted" style={{ fontSize: 12, marginTop: 8 }}>{"Score correlation used in sims: teammates " + fmtNum(corr.team, 3) + " · opponents " + fmtNum(corr.opp, 3) + (corr.team_games ? " (" + corr.team_games.toLocaleString() + " team-games)" : "")}</div> : null}
+      </div>
+    </div>
+  );
+}
+
+// Accuracy for registry sports (nfl/audit.json): the keys that are present only;
+// NBA-only sections (minutes, factors) don't apply.
+function SportAccuracy({ audit }) {
+  const dk = (audit.dk_points && audit.dk_points.overall) || null;
+  const sc = audit.scoring || {};
+  const badge = sc.verified === false ? <span className="chip" style={{ background: alpha(YE, 14), color: YE }}>{"Scoring unverified"}</span> : null;
+  if (!dk) return <EmptyState title="Accuracy report not available yet." text={audit.note || "The weekly backtest has not run yet."} />;
+  const sb = (audit.distribution && audit.distribution.held_out && audit.distribution.held_out.share_below) || {};
+  const calPts = Object.keys(sb).map((k) => [Number(k) * 100, Number(sb[k]) * 100]).filter((p) => fin(p[0]) && fin(p[1])).sort((a, b) => a[0] - b[0]);
+  const byPos = audit.dk_points.by_position || {};
+  const rows = Object.keys(byPos).map((pos) => ({ label: pos, note: "season mean " + fmtNum(byPos[pos].season_mean && byPos[pos].season_mean.mae, 2),
+    value: byPos[pos].model && byPos[pos].model.mae, compare: byPos[pos].season_mean && byPos[pos].season_mean.mae }));
+  const m = dk.model || {}, base = dk.season_mean || {};
+  return (
+    <div className="stack">
+      <div className="panel anim-in">
+        <SectionHeader label="Model accuracy" title={(audit.sport || "") + " projection backtest"} sub={audit.method || ""}
+          right={<span style={{ display: "flex", gap: 6, alignItems: "center" }}>{badge}<SampleBadge n={m.n || 0} unit="player-weeks" small={1000} /></span>} />
+        <div className="hud-strip" style={{ margin: 0, padding: 0 }}>
+          <Kpi label="DK points MAE" primary value={fin(m.mae) ? <CountUp value={m.mae} format={(v) => v.toFixed(2)} /> : "—"} sub="avg miss, fantasy pts" />
+          <Kpi label="Season-mean MAE" value={fin(base.mae) ? base.mae.toFixed(2) : "—"} sub="baseline (~DK average)" />
+          <Kpi label="Bias" value={fin(m.bias) ? (m.bias > 0 ? "+" : "") + m.bias.toFixed(2) : "—"} sub="projected − actual" />
+          <Kpi label="Correlation" value={fin(m.corr) ? m.corr.toFixed(3) : "—"} sub="projection vs actual" />
+          {audit.dst ? <Kpi label="DST MAE" value={fin(audit.dst.mae) ? audit.dst.mae.toFixed(2) : "—"} sub={(audit.dst.n || 0) + " team-games"} /> : null}
+        </div>
+      </div>
+      <div className="grid-2">
+        <div className="panel anim-in" style={{ "--i": 1 }}>
+          <SectionHeader label="By position" title="Model vs season mean" sub="Mean absolute error, DK points (lower is better)." />
+          <BarList items={rows} valueLabel="model" compareLabel="season mean" format={(v) => fmtNum(v, 2)} color={ACC} />
+        </div>
+        <div className="panel anim-in" style={{ "--i": 2 }}>
+          <SectionHeader label="Calibration" title="Outcome curve calibration" sub={(audit.distribution && audit.distribution.held_out_def) || ""} />
+          <LineChart series={[{ name: "actual share below", points: calPts, color: ACC }]} diagonal xLabel="predicted percentile" yLabel="actual %"
+            xFmt={(v) => v.toFixed(0)} yFmt={(v) => v.toFixed(0)} height={240} label="Calibration of the predicted outcome percentiles" empty="No held-out calibration yet." />
+        </div>
       </div>
     </div>
   );

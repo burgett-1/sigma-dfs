@@ -49,6 +49,8 @@ SLOT_RE = re.compile(r"(?:^|\s)(CPT|PG|SG|SF|PF|C|G|F|UTIL)\s+")
 LOW_OWN = 10.0          # "low owned" means under 10% drafted
 SHRINK_N = 600          # player observations needed before the correction gets half its weight
 
+# NFL lineups are re-split with their own slot tokens once detected (NBA parsing is untouched)
+SPORT_SLOT_RE = {"NFL": re.compile(r"(?:^|\s)(CPT|QB|RB|WR|TE|FLEX|DST)\s+")}
 NBA_SLOTS = {"PG", "SG", "SF", "PF", "C", "G", "F", "UTIL"}
 NBA_CORE = {"PG", "SG", "SF", "PF", "G", "F"}
 NFL_SLOTS = {"QB", "RB", "WR", "TE", "FLEX", "DST"}
@@ -67,13 +69,35 @@ _WATCH = {"at": 0.0}
 ENTRY_HISTORY_RE = re.compile(r"entry-history", re.I)
 
 
+def accepted() -> set[str]:
+    """Sports whose contest exports are imported: enabled sports with a pipeline."""
+    from . import sports
+    return set(sports.enabled()) & {"NBA", "NFL"}
+
+
+def sport_rosters() -> dict[str, set[str]]:
+    """Name keys per sport used to resolve {CPT, FLEX} showdowns: the NFL private
+    snapshots plus the nflverse history names."""
+    out = {"NFL": snapshot_names(SNAPSHOTS / "nfl")}
+    try:
+        from .sports.nfl import data as nfl_data
+        from .sports.paths import paths
+        h = nfl_data.load_history(paths("NFL", DATA_DIR).history)
+        out["NFL"] |= {norm_name(str(n)) for n in h.get("name", [])}
+    except Exception:  # noqa: BLE001
+        pass
+    return out
+
+
 def _accept_sport(res: dict) -> str:
-    """NBA only. Showdowns share slot names with other sports, so an unknown
-    showdown must match the private snapshot names to count."""
+    """The contest's sport. Showdowns share slot names with other sports, so an
+    unknown showdown must match the private snapshot names (NBA) or a sport's
+    roster names (NFL/NHL) to count."""
     sport = res.get("sport")
     if sport == "UNKNOWN" and res.get("kind") == "showdown":
         sport = detect_sport(res.get("slots_seen", []), res.get("lineup_tokens", []),
-                             names=list(res.get("own") or {}), nba_names=snapshot_names())
+                             names=list(res.get("own") or {}), nba_names=snapshot_names(),
+                             rosters=sport_rosters() if "FLEX" in res.get("slots_seen", []) else None)
     return sport or "UNKNOWN"
 
 
@@ -91,6 +115,7 @@ def import_new(now: float | None = None) -> list[str]:
     have = {m.group(1) for f in CONTESTS.glob("*.csv") if (m := FILE_RE.search(f.name))}
     meta = _meta()
     rejected = dict(meta.get("rejected") or {})
+    ok_sports = accepted()
     dirty = False
     new = []
     for d in _import_dirs():
@@ -110,7 +135,9 @@ def import_new(now: float | None = None) -> list[str]:
                 continue
             sig = {"file": f.name, "size": st.st_size, "mtime": int(st.st_mtime)}
             prev = rejected.get(cid)
-            if prev and all(prev.get(k) == v for k, v in sig.items()):
+            retry = bool(prev and str(prev.get("reason", "")).startswith("not_nba:")
+                         and prev["reason"].split(":", 1)[1] in ok_sports and not prev.get("retried"))
+            if prev and all(prev.get(k) == v for k, v in sig.items()) and not retry:
                 continue                                   # same file already rejected
             reason = None
             if f.suffix.lower() not in (".csv", ".zip"):
@@ -129,18 +156,19 @@ def import_new(now: float | None = None) -> list[str]:
                 res = parse(text) if reason is None else None
                 if reason is None and res is None:
                     reason = "malformed"
+                sport = None
                 if reason is None:
                     sport = _accept_sport(res)
-                    if sport != "NBA":
+                    if sport not in ok_sports:
                         reason = "not_nba:" + sport
             if reason:
-                rejected[cid] = {"reason": reason, **sig}
+                rejected[cid] = {"reason": reason, **sig, **({"retried": True} if retry else {})}
                 dirty = True
                 log.info("contest export %s not imported: %s", f.name, reason)
                 continue
             (CONTESTS / f"contest-standings-{cid}.csv").write_text(text, encoding="utf-8")
             stamp = datetime.fromtimestamp(st.st_mtime, ET).date().isoformat()
-            _meta_update(cid, {"imported_from": f.name, "file_date": stamp})
+            _meta_update(cid, {"imported_from": f.name, "file_date": stamp, "sport": sport})
             if rejected.pop(cid, None) is not None:
                 dirty = True
             have.add(cid)
@@ -197,10 +225,10 @@ def _meta_update(cid: str, fields: dict) -> None:
 
 
 # ── parsing ──────────────────────────────────────────────────────────────────
-def split_lineup(s: str) -> list[tuple[str, str]]:
+def split_lineup(s: str, slot_re: re.Pattern | None = None) -> list[tuple[str, str]]:
     """'C Nikola Jokic F LeBron James ...' -> [('C','Nikola Jokic'), ('F','LeBron James'), ...]"""
     s = " " + (s or "").strip() + " "
-    marks = list(SLOT_RE.finditer(s))
+    marks = list((slot_re or SLOT_RE).finditer(s))
     out = []
     for i, m in enumerate(marks):
         end = marks[i + 1].start() if i + 1 < len(marks) else len(s)
@@ -258,30 +286,56 @@ def parse(text: str) -> dict | None:
         name = r[ix["EntryName"]].strip() if "EntryName" in ix else ""
         user = re.sub(r"\s*\(\d+/\d+\)\s*$", "", name)
         entries.append({"rank": rank, "points": pts, "user": user, "entry": name,
-                        "players": split_lineup(r[ix["Lineup"]])})
+                        "players": split_lineup(r[ix["Lineup"]]), "_lineup": r[ix["Lineup"]]})
     if not entries:
         return None
     entries.sort(key=lambda e: e["rank"])
     tokens = {s for e in entries[:200] for s, _ in e["players"]}
     kind = "showdown" if "CPT" in slots_seen or any(s == "CPT" for e in entries[:50] for s, _ in e["players"]) else "classic"
+    sport = detect_sport(slots_seen, tokens)
+    # NFL (and {CPT, FLEX} showdowns, never NBA) use their own slot tokens
+    resplit = SPORT_SLOT_RE.get(sport) or (SPORT_SLOT_RE["NFL"] if sport == "UNKNOWN" and "FLEX" in slots_seen else None)
+    if resplit is not None:
+        for e in entries:
+            e["players"] = split_lineup(e.pop("_lineup", ""), resplit)
+    for e in entries:
+        e.pop("_lineup", None)
     return {"entries": entries, "own": own, "fpts": fpts, "kind": kind, "own_slots": own_slots,
             "names": names, "slots_seen": sorted(slots_seen), "lineup_tokens": sorted(tokens),
-            "sport": detect_sport(slots_seen, tokens),
+            "sport": sport,
             "own_total": round(sum(own.values()), 2)}
 
 
-def detect_sport(slots_seen, lineup_tokens=(), names=None, nba_names=None) -> str:
-    """"NBA" | "NFL" | "MLB" | "OTHER" | "UNKNOWN" from the roster slots a contest uses.
+def detect_sport(slots_seen, lineup_tokens=(), names=None, nba_names=None, rosters=None) -> str:
+    """DraftKings sport code ("NBA", "NFL", "CFB", "NHL", "MLB", "GOLF", "MMA", "NAS"),
+    "OTHER" or "UNKNOWN", from the roster slots a contest uses. In order:
+    S-FLEX -> CFB; DST/TE, or QB with FLEX -> NFL; exactly {G} / {F} / {D} -> GOLF /
+    MMA / NAS; W or D -> NHL; MLB slots -> MLB; showdowns; then the NBA rule.
 
-    Showdown ({CPT, UTIL}) slots are shared with other sports, so a showdown is
-    "UNKNOWN" unless at least half its players are in a known NBA name set."""
+    Showdown slots are shared between sports: {CPT, UTIL} is NBA only if at least
+    half its players are in a known NBA name set; {CPT, FLEX} is NFL or NHL by the
+    same test against `rosters` ({sport: name keys}); otherwise "UNKNOWN"."""
     s = {str(x).strip().upper() for x in (set(slots_seen) | set(lineup_tokens)) if str(x).strip()}
     if not s:
         return "UNKNOWN"
-    if s & NFL_SLOTS:
+    if "S-FLEX" in s:
+        return "CFB"
+    if s & {"DST", "TE"} or {"QB", "FLEX"} <= s:
         return "NFL"
+    for only, sport in (({"G"}, "GOLF"), ({"F"}, "MMA"), ({"D"}, "NAS")):
+        if s == only:
+            return sport
+    if s & {"W", "D"}:
+        return "NHL"
     if s & MLB_SLOTS:
         return "MLB"
+    if "CPT" in s and s <= {"CPT", "FLEX"}:
+        keys = {norm_name(n) for n in names or ()}
+        for sport in ("NFL", "NHL"):
+            known = set((rosters or {}).get(sport) or ())
+            if keys and known and len(keys & known) >= 0.5 * len(keys):
+                return sport
+        return "UNKNOWN"
     if "CPT" in s and s <= {"CPT", "UTIL"}:
         if names and nba_names:
             keys = {norm_name(n) for n in names}
@@ -321,10 +375,11 @@ def load_all() -> list[dict]:
             out.append({"id": cid, **meta.get(cid, {}), **res})
     if any(c.get("sport") == "UNKNOWN" and c.get("kind") == "showdown" for c in out):
         nba = snapshot_names()
+        rosters = sport_rosters() if any("FLEX" in c.get("slots_seen", []) for c in out) else None
         for c in out:
             if c.get("sport") == "UNKNOWN" and c.get("kind") == "showdown":
                 c["sport"] = detect_sport(c.get("slots_seen", []), c.get("lineup_tokens", []),
-                                          names=list(c["own"]), nba_names=nba)
+                                          names=list(c["own"]), nba_names=nba, rosters=rosters)
     return out
 
 
@@ -464,9 +519,11 @@ def load_own_calibration() -> dict:
         return {}
 
 
-def snapshot(slate_id: int, day: str, rows: list[dict]) -> None:
-    """Keep the model's pre-lock projection/ownership for later comparison (private)."""
-    path = SNAPSHOTS / day / f"{slate_id}.json"
+def snapshot(slate_id: int, day: str, rows: list[dict], sport: str = "NBA") -> None:
+    """Keep the model's pre-lock projection/ownership for later comparison (private).
+    NBA: projections/{day}/{id}.json (as always); other sports: projections/{sport}/{day}/."""
+    base = SNAPSHOTS if sport == "NBA" else SNAPSHOTS / sport.lower()
+    path = base / day / f"{slate_id}.json"
     path.parent.mkdir(parents=True, exist_ok=True)
     players = {norm_name(r["name"]): [round(r["proj"], 2), round(r.get("own", 0.0), 2), r["salary"]]
                for r in rows if r.get("proj", 0) > 0}
@@ -496,7 +553,33 @@ def refresh() -> dict:
         contest_history.write_public(contests, SNAPSHOTS, PUBLIC_OUT)
     except Exception as e:      # the public summary must never break the live loop
         log.warning("contest_history: %s", e)
+    if "NFL" in accepted():
+        try:
+            refresh_nfl(contests)
+        except Exception as e:  # noqa: BLE001 - never break the live loop
+            log.warning("NFL contest history: %s", e)
     return {"contests": len(contests), "new": new}
+
+
+def refresh_nfl(contests: list[dict]) -> dict:
+    """NFL: the public aggregate data/nfl/contest_history.json and the private
+    ownership-shape calibration (own_calibration_nfl.json, no names)."""
+    from . import contest_history
+    from .sports.nfl import data as nfl_data
+    from .sports.nfl import ownership as nfl_own
+    from .sports.paths import paths
+    hist = nfl_data.load_history(paths("NFL", PUBLIC_OUT.parent).history)
+    games = None
+    try:
+        games = nfl_data.games(None) if (paths("NFL").cache / "games.csv").exists() else None
+    except Exception:  # noqa: BLE001
+        games = None
+    nfl = [c for c in contests if c.get("sport") == "NFL"]
+    doc = contest_history.write_public(contests, SNAPSHOTS / "nfl", PUBLIC_OUT.parent / "nfl" / "contest_history.json",
+                                       sport="NFL", context=contest_history.nfl_context(hist, games))
+    cal = nfl_own.calibrate(nfl, hist, games)
+    (PRIVATE / "own_calibration_nfl.json").write_text(json.dumps(cal, indent=1))
+    return doc
 
 
 def _agg(stats, key, sub):

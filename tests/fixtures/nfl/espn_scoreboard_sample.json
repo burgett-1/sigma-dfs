@@ -1,0 +1,200 @@
+{
+"events": [
+{
+"id": "401873087",
+"date": "2026-11-29T18:00Z",
+"name": "New Orleans Saints at Cincinnati Bengals",
+"weather": {
+"displayValue": "Cloudy",
+"temperature": 48,
+"highTemperature": 48,
+"conditionId": "7",
+"link": {
+"language": "en-US",
+"rel": [
+"45202"
+],
+"href": "http://www.accuweather.com/en/us/paycor-stadium-oh/45212/hourly-weather-forecast/53622_poi?day=4&hbhhour=13&lang=en-us",
+"text": "Weather",
+"shortText": "Weather",
+"isExternal": true,
+"isPremium": false
+}
+},
+"competitions": [
+{
+"venue": {
+"indoor": false
+},
+"competitors": [
+{
+"homeAway": "home",
+"team": {
+"abbreviation": "CIN"
+}
+},
+{
+"homeAway": "away",
+"team": {
+"abbreviation": "NO"
+}
+}
+],
+"odds": [
+{
+"spread": -10.0,
+"overUnder": 49.5
+}
+]
+}
+]
+},
+{
+"id": "401873088",
+"date": "2026-11-29T18:00Z",
+"name": "New York Giants at Indianapolis Colts",
+"weather": {
+"displayValue": "Rain",
+"temperature": 46,
+"highTemperature": 46,
+"conditionId": "18",
+"link": {
+"language": "en-US",
+"rel": [
+"46225"
+],
+"href": "http://www.accuweather.com/en/us/lucas-oil-stadium-in/46204/hourly-weather-forecast/53571_poi?day=4&hbhhour=13&lang=en-us",
+"text": "Weather",
+"shortText": "Weather",
+"isExternal": true,
+"isPremium": false
+}
+},
+"competitions": [
+{
+"venue": {
+"indoor": true
+},
+"competitors": [
+{
+"homeAway": "home",
+"team": {
+"abbreviation": "IND"
+}
+},
+{
+"homeAway": "away",
+"team": {
+"abbreviation": "NYG"
+}
+}
+],
+"odds": [
+{
+"spread": 6.0,
+"overUnder": 41.5
+}
+]
+}
+]
+},
+{
+"id": "401873089",
+"date": "2026-11-29T18:00Z",
+"name": "New York Jets at Miami Dolphins",
+"weather": {
+"displayValue": "Cloudy",
+"temperature": 77,
+"highTemperature": 77,
+"conditionId": "7",
+"link": {
+"language": "en-US",
+"rel": [
+"33056"
+],
+"href": "http://www.accuweather.com/en/us/hard-rock-stadium-fl/33056/hourly-weather-forecast/53559_poi?day=4&hbhhour=13&lang=en-us",
+"text": "Weather",
+"shortText": "Weather",
+"isExternal": true,
+"isPremium": false
+}
+},
+"competitions": [
+{
+"venue": {
+"indoor": false
+},
+"competitors": [
+{
+"homeAway": "home",
+"team": {
+"abbreviation": "MIA"
+}
+},
+{
+"homeAway": "away",
+"team": {
+"abbreviation": "NYJ"
+}
+}
+],
+"odds": [
+{
+"spread": 5.5,
+"overUnder": 39.5
+}
+]
+}
+]
+},
+{
+"id": "401873084",
+"date": "2026-11-29T18:00Z",
+"name": "Atlanta Falcons at Minnesota Vikings",
+"weather": {
+"displayValue": "Mostly cloudy",
+"temperature": 36,
+"highTemperature": 36,
+"conditionId": "6",
+"link": {
+"language": "en-US",
+"rel": [
+"55415"
+],
+"href": "http://www.accuweather.com/en/us/us-bank-stadium-mn/55415/hourly-weather-forecast/35911_poi?day=4&hbhhour=12&lang=en-us",
+"text": "Weather",
+"shortText": "Weather",
+"isExternal": true,
+"isPremium": false
+}
+},
+"competitions": [
+{
+"venue": {
+"indoor": true
+},
+"competitors": [
+{
+"homeAway": "home",
+"team": {
+"abbreviation": "MIN"
+}
+},
+{
+"homeAway": "away",
+"team": {
+"abbreviation": "ATL"
+}
+}
+],
+"odds": [
+{
+"spread": -7.0,
+"overUnder": 41.5
+}
+]
+}
+]
+}
+]
+}

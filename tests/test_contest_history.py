@@ -238,7 +238,8 @@ def test_non_nba_files_are_skipped(tmp_path):
     doc = H.build(H.load_dir([src]), None)
     assert doc["samples"]["contests"] == 1
     sk = {(s["reason"], s["detected"]): s["count"] for s in doc["skipped"]}
-    assert sk == {("not_nba", "NFL"): 1, ("not_nba", "MLB"): 1, ("not_nba", "OTHER"): 1, ("unknown_sport", "UNKNOWN"): 1}
+    # G-only is now detected as GOLF (was OTHER): sport-specific detection, Phase 3
+    assert sk == {("not_nba", "NFL"): 1, ("not_nba", "MLB"): 1, ("not_nba", "GOLF"): 1, ("unknown_sport", "UNKNOWN"): 1}
 
 
 def test_showdown_counted_when_names_are_nba(tmp_path):
@@ -485,3 +486,26 @@ def test_corrupt_first_copy_does_not_hide_good_duplicate(tmp_path):
     (c / "contest-standings-555006002.zip").write_bytes(b"garbage")
     doc2 = H.build(H.load_dir([c]), None)
     assert doc2["samples"]["contests"] == 1 and doc2["skipped"] == []
+
+
+# ── Phase 3: NFL history (aggregate only) ───────────────────────────────────
+def test_nfl_contest_history_structure_and_privacy(tmp_path, monkeypatch):
+    import pandas as pd
+
+    from tests.fixtures.nfl import synthetic_nfl as N
+    c = C.parse(N.contest_export(80))
+    c.update(id="777002", file_date="2026-11-30")
+    hist = N.history()
+    games = pd.DataFrame([{"season": 2026, "week": 12, "gameday": "2026-11-29"}])
+    out = tmp_path / "nfl" / "contest_history.json"
+    doc = H.write_public([c], tmp_path / "snaps", out, sport="NFL", context=H.nfl_context(hist, games))
+    assert doc["sport"] == "NFL" and doc["samples"]["contests"] == 1 and out.exists()
+    st = doc["structure"]
+    assert st["qb_stack_rate"] == 1.0                        # every synthetic lineup stacks its QB
+    assert set(st["ownership_concentration"]) == {"QB", "RB", "WR", "TE", "DST"}
+    assert st["winning_score"] == 200.0 and st["cash_line_estimate"] is not None
+    blob = out.read_text()
+    assert "fakeuser" not in blob and "777002" not in blob and "9000000" not in blob
+    # the NBA document ignores the NFL contest
+    nba = H.build([c], tmp_path / "snaps")
+    assert nba["sport"] == "NBA" and nba["samples"]["contests"] == 0

@@ -18,6 +18,13 @@ export const MONO = "var(--font-mono)";
 // position colours stay the same in both themes
 export const POS_COLORS = { PG: "#4a9eff", SG: "#a78bfa", SF: "#34d399", PF: "#fb923c", C: "#f43f5e" };
 
+// position colours for a sport: the registry's ui.pos_colors (NBA = POS_COLORS)
+export function posColors(sport, registry) {
+  if (!sport || sport === "NBA") return POS_COLORS;
+  const s = registry && registry.sports && registry.sports[sport];
+  return (s && s.ui && s.ui.pos_colors) || POS_COLORS;
+}
+
 // translucent version of any colour (hex or var(...)): alpha(GR, 13) ~ the old GR+"22"
 export function alpha(c, pct) {
   return "color-mix(in srgb, " + c + " " + pct + "%, transparent)";

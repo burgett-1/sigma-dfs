@@ -1,0 +1,1946 @@
+{
+ "_note": "Shared Python/JS conformance cases (tests/test_sports_conformance.py, web/tests/sports.test.mjs). Hand-written expectations; 'implied_corr' is L L^T of the registry NFL defaults.",
+ "eligibility": [
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "roster_position": "PG/G/UTIL",
+   "position": "PG",
+   "slots": [
+    "PG",
+    "G",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "roster_position": "SG/SF/G/F/UTIL",
+   "position": "SG/SF",
+   "slots": [
+    "SG",
+    "SF",
+    "G",
+    "F",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "roster_position": "C/UTIL",
+   "position": "C",
+   "slots": [
+    "C",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "roster_position": "PF/C/F/UTIL",
+   "position": "PF/C",
+   "slots": [
+    "PF",
+    "C",
+    "F",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "roster_position": "PG/UTIL",
+   "position": "PG",
+   "slots": null
+  },
+  {
+   "sport": "NBA",
+   "kind": "showdown",
+   "roster_position": "CPT",
+   "position": "PG",
+   "slots": [
+    "CPT",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NBA",
+   "kind": "showdown",
+   "roster_position": "UTIL",
+   "position": "",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "WR/FLEX",
+   "position": "WR",
+   "slots": [
+    "WR",
+    "FLEX"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "RB/FLEX",
+   "position": "RB",
+   "slots": [
+    "RB",
+    "FLEX"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "TE/FLEX",
+   "position": "TE",
+   "slots": [
+    "TE",
+    "FLEX"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "QB",
+   "position": "QB",
+   "slots": [
+    "QB"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "DST",
+   "position": "DST",
+   "slots": [
+    "DST"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "K",
+   "position": "K",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "WR",
+   "position": "WR",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "QB/FLEX",
+   "position": "QB",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "XX/FLEX",
+   "position": "XX",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "roster_position": "",
+   "position": "",
+   "slots": null
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "roster_position": "FLEX",
+   "position": "K",
+   "slots": [
+    "CPT",
+    "FLEX"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "roster_position": "CPT",
+   "position": "DST",
+   "slots": [
+    "CPT",
+    "FLEX"
+   ]
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "roster_position": "FLEX",
+   "position": "P",
+   "slots": null
+  },
+  {
+   "sport": "NHL",
+   "kind": "classic",
+   "roster_position": "W/UTIL",
+   "position": "LW",
+   "slots": [
+    "W",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "kind": "classic",
+   "roster_position": "C/UTIL",
+   "position": "C",
+   "slots": [
+    "C",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "kind": "classic",
+   "roster_position": "D/UTIL",
+   "position": "D",
+   "slots": [
+    "D",
+    "UTIL"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "kind": "classic",
+   "roster_position": "G",
+   "position": "G",
+   "slots": [
+    "G"
+   ]
+  },
+  {
+   "sport": "NHL",
+   "kind": "classic",
+   "roster_position": "G/UTIL",
+   "position": "G",
+   "slots": null
+  },
+  {
+   "sport": "CFB",
+   "kind": "classic",
+   "roster_position": "RB/FLEX/S-FLEX",
+   "position": "RB",
+   "slots": [
+    "RB",
+    "FLEX",
+    "S-FLEX"
+   ]
+  },
+  {
+   "sport": "CFB",
+   "kind": "classic",
+   "roster_position": "QB/S-FLEX",
+   "position": "QB",
+   "slots": [
+    "QB",
+    "S-FLEX"
+   ]
+  },
+  {
+   "sport": "CFB",
+   "kind": "classic",
+   "roster_position": "WR/FLEX/S-FLEX",
+   "position": "WR",
+   "slots": [
+    "WR",
+    "FLEX",
+    "S-FLEX"
+   ]
+  },
+  {
+   "sport": "CFB",
+   "kind": "classic",
+   "roster_position": "QB/FLEX/S-FLEX",
+   "position": "QB",
+   "slots": null
+  }
+ ],
+ "legality": [
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "legal stack (QB + same-team WR), 2 games",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": true
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "salary over $50,000",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 13000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "duplicate player",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 1,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "K in FLEX",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "K",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "TE in a WR slot",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "TE",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "TE at FLEX",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": true
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "single game",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "no QB stack",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "DST facing its own QB",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 9,
+     "pos": "DST",
+     "salary": 3000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "classic",
+   "label": "8 players",
+   "players": [
+    {
+     "id": 1,
+     "pos": "QB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 2,
+     "pos": "RB",
+     "salary": 6000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 3,
+     "pos": "RB",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 4,
+     "pos": "WR",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 5,
+     "pos": "WR",
+     "salary": 5000,
+     "team": "KC",
+     "opp": "LV",
+     "game": "LV@KC"
+    },
+    {
+     "id": 6,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    },
+    {
+     "id": 7,
+     "pos": "TE",
+     "salary": 4000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 8,
+     "pos": "WR",
+     "salary": 4000,
+     "team": "LV",
+     "opp": "KC",
+     "game": "LV@KC"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "label": "legal captain lineup (K, DST eligible)",
+   "players": [
+    {
+     "id": 11,
+     "pos": "QB",
+     "salary": 10500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF",
+     "cpt_salary": 15750
+    },
+    {
+     "id": 12,
+     "pos": "WR",
+     "salary": 8000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 13,
+     "pos": "RB",
+     "salary": 7000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 14,
+     "pos": "K",
+     "salary": 4500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 15,
+     "pos": "DST",
+     "salary": 3500,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 16,
+     "pos": "TE",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    }
+   ],
+   "legal": true
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "label": "one team only",
+   "players": [
+    {
+     "id": 11,
+     "pos": "QB",
+     "salary": 10500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF",
+     "cpt_salary": 15750
+    },
+    {
+     "id": 12,
+     "pos": "WR",
+     "salary": 8000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 13,
+     "pos": "RB",
+     "salary": 7000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 14,
+     "pos": "K",
+     "salary": 4500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 15,
+     "pos": "DST",
+     "salary": 3500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 16,
+     "pos": "TE",
+     "salary": 5000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NFL",
+   "kind": "showdown",
+   "label": "captain salary over the cap",
+   "players": [
+    {
+     "id": 11,
+     "pos": "QB",
+     "salary": 10500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF",
+     "cpt_salary": 25000
+    },
+    {
+     "id": 12,
+     "pos": "WR",
+     "salary": 8000,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 13,
+     "pos": "RB",
+     "salary": 7000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 14,
+     "pos": "K",
+     "salary": 4500,
+     "team": "BUF",
+     "opp": "MIA",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 15,
+     "pos": "DST",
+     "salary": 3500,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    },
+    {
+     "id": 16,
+     "pos": "TE",
+     "salary": 5000,
+     "team": "MIA",
+     "opp": "BUF",
+     "game": "MIA@BUF"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "label": "legal (one game: NBA keeps its original checks)",
+   "players": [
+    {
+     "id": 21,
+     "pos": "PG",
+     "salary": 9000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 22,
+     "pos": "SG",
+     "salary": 7000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 23,
+     "pos": "SF",
+     "salary": 6000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 24,
+     "pos": "PF",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 25,
+     "pos": "C",
+     "salary": 6000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 26,
+     "pos": "PG/SG",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 27,
+     "pos": "SF/PF",
+     "salary": 5000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 28,
+     "pos": "C",
+     "salary": 4000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    }
+   ],
+   "legal": true
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "label": "C in the PG slot",
+   "players": [
+    {
+     "id": 25,
+     "pos": "C",
+     "salary": 6000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 22,
+     "pos": "SG",
+     "salary": 7000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 23,
+     "pos": "SF",
+     "salary": 6000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 24,
+     "pos": "PF",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 21,
+     "pos": "PG",
+     "salary": 9000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 26,
+     "pos": "PG/SG",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 27,
+     "pos": "SF/PF",
+     "salary": 5000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 28,
+     "pos": "C",
+     "salary": 4000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NBA",
+   "kind": "classic",
+   "label": "salary over the cap",
+   "players": [
+    {
+     "id": 21,
+     "pos": "PG",
+     "salary": 15000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 22,
+     "pos": "SG",
+     "salary": 7000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 23,
+     "pos": "SF",
+     "salary": 6000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 24,
+     "pos": "PF",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 25,
+     "pos": "C",
+     "salary": 6000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 26,
+     "pos": "PG/SG",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 27,
+     "pos": "SF/PF",
+     "salary": 5000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 28,
+     "pos": "C",
+     "salary": 4000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    }
+   ],
+   "legal": false
+  },
+  {
+   "sport": "NBA",
+   "kind": "showdown",
+   "label": "legal",
+   "players": [
+    {
+     "id": 21,
+     "pos": "PG",
+     "salary": 9000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 22,
+     "pos": "SG",
+     "salary": 7000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 23,
+     "pos": "SF",
+     "salary": 6000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 24,
+     "pos": "PF",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    },
+    {
+     "id": 25,
+     "pos": "C",
+     "salary": 6000,
+     "team": "BOS",
+     "opp": "LAL",
+     "game": "g"
+    },
+    {
+     "id": 26,
+     "pos": "PG/SG",
+     "salary": 5000,
+     "team": "LAL",
+     "opp": "BOS",
+     "game": "g"
+    }
+   ],
+   "legal": true
+  }
+ ],
+ "implied_corr": {
+  "sport": "NFL",
+  "players": [
+   {
+    "position": "QB",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "WR",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "TE",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "RB",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "DST",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "QB",
+    "team": "MIA",
+    "opp": "BUF",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "WR",
+    "team": "MIA",
+    "opp": "BUF",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "DST",
+    "team": "MIA",
+    "opp": "BUF",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "K",
+    "team": "BUF",
+    "opp": "MIA",
+    "game": "MIA@BUF"
+   },
+   {
+    "position": "QB",
+    "team": "KC",
+    "opp": "LV",
+    "game": "LV@KC"
+   }
+  ],
+  "matrix": [
+   [
+    1.0,
+    0.35250000000000004,
+    0.30500000000000005,
+    0.15900000000000003,
+    0.020000000000000004,
+    0.09,
+    0.075,
+    -0.21750000000000003,
+    0.11499999999999999,
+    0.0
+   ],
+   [
+    0.35250000000000004,
+    1.0,
+    0.2485,
+    0.1275,
+    0.015,
+    0.075,
+    0.0625,
+    -0.1725,
+    0.09,
+    0.0
+   ],
+   [
+    0.30500000000000005,
+    0.2485,
+    1.0,
+    0.11510000000000001,
+    0.015,
+    0.066,
+    0.055,
+    -0.155,
+    0.08549999999999999,
+    0.0
+   ],
+   [
+    0.15900000000000003,
+    0.1275,
+    0.11510000000000001,
+    1.0,
+    0.10500000000000001,
+    0.054,
+    0.045,
+    -0.125,
+    0.11449999999999999,
+    0.0
+   ],
+   [
+    0.020000000000000004,
+    0.015,
+    0.015,
+    0.10500000000000001,
+    1.0,
+    -0.21750000000000003,
+    -0.1725,
+    -0.08000000000000002,
+    0.034999999999999996,
+    0.0
+   ],
+   [
+    0.09,
+    0.075,
+    0.066,
+    0.054,
+    -0.21750000000000003,
+    1.0,
+    0.35250000000000004,
+    0.020000000000000004,
+    0.045,
+    0.0
+   ],
+   [
+    0.075,
+    0.0625,
+    0.055,
+    0.045,
+    -0.1725,
+    0.35250000000000004,
+    1.0,
+    0.015,
+    0.0375,
+    0.0
+   ],
+   [
+    -0.21750000000000003,
+    -0.1725,
+    -0.155,
+    -0.125,
+    -0.08000000000000002,
+    0.020000000000000004,
+    0.015,
+    1.0,
+    -0.13999999999999999,
+    0.0
+   ],
+   [
+    0.11499999999999999,
+    0.09,
+    0.08549999999999999,
+    0.11449999999999999,
+    0.034999999999999996,
+    0.045,
+    0.0375,
+    -0.13999999999999999,
+    1.0,
+    0.0
+   ],
+   [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    1.0
+   ]
+  ],
+  "tol": 1e-09
+ },
+ "entries_headers": [
+  {
+   "header": [
+    "Entry ID",
+    "Contest Name",
+    "Contest ID",
+    "Entry Fee",
+    "PG",
+    "SG",
+    "SF",
+    "PF",
+    "C",
+    "G",
+    "F",
+    "UTIL",
+    "",
+    "Instructions"
+   ],
+   "expect": {
+    "sport": "NBA",
+    "kind": "classic"
+   }
+  },
+  {
+   "header": [
+    "Entry ID",
+    "Contest Name",
+    "Contest ID",
+    "Entry Fee",
+    "CPT",
+    "UTIL",
+    "UTIL",
+    "UTIL",
+    "UTIL",
+    "UTIL"
+   ],
+   "expect": {
+    "sport": "NBA",
+    "kind": "showdown"
+   }
+  },
+  {
+   "header": [
+    "Entry ID",
+    "Contest Name",
+    "Contest ID",
+    "Entry Fee",
+    "QB",
+    "RB",
+    "RB",
+    "WR",
+    "WR",
+    "WR",
+    "TE",
+    "FLEX",
+    "DST",
+    "",
+    "Instructions"
+   ],
+   "expect": {
+    "sport": "NFL",
+    "kind": "classic"
+   }
+  },
+  {
+   "header": [
+    "Entry ID",
+    "Contest Name",
+    "Contest ID",
+    "Entry Fee",
+    "CPT",
+    "FLEX",
+    "FLEX",
+    "FLEX",
+    "FLEX",
+    "FLEX"
+   ],
+   "expect": {
+    "sport": "NFL",
+    "kind": "showdown"
+   }
+  },
+  {
+   "header": [
+    "Entry ID",
+    "Contest Name",
+    "Contest ID",
+    "Entry Fee",
+    "QB",
+    "RB",
+    "WR",
+    "WR",
+    "WR",
+    "TE",
+    "FLEX",
+    "DST"
+   ],
+   "expect": null
+  },
+  {
+   "header": [
+    "Contest Name",
+    "QB",
+    "RB",
+    "RB",
+    "WR",
+    "WR",
+    "WR",
+    "TE",
+    "FLEX",
+    "DST"
+   ],
+   "expect": null
+  }
+ ],
+ "malformed_registries": [
+  {
+   "label": "code differs from its key",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "BBB"
+     }
+    }
+   }
+  },
+  {
+   "label": "slot position outside the kind's positions",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "AAA",
+      "kinds": {
+       "classic": {
+        "cap": 50000,
+        "positions": [
+         "A",
+         "B"
+        ],
+        "slots": [
+         {
+          "label": "X",
+          "pos": [
+           "Z"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "cap not positive",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "AAA",
+      "kinds": {
+       "classic": {
+        "cap": 0,
+        "positions": [
+         "A",
+         "B"
+        ],
+        "slots": [
+         {
+          "label": "X",
+          "pos": [
+           "A"
+          ]
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "showdown with two multiplier slots",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "AAA",
+      "kinds": {
+       "showdown": {
+        "cap": 50000,
+        "positions": [
+         "A",
+         "B"
+        ],
+        "slots": [
+         {
+          "label": "CPT",
+          "pos": "*",
+          "mult": 1.5
+         },
+         {
+          "label": "CPT",
+          "pos": "*",
+          "mult": 1.5
+         }
+        ]
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "factor loadings sum of squares >= 0.95",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "AAA",
+      "corr": {
+       "model": "factor",
+       "factors": [
+        {
+         "name": "team",
+         "scope": "team"
+        }
+       ],
+       "loadings": {
+        "QB": {
+         "team": 0.98
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  {
+   "label": "non-integer game_types key",
+   "registry": {
+    "sports": {
+     "AAA": {
+      "code": "AAA",
+      "game_types": {
+       "classic": {
+        "kind": "classic"
+       }
+      }
+     }
+    }
+   }
+  }
+ ]
+}

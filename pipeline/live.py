@@ -12,6 +12,12 @@ slate with the projections as they stand, publishes the pool, then upgrades it
 to exactly-solved lineups. Progress is published in run_status.json.
 
 A watchdog ends any pass that hangs; the updater script restarts the loop.
+
+Other sports (pipeline/scheduler.py) run after the NBA pass in whatever is left
+of each interval; the NBA pass itself, its interval and the 600 s background
+block are unchanged. SIGMA_SPORTS=NBA turns the other sports off entirely.
+Owner sim requests for a non-NBA draft group (data/state/dg_index.json) go to
+that sport's runner and report `sport` in run_status.json.
 """
 from __future__ import annotations
 
@@ -82,6 +88,8 @@ class Control:
         self.limiter = limiter if limiter is not None else owner.RateLimiter()
         self.ignored: dict[str, int] = {}
         self._logged = 0.0
+        self.pending: list[dict] = []          # requests seen by check() while other sports' jobs ran
+        self.scheduler = None
 
     def _summary(self) -> None:
         if self.ignored and time.time() - self._logged >= self.LOG_EVERY:
@@ -89,6 +97,17 @@ class Control:
             log.info("control: ignored %d request%s (%s)", n, "" if n == 1 else "s",
                      ", ".join(f"{k} {v}" for k, v in sorted(self.ignored.items())))
             self.ignored, self._logged = {}, time.time()
+
+    def check(self) -> bool:
+        """Poll now and keep any valid request for the next take(); True if one is waiting."""
+        self.pending = (self.pending + self.poll())[-1:]
+        return bool(self.pending)
+
+    def take(self) -> list[dict]:
+        """Requests stashed by check() plus a fresh poll (the newest valid one)."""
+        out = (self.pending + self.poll())[-1:]
+        self.pending = []
+        return out
 
     def poll(self) -> list[dict]:
         try:
@@ -119,7 +138,10 @@ class Control:
         """handle_request inside the rate limiter."""
         self.limiter.start()
         try:
-            handle_request(req, do_notify=do_notify)
+            if self.scheduler is not None:
+                handle_request(req, do_notify=do_notify, scheduler=self.scheduler)
+            else:
+                handle_request(req, do_notify=do_notify)
         finally:
             self.limiter.finish()
 
@@ -189,9 +211,22 @@ def write_status(**kw) -> None:
     path.write_text(json.dumps(kw, indent=1))
 
 
-def handle_request(req: dict, do_notify: bool) -> None:
+def make_scheduler():
+    """The other sports' scheduler, or None when only NBA is enabled (SIGMA_SPORTS=NBA)."""
+    from . import sports
+    if [c for c in sports.enabled() if c != "NBA"]:
+        from .scheduler import Scheduler
+        sched = Scheduler()
+        return sched if sched.codes else None
+    return None
+
+
+def handle_request(req: dict, do_notify: bool, scheduler=None) -> None:
     """Fast pool first (published within about a minute), then the exact upgrade."""
     slate, rid = int(req["slate_id"]), req.get("req", "")
+    sport = scheduler.sport_for(slate) if scheduler is not None else None
+    if sport:
+        return _handle_sport_request(scheduler, sport, slate, rid)
     write_status(state="running", slate_id=slate, req=rid, phase="fast",
                  message="Simulating 10,000 lineups x 1,000,000 contests…")
     publish()
@@ -215,6 +250,69 @@ def handle_request(req: dict, do_notify: bool) -> None:
         publish()
 
 
+def _handle_sport_request(scheduler, sport: str, slate: int, rid: str) -> None:
+    """handle_request for a non-NBA draft group: the same statuses, plus `sport`."""
+    write_status(state="running", slate_id=slate, req=rid, phase="fast", sport=sport,
+                 message="Simulating 10,000 lineups x 1,000,000 contests…")
+    publish()
+    for phase in ("fast", "exact"):
+        res = scheduler.run_sim(sport, datetime.now(timezone.utc), {"slate_id": slate, "phase": phase, "req": rid})
+        if res.get("sim_errors"):
+            write_status(state="error", slate_id=slate, req=rid, phase=phase, sport=sport,
+                         message=res["sim_errors"][0][:300])
+            publish()
+            return
+        if not res.get("sims_ran"):
+            write_status(state="error", slate_id=slate, req=rid, phase=phase, sport=sport,
+                         message="This slate is locked or no longer listed on DraftKings.")
+            publish()
+            return
+        if phase == "fast":
+            write_status(state="running", slate_id=slate, req=rid, phase="exact", sport=sport,
+                         message="Lineups ready. Upgrading to exactly-solved lineups (2-3 min)…")
+        else:
+            write_status(state="done", slate_id=slate, req=rid, phase="exact", sport=sport,
+                         message="Exact lineups ready.")
+        publish()
+
+
+def run_other_sports(scheduler, t_left: float, control=None) -> bool:
+    """The scheduler's turn after the NBA pass; publishes if anything changed."""
+    from .scheduler import nba_next_lock
+    if scheduler is None or t_left <= 0:
+        return False
+    faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
+    try:
+        res = scheduler.run_due(datetime.now(timezone.utc), t_left, nba_next_lock(DATA_DIR),
+                                stop=(control.check if control else None))
+        if res["changed"]:
+            publish()
+        return bool(res["changed"])
+    except Exception as e:  # noqa: BLE001 - other sports must never stop the NBA loop
+        log.warning("other sports failed: %s", e)
+        return False
+    finally:
+        faulthandler.cancel_dump_traceback_later()
+
+
+def run_background_sports(scheduler) -> bool:
+    """Other sports' long jobs (weekly backtest audit), from the 600 s block."""
+    from .scheduler import nba_next_lock
+    if scheduler is None:
+        return False
+    faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
+    try:
+        res = scheduler.run_background(datetime.now(timezone.utc), nba_next_lock(DATA_DIR))
+        if res["changed"]:
+            publish()
+        return bool(res["changed"])
+    except Exception as e:  # noqa: BLE001
+        log.warning("other sports' background jobs failed: %s", e)
+        return False
+    finally:
+        faulthandler.cancel_dump_traceback_later()
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--minutes", type=float, default=30.0, help="how long to keep polling")
@@ -224,6 +322,9 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     control = make_control()
+    scheduler = make_scheduler()
+    if control is not None:
+        control.scheduler = scheduler
     deadline = time.time() + args.minutes * 60
     last_patterns = 0.0
     last_industry = 0.0
@@ -243,7 +344,7 @@ def main(argv=None) -> int:
         # updater script restarts the loop a few seconds later
         faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
         try:
-            reqs = control.poll() if control else []
+            reqs = control.take() if control else []
             if reqs:
                 control.run(reqs[-1], do_notify=not args.no_notify)
             else:
@@ -269,6 +370,8 @@ def main(argv=None) -> int:
         finally:
             faulthandler.cancel_dump_traceback_later()
         first = False
+        # other sports in what is left of this interval (NBA's pass above is untouched)
+        run_other_sports(scheduler, args.interval - (time.time() - t0) - 5.0, control)
         try:                          # new contest-standings exports in Downloads: import right away
             if contests.watch():
                 publish()
@@ -314,6 +417,7 @@ def main(argv=None) -> int:
                 log.warning("calibration failed: %s", e)
             finally:
                 faulthandler.cancel_dump_traceback_later()
+            run_background_sports(scheduler)       # other sports' weekly audit (never near a lock)
         # wait for the next pass, answering "Run simulations" within a few seconds and
         # starting the pass early when the news feeds change
         while time.time() - t0 < args.interval and time.time() < deadline:
@@ -323,7 +427,7 @@ def main(argv=None) -> int:
             except Exception as e:  # noqa: BLE001
                 log.debug("news watch failed: %s", e)
             if control:
-                reqs = control.poll()
+                reqs = control.take()
                 if reqs:
                     faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
                     try:

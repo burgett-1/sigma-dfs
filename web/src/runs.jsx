@@ -69,15 +69,16 @@ function defaultSize() {
 }
 const SIZE_LABEL = { quick: "Quick", standard: "Standard", bigger: "Bigger" };
 
-export function BrowserRunPanel({ run, players, slate, corr, rules, onDone, lastRun }) {
+export function BrowserRunPanel({ run, players, slate, corr, rules, onDone, lastRun, spec }) {
   const [size, setSize] = useState(defaultSize);
   const st = run.state;
   const busy = st.phase === "running";
-  const can = !!slate && players && players.length >= 8;
+  const can = !!slate && players && players.length >= (spec ? spec.size : 8);
   const sz = SIZES[size];
   function go() {
     const opts = { kind: slate.kind === "showdown" ? "showdown" : "classic", corr, rules, lineups: sz.lineups, sims: sz.sims,
       fieldSample: sz.fieldSample, fieldSize: 10000, seed: (Date.now() % 2147483647) >>> 0, slateId: slate.id };
+    if (spec) opts.spec = spec;              // sport rules (sports.js specFor); NBA passes none
     run.start(players, opts).then((doc) => { if (doc) onDone(doc); });
   }
   return (

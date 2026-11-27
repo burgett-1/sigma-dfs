@@ -1,5 +1,6 @@
 import json
 import os
+import time
 import zipfile
 
 import numpy as np
@@ -139,8 +140,8 @@ def test_parse_ignores_bad_percentages_and_short_rows():
     ({"PG", "SG", "SF", "PF", "C"}, "NBA"),
     ({"QB", "RB", "WR", "TE", "FLEX", "DST"}, "NFL"),
     ({"P", "C", "1B", "2B", "3B", "SS", "OF"}, "MLB"),
-    ({"G"}, "OTHER"),
-    ({"F"}, "OTHER"),
+    ({"G"}, "GOLF"),     # was OTHER: detection is now sport-specific (Phase 3)
+    ({"F"}, "MMA"),      # was OTHER
     ({"CPT", "UTIL"}, "UNKNOWN"),
     (set(), "UNKNOWN"),
 ])
@@ -304,7 +305,8 @@ def test_import_new_accepts_nba_and_rejects_the_rest(private, monkeypatch):
     rej = json.loads((contests.CONTESTS / "index.json").read_text())["rejected"]
     assert rej["503"]["reason"] == "empty" and rej["504"]["reason"] == "partial" and rej["506"]["reason"] == "no_csv"
     assert rej["507"]["reason"] == "not_nba:NFL" and rej["508"]["reason"] == "not_nba:MLB"
-    assert rej["509"]["reason"] == "not_nba:OTHER" and rej["510"]["reason"] == "malformed"
+    # F-only is now detected as MMA (was OTHER): sport-specific detection, Phase 3
+    assert rej["509"]["reason"] == "not_nba:MMA" and rej["510"]["reason"] == "malformed"
     assert "505" not in rej                                            # settling files are simply retried later
     assert {f: (f.stat().st_size, f.stat().st_mtime) for f in before} == before    # originals untouched
     calls = []
@@ -346,3 +348,51 @@ def test_watch_refreshes_once_and_is_rate_limited(private, monkeypatch):
     assert "701" not in text and "zz_user_one" not in text and "EntryId" not in text
     assert json.loads(text)["samples"]["contests"] == 1
     assert contests.watch(now=1200.0) == [] and calls == [1]
+
+
+# ── Phase 3: per-sport detection and NFL import ─────────────────────────────
+@pytest.mark.parametrize("slots,expected", [
+    ({"QB", "RB", "WR", "FLEX", "S-FLEX"}, "CFB"),
+    ({"C", "W", "D", "G", "UTIL"}, "NHL"),
+    ({"D"}, "NAS"),
+    ({"QB", "RB", "WR", "TE", "FLEX", "DST"}, "NFL"),
+    ({"CPT", "FLEX"}, "UNKNOWN"),
+])
+def test_detect_sport_phase3(slots, expected):
+    assert contests.detect_sport(slots) == expected
+
+
+def test_detect_nfl_showdown_by_roster_names():
+    assert contests.detect_sport({"CPT", "FLEX"}, names=["Josh Allen", "James Cook"],
+                                 rosters={"NFL": {"josh allen", "james cook"}}) == "NFL"
+
+
+def _nfl_export_file(folder, cid):
+    from tests.fixtures.nfl import synthetic_nfl as N
+    p = folder / f"contest-standings-{cid}.csv"
+    p.write_text(N.contest_export())
+    old = time.time() - 600
+    os.utime(p, (old, old))
+    return p
+
+
+def test_nfl_export_accepted_only_when_nfl_enabled_and_rejections_retried(monkeypatch, tmp_path):
+    imp = tmp_path / "_import"
+    _nfl_export_file(imp, "777001")
+    assert contests.import_new() == []
+    rej = contests._meta()["rejected"]["777001"]
+    assert rej["reason"] == "not_nba:NFL"
+    assert contests.import_new() == []                       # same file, still rejected: not re-read
+    monkeypatch.setenv("SIGMA_SPORTS", "NBA,NFL")
+    assert contests.import_new() == ["777001"]               # retried once NFL is accepted
+    assert contests._meta()["777001"]["sport"] == "NFL"
+    loaded = contests.load_all()
+    assert [c["sport"] for c in loaded] == ["NFL"] and not any(contests.is_nba(c) for c in loaded)
+
+
+def test_nfl_snapshot_goes_to_its_own_folder():
+    rows = [{"name": "Kc Qb A", "proj": 20.0, "own": 12.0, "salary": 7400}]
+    contests.snapshot(900001, "2026-11-29", rows, sport="NFL")
+    assert (contests.SNAPSHOTS / "nfl" / "2026-11-29" / "900001.json").exists()
+    assert not (contests.SNAPSHOTS / "2026-11-29").exists()
+    assert contests.snapshot_names() == set()                # NBA name set unaffected

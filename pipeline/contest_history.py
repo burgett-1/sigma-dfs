@@ -1,4 +1,8 @@
-"""Public, aggregate-only history of DraftKings NBA contests (data/contest_history.json).
+"""Public, aggregate-only history of DraftKings contests: NBA in
+data/contest_history.json (unchanged), NFL in data/nfl/contest_history.json
+(same schema, sport "NFL", plus a `structure` block: entry-size buckets, winning
+and cash-line scores, ownership concentration and FLEX use by position, QB-stack,
+bring-back and DST-facing-own-QB rates).
 
 Built from the private contest-standings exports (see contests.py). The output is
 safe to publish: it holds contest-level score/ownership profiles and player-level
@@ -216,9 +220,12 @@ def _err(sel) -> dict:
     return {"n": len(sel), "mae": _r(np.abs(d).mean()), "bias": _r(d.mean())}
 
 
-def build(contests: list[dict], snapshots_dir: Path | None, nba_names: set[str] | None = None) -> dict:
+def build(contests: list[dict], snapshots_dir: Path | None, nba_names: set[str] | None = None,
+          sport: str = "NBA", context: dict | None = None) -> dict:
     """Parsed contests -> the public document (schema version 1). Pure apart from
-    reading the snapshot folder."""
+    reading the snapshot folder. `sport` selects which contests count (NBA by
+    default, exactly as before); `context` (NFL) maps names to positions/teams
+    for the structure block (see nfl_context)."""
     snaps = _snapshots(snapshots_dir)
     known = set(nba_names or ())
     for s in snaps:
@@ -236,18 +243,18 @@ def build(contests: list[dict], snapshots_dir: Path | None, nba_names: set[str] 
         if cid and cid in seen:
             continue
         seen.add(cid)
-        sport = c.get("sport") or C.detect_sport(c.get("slots_seen", []), c.get("lineup_tokens", []))
-        if sport == "UNKNOWN" and c.get("kind") == "showdown":
-            sport = C.detect_sport(c.get("slots_seen", []), c.get("lineup_tokens", []),
-                                   names=list(c.get("own") or {}), nba_names=known)
-        if sport != "NBA":
-            k = ("unknown_sport" if sport == "UNKNOWN" else "not_nba", sport)
+        csport = c.get("sport") or C.detect_sport(c.get("slots_seen", []), c.get("lineup_tokens", []))
+        if csport == "UNKNOWN" and c.get("kind") == "showdown" and sport == "NBA":
+            csport = C.detect_sport(c.get("slots_seen", []), c.get("lineup_tokens", []),
+                                    names=list(c.get("own") or {}), nba_names=known)
+        if csport != sport:
+            k = ("unknown_sport" if csport == "UNKNOWN" else ("not_nba" if sport == "NBA" else "other_sport"), csport)
             skipped[k] = skipped.get(k, 0) + 1
             continue
         entries = c.get("entries") or []
         scored = [e for e in entries if e.get("players")]
         if not scored:
-            skipped[("empty", "NBA")] = skipped.get(("empty", "NBA"), 0) + 1
+            skipped[("empty", sport)] = skipped.get(("empty", sport), 0) + 1
             continue
         keep.append((c, entries, scored))
 
@@ -327,16 +334,127 @@ def build(contests: list[dict], snapshots_dir: Path | None, nba_names: set[str] 
         "fit": {"used": bool(fit.get("used")), "slope_raw": fit.get("slope_raw"), "weight": fit.get("weight"),
                 "slope": fit.get("slope"), "intercept": fit.get("intercept")},
     }
-    return {
+    doc = {
         "version": VERSION,
         "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "sport": "NBA",
+        "sport": sport,
         "note": NOTE,
         "contests": docs,
         "players": {"columns": COLUMNS, "rows": rows_out},
         "calibration": calibration,
         "skipped": [{"reason": r, "detected": d, "count": n} for (r, d), n in sorted(skipped.items(), key=str)],
         "samples": {"contests": len(docs), "player_rows": len(rows_out), "nights": len(nights)},
+    }
+    if sport == "NFL":
+        doc["structure"] = nfl_structure([(t[2], t[4], d) for t, d in zip(staged, docs)], context or {})
+    return doc
+
+
+# ── NFL structure block (aggregates only) ───────────────────────────────────
+NFL_GROUPS = ("QB", "RB", "WR", "TE", "DST")
+
+
+def nfl_context(hist, games=None) -> dict:
+    """name key -> position and team, from the nflverse history (DST by nickname),
+    plus {(season, week, team): opp}. Week-specific teams are looked up by date."""
+    from .sports.nfl import teams as T
+    pos, team = {}, {}
+    if hist is not None and len(hist):
+        last = hist.sort_values(["season", "week"]).drop_duplicates("player_id", keep="last")
+        for n, p, t in zip(last["name"], last["position"], last["team"]):
+            pos[norm_name(str(n))] = p
+            team[norm_name(str(n))] = t
+    for t in T.TEAMS:
+        pos[norm_name(t["nickname"])] = "DST"
+        team[norm_name(t["nickname"])] = t["dk"]
+    opp = {}
+    if hist is not None and len(hist):
+        for s, w, t, o in hist[["season", "week", "team", "opp"]].drop_duplicates().itertuples(index=False):
+            opp[(int(s), int(w), t)] = o
+    weeks = {}
+    if games is not None and len(games):
+        for s, w, d in games[["season", "week", "gameday"]].dropna().itertuples(index=False):
+            weeks[str(d)] = (int(s), int(w))
+    return {"pos": pos, "team": team, "opp": opp, "weeks": weeks}
+
+
+def _week_of(c: dict, ctx: dict):
+    fd = c.get("file_date")
+    if not fd:
+        return None
+    try:
+        d = date.fromisoformat(fd)
+    except ValueError:
+        return None
+    for back in range(0, 4):
+        wk = ctx.get("weeks", {}).get((d - timedelta(days=back)).isoformat())
+        if wk:
+            return wk
+    return None
+
+
+def nfl_structure(items: list, ctx: dict) -> dict:
+    """items: (contest, scored entries, public doc). Means across contests."""
+    pos, team, opp = ctx.get("pos", {}), ctx.get("team", {}), ctx.get("opp", {})
+    buckets: dict[str, int] = {}
+    win, cash = [], []
+    conc = {p: {"top1": [], "top3": [], "hhi": []} for p in NFL_GROUPS}
+    flex = {"RB": 0.0, "WR": 0.0, "TE": 0.0}
+    rates = {"qb_stack": [], "bring_back": [], "dst_vs_own_qb": []}
+    for c, scored, d in items:
+        buckets[d["size_bucket"]] = buckets.get(d["size_bucket"], 0) + 1
+        pts = sorted((e["points"] for e in scored), reverse=True)
+        if pts:
+            win.append(pts[0])
+            cash.append(pts[max(0, int(len(pts) * 0.2) - 1)])
+        own, slots = c.get("own") or {}, c.get("own_slots") or {}
+        for p in NFL_GROUPS:
+            v = np.sort(np.array([o for k, o in own.items() if pos.get(k) == p and o > 0]))[::-1]
+            if len(v):
+                sh = v / v.sum()
+                conc[p]["top1"].append(sh[:1].sum())
+                conc[p]["top3"].append(sh[:3].sum())
+                conc[p]["hhi"].append((sh ** 2).sum())
+        for k, sl in slots.items():
+            if pos.get(k) in flex and sl.get("FLEX"):
+                flex[pos[k]] += float(sl["FLEX"])
+        wk = _week_of(c, ctx)
+        if c.get("kind", "classic") != "classic":
+            continue
+        n_stack = n_back = n_dst = n_qb = 0
+        for e in scored:
+            ks = [(s, norm_name(nm)) for s, nm in e["players"]]
+            qbs = [k for s, k in ks if pos.get(k) == "QB"]
+            if not qbs:
+                continue
+            q = qbs[0]
+            qt = team.get(q)
+            if not qt:
+                continue
+            n_qb += 1
+            mates = [k for s, k in ks if k != q and pos.get(k) in ("WR", "TE") and team.get(k) == qt]
+            n_stack += bool(mates)
+            o = opp.get((wk[0], wk[1], qt)) if wk else None
+            if o:
+                n_back += any(pos.get(k) in ("RB", "WR", "TE") and team.get(k) == o for s, k in ks)
+                n_dst += any(pos.get(k) == "DST" and team.get(k) == o for s, k in ks)
+        if n_qb:
+            rates["qb_stack"].append(n_stack / n_qb)
+            if wk:
+                rates["bring_back"].append(n_back / n_qb)
+                rates["dst_vs_own_qb"].append(n_dst / n_qb)
+    tot = sum(flex.values())
+    return {
+        "entries_buckets": buckets,
+        "winning_score": _r(np.mean(win)) if win else None,
+        "cash_line_estimate": _r(np.mean(cash)) if cash else None,
+        "cash_line_def": "score at the top-20% rank, mean across contests",
+        "ownership_concentration": {p: {k: _r(np.mean(v), 4) if v else None for k, v in d.items()}
+                                    for p, d in conc.items()},
+        "flex_composition": {p: _r(v / tot, 3) for p, v in flex.items()} if tot > 0 else None,
+        "qb_stack_rate": _r(np.mean(rates["qb_stack"]), 4) if rates["qb_stack"] else None,
+        "bring_back_rate": _r(np.mean(rates["bring_back"]), 4) if rates["bring_back"] else None,
+        "dst_vs_own_qb_rate": _r(np.mean(rates["dst_vs_own_qb"]), 4) if rates["dst_vs_own_qb"] else None,
     }
 
 
@@ -347,14 +465,16 @@ def _same_content(a: dict, b: dict) -> bool:
     return {k: v for k, v in a.items() if k != "generated_at"} == {k: v for k, v in b.items() if k != "generated_at"}
 
 
-def write_public(contests: list[dict], snapshots_dir: Path | None, out_path: Path) -> dict:
+def write_public(contests: list[dict], snapshots_dir: Path | None, out_path: Path, sport: str = "NBA",
+                 context: dict | None = None) -> dict:
     """Build and write atomically (tmp file then rename).
 
     Skips the write when the existing file differs only in generated_at, so the
     live loop doesn't create a data-branch commit every pass. The returned doc
     carries no extra keys; whether it was written is logged and available as
     write_public.last_written (True/False)."""
-    doc = build(contests, snapshots_dir)
+    doc = build(contests, snapshots_dir, sport=sport, context=context) if sport != "NBA" else \
+        build(contests, snapshots_dir)
     out_path = Path(out_path)
     try:
         old = json.loads(out_path.read_text(encoding="utf-8"))

@@ -2,8 +2,10 @@
 import { useState, useRef, useEffect, useMemo, Fragment } from "react";
 import { fillEntries } from "./lateswap.js";
 import { MarketsView, ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
-import { OH, BG, CARD, BR, MU, GR, RE, YE, TX, ACC, ACC2, SURF2, LINE2, POS_COLORS, alpha } from "./theme.js";
-import { HudStrip, ThemeToggle, EmptyState, StaleBanner, SlateOffline, LiveDot } from "./hud.jsx";
+import { OH, BG, CARD, BR, MU, GR, RE, YE, TX, ACC, ACC2, SURF2, LINE2, POS_COLORS, alpha, posColors } from "./theme.js";
+import { HudStrip, ThemeToggle, EmptyState, StaleBanner, SlateOffline, LiveDot, SportSwitcher, ScoringBadge } from "./hud.jsx";
+import REGISTRY from "./sports/registry.json";
+import { specFor, sportBase, sportsIndex, validateRegistry, detectEntriesSport, pickInitialSport, listedSport } from "./sports.js";
 import { LeverageRadar, PoolInsights, OwnershipLab, ModelAccuracy, PlayerOutcome } from "./insights.jsx";
 import { QuantileBox, DivergingBar, BarList } from "./charts.jsx";
 import { quantileBox, realityCheck, synthSlate, freshness, validateContestHistory } from "./datautil.js";
@@ -60,9 +62,27 @@ const STATUS_COL={Out:RE,Doubtful:RE,Questionable:YE,Probable:"#9ad66b"};
 const STATUS_ABBR={Out:"OUT",Doubtful:"D",Questionable:"Q",Probable:"P"};
 function fetchText(path){return fetch(dataUrl(path),{cache:GH&&DATA_SHA?"default":"no-store"}).then(function(r){if(!r.ok)throw new Error(r.status+" "+path);return r.text();});}
 function fetchJson(path){return fetchText(path).then(function(t){return JSON.parse(t);});}
+// ── sports: NBA data stays at the data root (base ""), every other sport under
+// its registry prefix (data/nfl/...). sports.json, run_status.json and
+// updater_error.json always come from the root.
+const REG_OK=validateRegistry(REGISTRY).length===0;
+if(!REG_OK)try{console.warn("sport registry invalid; NBA only",validateRegistry(REGISTRY));}catch(e){}
+// gen: bumped on every sport switch; responses started under an older gen are dropped
+const SPORT={code:"NBA",base:"",gen:0};
+function sportText(path){return fetchText(SPORT.base+path);}
+function sportJson(path){return fetchJson(SPORT.base+path);}
+function sportKey(k){return SPORT.code==="NBA"?k:k+"_"+SPORT.code.toLowerCase();}
+// ?sport= > saved choice > NBA, enabled sports only (sports.json is checked once it loads)
+function initialSport(){
+  if(!REG_OK)return"NBA";
+  var v=null,s=null;
+  try{v=new URLSearchParams(window.location.search).get("sport");}catch(e){}
+  try{s=localStorage.getItem("sigma_sport");}catch(e){}
+  return pickInitialSport(v,s,REGISTRY);
+}
 // ?slate=<id> opens a slate that is no longer listed (archived replay)
 function urlSlate(){try{var v=new URLSearchParams(window.location.search).get("slate");return v&&/^\d{1,12}$/.test(v)?Number(v):null;}catch(e){return null;}}
-function lastSavedSlate(){try{var s=JSON.parse(localStorage.getItem("sigma_slate")||"null");return s&&s.id!=null?s.id:null;}catch(e){return null;}}
+function lastSavedSlate(){try{var s=JSON.parse(localStorage.getItem(sportKey("sigma_slate"))||"null");return s&&s.id!=null?s.id:null;}catch(e){return null;}}
 const SLATE_TABS=["pool","leverage","lineups","lateswap","single","exposures"];
 function fmtClock(iso){if(!iso)return"—";var d=new Date(iso);return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});}
 function minsAgo(iso){if(!iso)return"";var m=Math.round((Date.now()-new Date(iso).getTime())/60000);return m<1?"just now":m<60?m+" min ago":Math.round(m/60)+" hr ago";}
@@ -145,12 +165,13 @@ function parseProjections(text,sport){
   }
   return players.filter(function(p){return p.salary>0;});
 }
-function parsePlayerIdCsv(text){
+function parsePlayerIdCsv(text,specs){
   var lines=text.replace(/\r/g,"").split("\n");
   var result={headers:[],entries:[],playerMap:{},rawLines:lines,headerLineIdx:-1,slotIdxMap:{},slotIdxList:{}};
   var headerIdx=-1;
   for(var i=0;i<lines.length;i++){
     var low=lines[i].toLowerCase();
+    if(specs){var d=detectEntriesSport(splitLine(lines[i]),REGISTRY);if(d&&d.sport===specs.classic.sport){headerIdx=i;break;}continue;}
     if((low.indexOf("util")!==-1&&low.indexOf("pg")!==-1)||(low.indexOf("1b")!==-1&&low.indexOf("of")!==-1)){headerIdx=i;break;}
   }
   if(headerIdx===-1)return result;
@@ -838,9 +859,9 @@ function ExposuresTab(props){
   );
 }
 
-function renderLineupDetail(lu,sport){
+function renderLineupDetail(lu,sport,pc){
   if(!lu.assigned)return null;
-  var pcMap=NBA_PC;
+  var pcMap=pc||NBA_PC;
   var headers=["Slot","Player","Pos","Team","Salary","Proj","Own%","Boom%","Bust%","Ceiling","Floor"];
   var rows=lu.assigned.map(function(p,i){
     if(!p)return null;
@@ -908,7 +929,7 @@ function LineupCard(props){
           </button>
         </div>
       </div>
-      {expanded?renderLineupDetail(lu,props.sport):null}
+      {expanded?renderLineupDetail(lu,props.sport,props.pc):null}
     </div>
   );
 }
@@ -916,6 +937,13 @@ function LineupCard(props){
 // ── Main App ───────────────────────────────────────────────────────────────
 export default function App(){
   var sport="nba";
+  // DraftKings sport shown (NBA unless ?sport= / the saved choice names another the index lists)
+  var spS=useState(initialSport);var spCode=spS[0];var setSpCode=spS[1];
+  var sidxS=useState(null);var sportsList=sidxS[0];var setSportsList=sidxS[1];
+  SPORT.code=spCode;SPORT.base=spCode==="NBA"?"":sportBase(REGISTRY,spCode);
+  var isNBA=spCode==="NBA";
+  var sportCfg=REGISTRY.sports[spCode]||REGISTRY.sports.NBA;
+  var specs=useMemo(function(){return spCode==="NBA"?null:{classic:specFor(REGISTRY,spCode,"classic"),showdown:specFor(REGISTRY,spCode,"showdown")};},[spCode]);
   var ps=useState([]);var players=ps[0];var setPlayers=ps[1];
   var ls=useState([]);var lineups=ls[0];var setLineups=ls[1];
   var lids=useState(new Set());var likedIds=lids[0];var setLikedIds=lids[1];
@@ -985,8 +1013,8 @@ export default function App(){
   var luNewsS=useState([]);var luNews=luNewsS[0];var setLuNews=luNewsS[1];
   var startersS=useState(null);var startersDoc=startersS[0];var setStartersDoc=startersS[1];
   var patternsS=useState(null);var patternsDoc=patternsS[0];var setPatternsDoc=patternsS[1];
-  var auditS=useState(null);var auditDoc=auditS[0];var setAuditDoc=auditS[1];
-  var histS=useState(null);var historyDoc=histS[0];var setHistoryDoc=histS[1];
+  var auditS=useState(null);var auditDoc=auditS[0];var setAuditDoc=auditS[1];var setAuditState=auditS[1];
+  var histS=useState(null);var historyDoc=histS[0];var setHistoryDoc=histS[1];var setHistoryState=histS[1];
   var archS=useState(null);var archivedSlate=archS[0];var setArchivedSlate=archS[1];
   var archErrS=useState("");var archErr=archErrS[0];var setArchErr=archErrS[1];
   var poolExpS=useState(null);var poolExp=poolExpS[0];var setPoolExp=poolExpS[1];
@@ -1021,15 +1049,18 @@ export default function App(){
   }
   function loadSlate(sl,isUpdate){
     if(!sl)return Promise.resolve();
+    var gen=SPORT.gen;
     slateRef.current=sl.id;setSlateId(sl.id);
-    if(sl.spotlight_file)fetchJson(sl.spotlight_file).then(setSpotlight).catch(function(){setSpotlight(null);});
+    if(sl.spotlight_file)sportJson(sl.spotlight_file).then(function(d){if(gen===SPORT.gen)setSpotlight(d);}).catch(function(){if(gen===SPORT.gen)setSpotlight(null);});
     setTeamStartMap(slateTeamStartMap(sl));
-    return fetchText(sl.file).then(function(t){
+    return sportText(sl.file).then(function(t){
+      if(gen!==SPORT.gen)return;                      // the sport changed while this was loading
       var parsed=applyLiveCsv(t,isUpdate);
       // a displayed browser run is never replaced by a refreshed shared pool (the switch can go back)
       var keepBrowser=function(){return srcRef.current==="browser"&&browserRef.current&&browserRef.current.slateId===sl.id;};
       if(!sl.lineups_file){sharedRef.current=null;setSharedAvail(false);if(!keepBrowser()){setLineups([]);setPoolInfo(null);}return;}
-      return fetchJson(sl.lineups_file).then(function(doc){
+      return sportJson(sl.lineups_file).then(function(doc){
+        if(gen!==SPORT.gen)return;
         sharedRef.current={doc:doc,slateId:sl.id};setSharedAvail(true);
         if(isUpdate)setStaleInfo(function(si){return si&&doc.generated_at&&doc.generated_at>=si.at?null:si;});
         if(keepBrowser())return;
@@ -1037,7 +1068,7 @@ export default function App(){
         setLineups(lus);setPage(0);
         setPoolInfo(poolInfoOf(doc,lus.length));
         if(!isUpdate)setLikedIds(new Set());
-      }).catch(function(e){if(!sl.archived)throw e;sharedRef.current=null;setSharedAvail(false);if(!keepBrowser()){setLineups([]);setPoolInfo(null);}});   // archived: no lineups file is fine
+      }).catch(function(e){if(gen!==SPORT.gen)return;if(!sl.archived)throw e;sharedRef.current=null;setSharedAvail(false);if(!keepBrowser()){setLineups([]);setPoolInfo(null);}});   // archived: no lineups file is fine
     });
   }
   // Owner only: "Run on my Mac" signs the request with the key from this browser's owner
@@ -1095,11 +1126,26 @@ export default function App(){
     seenNewsRef.current=seen;
     return out;
   }
+  // sports.json loaded (or missing): a sport it doesn't list falls back to NBA
+  function applySportsIndex(list){
+    setSportsList(list);
+    if(SPORT.code!=="NBA"&&listedSport(SPORT.code,list)!==SPORT.code){
+      try{localStorage.removeItem("sigma_sport");}catch(e){}
+      switchSport("NBA",true);
+    }
+  }
   function refreshLive(initial){
+    var gen=SPORT.gen;
+    var live=function(){return gen===SPORT.gen;};   // false once the viewer has switched sport
     return refreshSha().then(function(sha){
+      if(!live())return;
       if(!initial&&sha&&sha===shaRef.current)return;   // nothing new on the data branch
       shaRef.current=sha;
-      return fetchJson("meta.json").then(function(m){
+      // the sport switcher's index (root); absent or malformed -> NBA only, as before
+      fetchJson("sports.json").then(function(d){if(live())applySportsIndex(REG_OK?sportsIndex(d,REGISTRY):null);}).catch(function(){if(live())applySportsIndex(null);});
+      var nba=SPORT.code==="NBA";
+      return sportJson("meta.json").then(function(m){
+      if(!live())return;
       var changed=!metaRef.current||metaRef.current.updated_at!==m.updated_at;
       metaRef.current=m;setMeta(m);setAutoErr("");
       fetchJson("updater_error.json").then(setUpdaterErr).catch(function(){setUpdaterErr(null);});
@@ -1113,15 +1159,16 @@ export default function App(){
         else if(Date.now()-r.sentAt>120000){setRunState(Object.assign({},r,{state:"error",message:"Your Mac didn't pick up the request within 2 minutes. Make sure it's on, awake and the updater is running — if you rotated the key, paste the new setup code."}));runRef.current=null;}
       }).catch(function(){});}
       if(!changed&&!initial)return;
-      fetchJson("patterns.json").then(setPatternsDoc).catch(function(){});
+      if(nba)fetchJson("patterns.json").then(setPatternsDoc).catch(function(){});
       var noSlate=!m.slates||!m.slates.length;          // no slate open right now: still load news and starters
-      return Promise.all([noSlate?Promise.resolve([]):fetchJson("slates.json"),fetchJson("injury_log.json").catch(function(){return[];}),
-                          fetchJson("lineup_log.json").catch(function(){return[];}),
-                          fetchJson("starting_lineups.json").catch(function(){return null;})]).then(function(res){
+      return Promise.all([noSlate?Promise.resolve([]):sportJson("slates.json"),sportJson("injury_log.json").catch(function(){return[];}),
+                          nba?fetchJson("lineup_log.json").catch(function(){return[];}):Promise.resolve([]),
+                          nba?fetchJson("starting_lineups.json").catch(function(){return null;}):Promise.resolve(null)]).then(function(res){
+        if(!live())return;
         var sl=res[0]||[];setSlates(sl);setInjLog(res[1]||[]);setLuNews(res[2]||[]);setStartersDoc(res[3]);
         pushToasts(newsSince(res[1]||[],res[2]||[]));
         if(sourceRef.current==="manual")return;           // user uploaded their own CSV
-        if(slateRef.current==null){var us=urlSlate();if(us!=null)slateRef.current=us;else{try{var saved=JSON.parse(localStorage.getItem("sigma_slate")||"null");if(saved&&saved.date===m.date)slateRef.current=saved.id;}catch(e){}}}
+        if(slateRef.current==null){var us=urlSlate();if(us!=null)slateRef.current=us;else{try{var saved=JSON.parse(localStorage.getItem(sportKey("sigma_slate"))||"null");if(saved&&saved.date===m.date)slateRef.current=saved.id;}catch(e){}}}
         var cur=null;for(var i=0;i<sl.length;i++){if(sl[i].id===slateRef.current)cur=sl[i];}
         if(cur){if(archRef.current){archRef.current=null;setArchivedSlate(null);}
           return loadSlate(cur,!initial&&cur.id===slateRef.current&&!runningRef.current);}
@@ -1130,7 +1177,7 @@ export default function App(){
         if(sl.length)setActiveTab("slates");             // pick the slate first
       });
       });
-    }).catch(function(e){setAutoErr(initial?"Live projections not available yet ("+e.message+"). Upload a CSV instead.":"Couldn't refresh: "+e.message);});
+    }).catch(function(e){if(!live())return;setAutoErr(initial?"Live projections not available yet ("+e.message+"). Upload a CSV instead.":"Couldn't refresh: "+e.message);});
   }
   useEffect(function(){
     refreshLive(true);
@@ -1140,7 +1187,7 @@ export default function App(){
     return function(){clearInterval(iv);clearInterval(tk);clearInterval(fast);};
   },[]);
   function pickSlate(id){var sl=null;for(var i=0;i<slates.length;i++){if(String(slates[i].id)===String(id))sl=slates[i];}if(!sl)return;
-    try{localStorage.setItem("sigma_slate",JSON.stringify({id:sl.id,date:meta&&meta.date}));}catch(e){}
+    try{localStorage.setItem(sportKey("sigma_slate"),JSON.stringify({id:sl.id,date:meta&&meta.date}));}catch(e){}
     archRef.current=null;setArchivedSlate(null);setArchErr("");clearRuns();
     sourceRef.current="auto";setActiveTab("pool");setLineups([]);setPoolInfo(null);setLikedIds(new Set());setSpotlight(null);
     loadSlate(sl,false).catch(function(e){setAutoErr(e.message);});}
@@ -1148,13 +1195,16 @@ export default function App(){
   // Its files stay on the data branch; simulations can't be requested for it.
   function loadArchived(id){
     var nid=Number(id);if(!isFinite(nid))return Promise.resolve();
+    var gen=SPORT.gen;
     setArchErr("");
-    return fetchText("slates/"+nid+".csv").then(function(t){
+    return sportText("slates/"+nid+".csv").then(function(t){
+      if(gen!==SPORT.gen)return;
       var rows=parseProjections(t,sport);if(!rows.length)throw new Error("empty");
-      var sl=synthSlate(nid,rows);archRef.current=sl;setArchivedSlate(sl);clearRuns();
+      var sl=synthSlate(nid,rows,SPORT.base);archRef.current=sl;setArchivedSlate(sl);clearRuns();
       sourceRef.current="auto";setLineups([]);setPoolInfo(null);setLikedIds(new Set());setSpotlight(null);
       return loadSlate(sl,false);
     }).catch(function(){
+      if(gen!==SPORT.gen)return;
       if(!archRef.current||archRef.current.id!==nid){slateRef.current=null;setArchErr("Slate "+nid+" isn't available.");}
     });
   }
@@ -1163,13 +1213,32 @@ export default function App(){
   // re-read when the Mac publishes (meta.updated_at changes) while the tab is open
   var metaStamp=meta&&meta.updated_at;
   useEffect(function(){
+    var fetchText=sportText;   // this sport's data base ("" for NBA, so NBA URLs are unchanged)
+    // responses that arrive after a sport switch are dropped
+    var gen=SPORT.gen;
+    var setAuditDoc=function(v){if(gen===SPORT.gen)setAuditState(v);};
+    var setHistoryDoc=function(v){if(gen===SPORT.gen)setHistoryState(v);};
     if(activeTab==="accuracy"&&(!auditDoc||auditAtRef.current!==metaStamp)){auditAtRef.current=metaStamp;
-      fetchJson("audit.json").then(setAuditDoc).catch(function(){setAuditDoc(function(d){return d&&!d.error?d:{error:true};});});}
+      sportJson("audit.json").then(setAuditDoc).catch(function(){setAuditDoc(function(d){return d&&!d.error?d:{error:true};});});}
     if((activeTab==="ownership"&&(!historyDoc||histAtRef.current!==metaStamp))||(activeTab==="pool"&&!historyDoc)){histAtRef.current=metaStamp;
       // a missing file (404) and a file that isn't valid JSON get different messages
       fetchText("contest_history.json").then(function(t){var d;try{d=JSON.parse(t);}catch(e){d=null;}if(!d||typeof d!=="object"||Array.isArray(d))d={error:true,kind:"format"};setHistoryDoc(function(prev){return d.error&&prev&&!prev.error?prev:d;});})
         .catch(function(){setHistoryDoc(function(d){return d&&!d.error?d:{error:true,kind:"missing"};});});}
-  },[activeTab,metaStamp]);
+  },[activeTab,metaStamp,spCode]);
+  // switch sport: only the new sport's slate selection is touched (saved per sport)
+  // (reads SPORT, not state: the polling timers hold an earlier render's closures)
+  function switchSport(code,fallback){
+    if(code===SPORT.code||!REGISTRY.sports[code])return;
+    if(!fallback)try{localStorage.setItem("sigma_sport",code);}catch(e){}
+    SPORT.code=code;SPORT.base=code==="NBA"?"":sportBase(REGISTRY,code);SPORT.gen++;
+    setSpCode(code);
+    slateRef.current=null;metaRef.current=null;archRef.current=null;seenNewsRef.current=null;
+    clearRuns();pRef.current=[];setPlayers([]);setLineups([]);setLikedIds(new Set());setPoolInfo(null);
+    setSlates([]);setSlateId(null);setMeta(null);setArchivedSlate(null);setArchErr("");setSpotlight(null);
+    setAuditDoc(null);setHistoryDoc(null);setInjLog([]);setLuNews([]);setStartersDoc(null);setStaleInfo(null);
+    setFilterPos("ALL");setActiveTab("pool");sourceRef.current="auto";setProjSource("auto");
+    refreshLive(true);
+  }
   function useLiveAgain(){sourceRef.current="auto";setProjSource("auto");refreshLive(true);}
 
   function doRestart(){
@@ -1188,7 +1257,7 @@ export default function App(){
   
 
   function onProjFile(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){var parsed=parseProjections(ev.target.result,sport);if(!parsed.length){setProjErr("Could not parse CSV.");return;}sourceRef.current="manual";setProjSource("manual");setStaleInfo(null);pRef.current=parsed;setPlayers(parsed);setProjOk(true);setProjErr("");setLineups([]);setLikedIds(new Set());setPlayerBoosts({});setAppliedBoosts({});};r.onerror=function(){setProjErr("Error reading file.");};r.readAsText(file);e.target.value="";}
-  function onPlayerIdFile(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){var parsed=parsePlayerIdCsv(ev.target.result);if(parsed.headerLineIdx===-1){setPlayerIdErr("Could not find slot headers.");return;}setPlayerIdData(parsed);setPlayerIdOk(true);setPlayerIdErr("");};r.onerror=function(){setPlayerIdErr("Error reading file.");};r.readAsText(file);e.target.value="";}
+  function onPlayerIdFile(e){var file=e.target.files[0];if(!file)return;var r=new FileReader();r.onload=function(ev){var parsed=parsePlayerIdCsv(ev.target.result,specs);if(parsed.headerLineIdx===-1){setPlayerIdErr("Could not find slot headers.");return;}setPlayerIdData(parsed);setPlayerIdOk(true);setPlayerIdErr("");};r.onerror=function(){setPlayerIdErr("Error reading file.");};r.readAsText(file);e.target.value="";}
   function onPayoutFile(e){
     var file=e.target.files[0];if(!file)return;
     var ext=file.name.split(".").pop().toLowerCase();
@@ -1288,13 +1357,13 @@ export default function App(){
   function doExport(){
     var liked=likedLineups.slice().sort(function(a,b){return a.rank-b.rank;});
     if(!liked.length)return;
-    var slotNames=["PG","SG","SF","PF","C","G","F","UTIL"];
+    var slotNames=specs?specs.classic.slots.map(function(x){return x.label;}):["PG","SG","SF","PF","C","G","F","UTIL"];
     var csvContent="";
     // each lineup as DraftKings slot labels + player IDs, in DK's slot order
     var entryLineups=[],missing=0;
     for(var li3=0;li3<liked.length;li3++){
       var hdrL=liked[li3].slotLabels||slotNames;
-      var a2=liked[li3].assigned||assignNBASlots(liked[li3].players,teamStartMap)||[];
+      var a2=liked[li3].assigned||(isNBA?assignNBASlots(liked[li3].players,teamStartMap):null)||[];
       var ids=a2.map(function(p){var id=p&&(p.slot==="CPT"?p.cptId:p.dkId);return id?String(id):"";});
       if(ids.length!==hdrL.length||ids.indexOf("")!==-1){missing++;continue;}
       entryLineups.push({labels:hdrL,ids:ids});
@@ -1304,7 +1373,7 @@ export default function App(){
     var fname;
     if(playerIdData&&playerIdData.rawLines&&/entry id/i.test(playerIdData.rawLines.join("\n"))){
       // Contests -> Edit Entries: fill the entries file DraftKings gave you
-      var res=fillEntries(playerIdData.rawLines.join("\n"),entryLineups);
+      var res=fillEntries(playerIdData.rawLines.join("\n"),entryLineups,specs?[specs.classic,specs.showdown]:undefined);
       if(res.error){alert(res.error);return;}
       csvContent=res.csv;fname="DKEntries_filled_"+res.filled+".csv";
       alert("Filled "+res.filled+" of "+res.entries+" entries"+(res.extra?" ("+res.extra+" liked lineups had no entry left)":"")+
@@ -1324,10 +1393,13 @@ export default function App(){
 
   var likedCount=likedIds.size;
   var sportEmoji="🏀";
-  var sportLabel="NBA";
-  var posList=["ALL","PG","SG","SF","PF","C"];
-  var pcMap=NBA_PC;
-  var cols=[["name","Player"],["salary","Salary"],["minutes","Min"],["proj","Proj"],["range","Range",false,"p10–p90 whisker, p25–p75 box, median tick"],["own","Own%"]];
+  var sportLabel=isNBA?"NBA":spCode;
+  var posList=isNBA?["ALL","PG","SG","SF","PF","C"]:["ALL"].concat(specs.classic.positions,specs.showdown.positions.filter(function(x){return specs.classic.positions.indexOf(x)===-1;}));
+  var pcMap=isNBA?NBA_PC:posColors(spCode,REGISTRY);
+  var showSwitch=REG_OK&&sportsList&&sportsList.length>1;
+  var sportEntry=(sportsList||[]).find(function(x){return x.code===spCode;});
+  var scoringVerified=meta&&meta.scoring&&meta.scoring.verified===false?false:sportEntry?sportEntry.scoring_verified:!isNBA?!!(sportCfg.scoring&&sportCfg.scoring.verified):true;
+  var cols=[["name","Player"],["salary","Salary"]].concat(isNBA?[["minutes","Min"]]:[]).concat([["proj","Proj"],["range","Range",false,"p10–p90 whisker, p25–p75 box, median tick"],["own","Own%"]]);
   if(historyDoc&&!historyDoc.error&&(historyDoc.contests||[]).length>=3&&validateContestHistory(historyDoc).ok)cols.push(["histOwn","Hist. own",false,"Model ownership scaled by how that ownership range actually came in at DraftKings"]);
   cols=cols.concat([["optExp","Sugg Exp%"],["boom","Boom%"],["bust","Bust%"],["ceiling","Ceiling"],["floor","Floor"],["value","Value"],["lev","Leverage"]]);
   var settings=[["Field size",fieldSize,setFieldSize,false],["Payout to 1st (%)",firstPct,setFirstPct,true],["Entry fee ($)",entryFee,setEntryFee,true],["Max entries/person",maxEntries,setMaxEntries,false]];
@@ -1345,6 +1417,7 @@ export default function App(){
 
   var curSlate=null;for(var csi=0;csi<slates.length;csi++){if(slates[csi].id===slateId)curSlate=slates[csi];}
   if(!curSlate&&archivedSlate&&archivedSlate.id===slateId)curSlate=archivedSlate;
+  var curSpec=specs&&curSlate?specs[curSlate.kind==="showdown"?"showdown":"classic"]:null;   // null for NBA: legacy rules
   var isArchived=!!(curSlate&&curSlate.archived);
   var offline=!!meta&&!slates.length&&!curSlate&&projSource!=="manual"&&!players.length;
   var poolOutdated=!!(poolInfo&&curSlate&&poolInfo.inputs&&curSlate.inputs&&poolInfo.inputs!==curSlate.inputs);
@@ -1356,7 +1429,7 @@ export default function App(){
   var runButton=(
     <div>
       {curSlate&&players.length?<ToolBoundary><BrowserRunPanel run={browserRun} players={players} slate={curSlate} corr={runCorr} rules={runRules}
-        onDone={showBrowserRun} lastRun={hasBrowserRun?browserDoc.doc:null}/></ToolBoundary>
+        onDone={showBrowserRun} lastRun={hasBrowserRun?browserDoc.doc:null} spec={curSpec}/></ToolBoundary>
         :<div style={{fontSize:12,color:MU}}>{"Pick a slate to run simulations in your browser."}</div>}
       {ownerCfg?<div style={{marginTop:12,borderTop:"1px solid "+BR,paddingTop:10}}>
         <button onClick={runOnMac} disabled={running2||!curSlate||curSlate.contest_locked||isArchived}
@@ -1391,7 +1464,7 @@ export default function App(){
         <tr className="row-click" onClick={function(){setPoolExp(function(x){return x===p.name?null:p.name;});}} aria-expanded={open} style={{background:open?alpha(ACC,8):i%2===0?"transparent":alpha(TX, 2)}}>
           <td style={S.tblD}><b>{p.name}</b>{starterBadge(p)}{p.restricted?<span title="Minutes restriction noted on the injury report" style={{marginLeft:4,fontSize:9,color:YE}}>{"⏱"}</span>:null}{(p.injury&&p.injury.toLowerCase()!=="none"&&p.injury!=="")?<span title={p.injury} style={Object.assign({},pill(STATUS_COL[p.injury]||RE),{marginLeft:5,fontSize:9,padding:"1px 5px"})}>{STATUS_ABBR[p.injury]||"⚠"}</span>:null}<span style={{marginLeft:6,fontSize:10,color:MU}}>{p.positions&&p.positions.length>1?p.positions.join("/"):""}</span></td>
           <td style={S.tblD} className="num"><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span>{p.cptSalary?<div style={{fontSize:10,color:"#a78bfa"}}>{"CPT $"+p.cptSalary.toLocaleString()}</div>:null}</td>
-          <td style={S.tblD} className="num">{p.minutes>0?p.minutes.toFixed(1):"—"}</td>
+          {isNBA?<td style={S.tblD} className="num">{p.minutes>0?p.minutes.toFixed(1):"—"}</td>:null}
           <td style={S.tblD} className={"num "+(flashMap[p.name]||"")}>{p.proj>0?<b>{p.proj.toFixed(2)}</b>:<span style={{color:RE}}>{"—"}</span>}</td>
           <td style={S.tblD}><QuantileBox box={box} min={0} max={poolBoxes.max}/></td>
           <td style={S.tblD} className="num"><span style={{color:p.own<10?GR:p.own>25?RE:TX}}>{p.own.toFixed(1)}{"%"}</span></td>
@@ -1430,7 +1503,7 @@ export default function App(){
         <button style={Object.assign({},tabSt(false),{color:GR})} onClick={function(){setLikedIds(function(prev){var n=new Set(prev);pageLineups.forEach(function(l){n.add(l.id);});return n;});}}>{"👍 Like this page"}</button>
       </div>
     );
-    var luCards=pageLineups.map(function(lu){return <LineupCard key={lu.id} lu={lu} liked={likedIds.has(lu.id)} expanded={expanded===lu.id} onToggleExpand={function(id){setExpanded(function(e){return e===id?null:id;});}} onToggleLike={toggleLike} sport={sport}/>;});
+    var luCards=pageLineups.map(function(lu){return <LineupCard key={lu.id} lu={lu} liked={likedIds.has(lu.id)} expanded={expanded===lu.id} onToggleExpand={function(id){setExpanded(function(e){return e===id?null:id;});}} onToggleLike={toggleLike} sport={sport} pc={pcMap}/>;});
     var noMatch=filteredLineups.length===0?<div style={Object.assign({},S.card,{textAlign:"center",padding:32})}><div style={{color:MU,fontSize:13}}>{"No lineups match the current filters."}</div></div>:null;
     lineupsContent=(
       <div>
@@ -1608,12 +1681,12 @@ export default function App(){
   var patternsContent=activeTab==="patterns"?<ToolBoundary><PatternsView patterns={patternsDoc} spotlight={spotlightDoc} slate={curSlate} players={players} likedExposure={likedExposure}/></ToolBoundary>:null;
   var toolDefaults={fieldSize:Number(fieldSize)||10000,entryFee:Number(entryFee)||15,firstPct:Number(firstPct)||20};
   var simCorr=(meta&&meta.correlation)||{team:0.02,opp:0.05};
-  var slatesContent=activeTab==="slates"?<SlatePicker slates={slates} current={slateId} onPick={function(sl){pickSlate(sl.id);}} fmtClock={fmtClock}/>:null;
-  var lateSwapContent=<div style={{display:activeTab==="lateswap"?"block":"none"}}><ToolBoundary key={"ls"+slateId}><LateSwapTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
-  var singleContent=<div style={{display:activeTab==="single"?"block":"none"}}><ToolBoundary key={"sl"+slateId}><SingleLineupTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
+  var slatesContent=activeTab==="slates"?<SlatePicker slates={slates} current={slateId} onPick={function(sl){pickSlate(sl.id);}} fmtClock={fmtClock} sport={spCode}/>:null;
+  var lateSwapContent=<div style={{display:activeTab==="lateswap"?"block":"none"}}><ToolBoundary key={"ls"+spCode+slateId}><LateSwapTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults} specs={specs} registry={REG_OK?REGISTRY:null} sport={spCode}/></ToolBoundary></div>;
+  var singleContent=<div style={{display:activeTab==="single"?"block":"none"}}><ToolBoundary key={"sl"+spCode+slateId}><SingleLineupTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults} spec={curSpec}/></ToolBoundary></div>;
 
   var topWin=null;for(var twi=0;twi<lineups.length;twi++){var lw=lineups[twi];if(lw.live&&typeof lw.pWin==="number"&&(topWin===null||lw.pWin>topWin))topWin=lw.pWin;}
-  function go(t){setActiveTab(t);if(t==="markets")fetchJson("markets.json").then(setMarketsDoc).catch(function(){setMarketsDoc({error:true});});}
+  function go(t){setActiveTab(t);if(t==="markets"&&isNBA)fetchJson("markets.json").then(setMarketsDoc).catch(function(){setMarketsDoc({error:true});});}
   function tabBtn(key,label,isNew){return <button key={key} role="tab" className={"tab"+(isNew?" tab-new":"")} aria-selected={activeTab===key} onClick={function(){go(key);}}>{label}</button>;}
   var confirmedTeams=startersDoc&&startersDoc.teams?startersDoc.teams.filter(function(t){return t.status==="confirmed";}).length:0;
   var tabButtons=[];
@@ -1622,16 +1695,16 @@ export default function App(){
   tabButtons.push(tabBtn("leverage","Leverage",true));
   tabButtons.push(tabBtn("lineups","Lineups"+(lineups.length>0?" ("+filteredLineups.length+"/"+lineups.length+")":"")));
   if(lineups.length>0||likedCount>0)tabButtons.push(tabBtn("exposures","Exposures ("+likedCount+")"));
-  tabButtons.push(tabBtn("starters","Starting Lineups"+(startersDoc&&startersDoc.teams?" ("+confirmedTeams+"/"+startersDoc.teams.length+" confirmed)":"")));
+  if(isNBA)tabButtons.push(tabBtn("starters","Starting Lineups"+(startersDoc&&startersDoc.teams?" ("+confirmedTeams+"/"+startersDoc.teams.length+" confirmed)":"")));
   tabButtons.push(tabBtn("lateswap","Late Swap"));
   tabButtons.push(tabBtn("single","Lineup Simulator"));
   tabButtons.push(tabBtn("ownership","Ownership Lab",true));
   tabButtons.push(tabBtn("accuracy","Accuracy",true));
-  tabButtons.push(tabBtn("markets","Betting Markets"));
-  tabButtons.push(tabBtn("patterns","Winning Patterns"));
+  if(isNBA){tabButtons.push(tabBtn("markets","Betting Markets"));tabButtons.push(tabBtn("patterns","Winning Patterns"));}
 
   var lastSlate=lastSavedSlate();
-  var offlineView=<SlateOffline meta={meta} lastSlateId={lastSlate} onReplay={replaySlate} onGo={go} err={archErr}/>;
+  var offlineView=isNBA?<SlateOffline meta={meta} lastSlateId={lastSlate} onReplay={replaySlate} onGo={go} err={archErr}/>
+    :<SlateOffline meta={meta} lastSlateId={lastSlate} onReplay={replaySlate} onGo={go} err={archErr} sport={spCode} seasonNote={sportEntry&&sportEntry.season_note} nbaTools={false}/>;
   var slateEmpty=offline&&SLATE_TABS.indexOf(activeTab)!==-1&&activeTab!=="pool"?(
     <EmptyState title="No slate loaded" text="This tool works on a DraftKings slate, and none is open right now. Replay a past slate, or use the history tools."
       actions={(lastSlate?[{label:"Replay last slate",primary:true,onClick:function(){replaySlate(lastSlate);}}]:[]).concat([{label:"Ownership Lab",onClick:function(){go("ownership");}},{label:"Model accuracy",onClick:function(){go("accuracy");}}])}/>
@@ -1644,7 +1717,9 @@ export default function App(){
         <div style={{display:"flex",alignItems:"baseline",gap:8}}>
           <span className="logo" style={{fontSize:36}} aria-hidden="true">{"Σ"}</span>
           <span className="wordmark" style={{fontSize:26}}><span style={{color:OH}}>{"Sigma"}</span>{" "}<span style={{color:TX}}>{"DFS"}</span></span>
-          <span className="chip" style={{background:alpha(ACC,12),color:ACC,alignSelf:"center",marginLeft:4}}>{sportLabel}</span>
+          {showSwitch?<span style={{alignSelf:"center",marginLeft:4,minWidth:0,maxWidth:"60vw"}}><SportSwitcher sports={sportsList} current={spCode} onPick={switchSport}/></span>
+            :<span className="chip" style={{background:alpha(ACC,12),color:ACC,alignSelf:"center",marginLeft:4}}>{sportLabel}</span>}
+          <ScoringBadge verified={scoringVerified}/>
           {ownerCfg?<span style={{alignSelf:"center"}}><OwnerChip/></span>:null}
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
@@ -1661,7 +1736,7 @@ export default function App(){
           {injuryCard}
           <div className="glass" style={S.side}>
             <div style={S.sl}>{"Upload Files"}</div>
-            {uploadRows.map(function(row){
+            {(isNBA?uploadRows:uploadRows.slice(0,1)).map(function(row){
               var label=row[0],ok=row[1],iref=row[2],onChange=row[3],text=row[4],err=row[5],accept=row[6];
               return(
                 <div key={label} style={{marginBottom:10}}>
@@ -1677,7 +1752,7 @@ export default function App(){
           </div>
           {poolCard}
           {hashOwner||ownerCfg?<ToolBoundary><OwnerPanel owner={ownerCfg} onChange={setOwnerCfg} macAuth={meta&&meta.control&&meta.control.auth}/></ToolBoundary>:null}
-          {projSource==="manual"?<div style={S.card}>
+          {isNBA&&projSource==="manual"?<div style={S.card}>
             <div style={S.sl}>{"Local build (your CSV)"}</div>
             <div style={{fontSize:11,color:MU,marginBottom:10}}>{"The 10,000-lineup / 1,000,000-sim engine runs on the live projections. With your own CSV the optimizer builds up to 10,000 lineups here on your device."}</div>
             {settings.map(function(row){
@@ -1707,16 +1782,16 @@ export default function App(){
           {offline&&activeTab==="pool"?offlineView:null}
           {slateEmpty}
           {activeTab==="pool"&&!offline?<div style={S.card}>{poolContent}</div>:null}
-          {activeTab==="leverage"&&!offline?<ToolBoundary><LeverageRadar players={players}/></ToolBoundary>:null}
+          {activeTab==="leverage"&&!offline?<ToolBoundary><LeverageRadar players={players} pc={isNBA?undefined:pcMap} positions={isNBA?undefined:posList}/></ToolBoundary>:null}
           {activeTab==="lineups"&&!offline?lineupsContent:null}
           {activeTab==="slates"?(slates.length?slatesContent:offlineView):null}
-          {activeTab==="markets"?<ToolBoundary><MarketsView doc={marketsDoc} slate={curSlate} fmtClock={fmtClock} onRefresh={function(){fetchJson("markets.json").then(setMarketsDoc).catch(function(){});}}/></ToolBoundary>:null}
+          {activeTab==="markets"&&isNBA?<ToolBoundary><MarketsView doc={marketsDoc} slate={curSlate} fmtClock={fmtClock} onRefresh={function(){fetchJson("markets.json").then(setMarketsDoc).catch(function(){});}}/></ToolBoundary>:null}
           {offline?null:lateSwapContent}
           {offline?null:singleContent}
-          {activeTab==="ownership"?<ToolBoundary><OwnershipLab doc={historyDoc} players={players}/></ToolBoundary>:null}
+          {activeTab==="ownership"?<ToolBoundary><OwnershipLab doc={historyDoc} players={players} sport={spCode}/></ToolBoundary>:null}
           {activeTab==="accuracy"?<ToolBoundary><ModelAccuracy audit={auditDoc} meta={meta}/></ToolBoundary>:null}
-          {activeTab==="starters"?startersContent:null}
-          {activeTab==="patterns"?patternsContent:null}
+          {activeTab==="starters"&&isNBA?startersContent:null}
+          {activeTab==="patterns"&&isNBA?patternsContent:null}
           {activeTab==="exposures"&&!offline?<ExposuresTab suggested={players.reduce(function(m,p){if(p.optExp!=null)m[p.name]=p.optExp;return m;},{})} exposures={exposures} likedCount={likedCount} likedIds={likedIds} setLikedIds={setLikedIds} filteredLineups={filteredLineups}/>:null}
         </main>
       </div>

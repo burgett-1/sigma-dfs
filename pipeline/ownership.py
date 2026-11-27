@@ -16,7 +16,10 @@ def _z(x: np.ndarray) -> np.ndarray:
     return (x - x.mean()) / sd if sd > 0 else np.zeros_like(x)
 
 
-def estimate_ownership(rows: list[dict], roster_size: int = 8, own_cal: dict | None = None) -> None:
+def estimate_ownership(rows: list[dict], roster_size: int = 8, own_cal: dict | None = None,
+                       coef: dict | None = None, cap: float = 80.0) -> None:
+    """Projected ownership % (sums to 100 x roster size). `coef` (registry
+    ownership.coef: value, proj, bump, q) defaults to the NBA model."""
     live = [r for r in rows if r["proj"] > 0]
     for r in rows:
         r["own"] = 0.0
@@ -26,7 +29,11 @@ def estimate_ownership(rows: list[dict], roster_size: int = 8, own_cal: dict | N
     proj = np.array([r["proj"] for r in live])
     q = np.array([1.0 if r.get("status") == "QUESTIONABLE" else 0.0 for r in live])
     bump = np.array([r.get("bump", 0.0) for r in live])
-    logit = 1.55 * _z(value) + 0.85 * _z(proj) + 2.0 * bump - 0.5 * q
+    if coef is None:
+        logit = 1.55 * _z(value) + 0.85 * _z(proj) + 2.0 * bump - 0.5 * q
+    else:
+        logit = (float(coef.get("value", 1.55)) * _z(value) + float(coef.get("proj", 0.85)) * _z(proj)
+                 + float(coef.get("bump", 2.0)) * bump + float(coef.get("q", -0.5)) * q)
     w = np.exp(logit)
     total = 100.0 * roster_size          # each roster spot adds 100% of ownership
     own = w / w.sum() * total
@@ -40,24 +47,36 @@ def estimate_ownership(rows: list[dict], roster_size: int = 8, own_cal: dict | N
         own = np.maximum(own, 0.01)
         own = own / own.sum() * total
     # a single player cannot exceed ~80% and a few rounds of capping keep the total at 800
-    for _ in range(25):
-        over = own > 80.0 + 1e-9
-        if not over.any():
-            break
-        extra = (own[over] - 80.0).sum()
-        own[over] = 80.0
-        own[~over] += extra * own[~over] / own[~over].sum()
+    own = cap_spread(own, cap)
     for r, o in zip(live, own):
         r["own"] = float(o)
 
 
-def _assignable(pos_lists: list[set[str]]) -> bool:
-    """Can these 8 players fill PG/SG/SF/PF/C/G/F/UTIL? (small bipartite match)"""
+def cap_spread(own: np.ndarray, cap: float = 80.0) -> np.ndarray:
+    """Cap every player at `cap` %, re-spreading the excess pro rata (total kept)."""
+    for _ in range(25):
+        over = own > cap + 1e-9
+        if not over.any():
+            break
+        extra = (own[over] - cap).sum()
+        own[over] = cap
+        own[~over] += extra * own[~over] / own[~over].sum()
+    return own
+
+
+def _assignable(pos_lists: list[set[str]], spec=None) -> bool:
+    """Can these players fill the roster slots (default DK NBA classic:
+    PG/SG/SF/PF/C/G/F/UTIL)? (small bipartite match)"""
+    if spec is None:
+        labels, ok_sets = DK_ROSTER_SLOTS, [DK_SLOT_OK[s] for s in DK_ROSTER_SLOTS]
+    else:
+        labels = spec.labels
+        ok_sets = [{p for b, p in enumerate(spec.positions) if m & (1 << b)} for m in spec.masks]
     match: dict[int, int] = {}
 
     def try_slot(i: int, seen: set[int]) -> bool:
-        for s, slot in enumerate(DK_ROSTER_SLOTS):
-            if s in seen or not (pos_lists[i] & DK_SLOT_OK[slot]):
+        for s, _slot in enumerate(labels):
+            if s in seen or not (pos_lists[i] & ok_sets[s]):
                 continue
             seen.add(s)
             if s not in match or try_slot(match[s], seen):
@@ -69,7 +88,8 @@ def _assignable(pos_lists: list[set[str]]) -> bool:
 
 
 def optimal_rates(rows: list[dict], kind: str = "classic", rules: dict | None = None,
-                  corr: dict | None = None, sims: int | None = None, seed: int = 7) -> None:
+                  corr: dict | None = None, sims: int | None = None, seed: int = 7,
+                  spec=None, loadings: dict | None = None) -> None:
     """opt% = share of simulated slates in which the player is in the best lineup;
     leverage = opt% - projected ownership (negative = more popular than he is optimal).
 
@@ -85,9 +105,10 @@ def optimal_rates(rows: list[dict], kind: str = "classic", rules: dict | None = 
     for r in rows:
         r["opt_pct"] = 0.0
         r["lev"] = -float(r.get("own", 0.0))
-    pool = sim.build_pool(rows, kind)
-    if len(pool.mu) < (6 if kind == "showdown" else 8):
+    pool = sim.build_pool(rows, kind, spec, loadings)
+    if len(pool.mu) < pool.spec.size:
         return
+    repair = pool.spec.enforce_rules and bool(pool.spec.stack_rules) and kind != "showdown" and sim.have_highs()
     rng = np.random.default_rng(seed)
     counts = np.zeros(len(pool.mu))
     done = 0
@@ -95,6 +116,8 @@ def optimal_rates(rows: list[dict], kind: str = "classic", rules: dict | None = 
         X = sim.sample_scores(pool, min(250, sims - start), rng, corr).astype(np.float64)
         for score in X:
             lu = sim.showdown_lineup(score, pool, rules) if kind == "showdown" else sim.best_lineup(score, pool, rules)
+            if not lu and repair:
+                lu = sim.exact_lineup(score, pool, rules, None)
             if not lu:
                 continue
             counts[list(lu)] += 1

@@ -1,0 +1,313 @@
+{
+  "version": 1,
+  "sports": {
+    "NBA": {
+      "code": "NBA", "label": "NBA", "dk_sport": "NBA", "enabled": true, "data_prefix": "",
+      "team_sport": true,
+      "season": { "windows": [["10-01", "06-30"]], "note_off": "Returns in October" },
+      "lobby": { "window": "dfs_day", "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade"] },
+      "game_types": { "70": { "kind": "classic", "csv_ct": 70 }, "81": { "kind": "showdown", "csv_ct": 81 } },
+      "position_source": "position",
+      "use_csv_status": false,
+      "status_map": {},
+      "play_prob": { "QUESTIONABLE": 0.70, "PROBABLE": 0.97, "": 1.0 },
+      "not_playing": ["OUT", "DOUBTFUL"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["PG", "SG", "SF", "PF", "C"],
+          "slots": [
+            { "label": "PG", "pos": ["PG"] }, { "label": "SG", "pos": ["SG"] }, { "label": "SF", "pos": ["SF"] },
+            { "label": "PF", "pos": ["PF"] }, { "label": "C", "pos": ["C"] }, { "label": "G", "pos": ["PG", "SG"] },
+            { "label": "F", "pos": ["SF", "PF"] }, { "label": "UTIL", "pos": ["PG", "SG", "SF", "PF", "C"] }
+          ],
+          "min_games": 2, "min_teams": 2, "late_swap": "per_game", "enforce_rules": false,
+          "field_min_salary": 48500, "pool_min_salary": 48500
+        },
+        "showdown": {
+          "cap": 50000, "positions": ["PG", "SG", "SF", "PF", "C"],
+          "slots": [
+            { "label": "CPT", "pos": "*", "mult": 1.5 }, { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" },
+            { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" }
+          ],
+          "min_teams": 2, "late_swap": "none", "enforce_rules": false,
+          "field_min_salary": 45000, "pool_min_salary": 45000
+        }
+      },
+      "scoring": {
+        "id": "nba-v1", "source": "production since Phase 1 (config.DK_SCORING)", "as_of": "2026-11-26", "verified": true,
+        "default_table": "player", "position_tables": {},
+        "tables": {
+          "player": {
+            "per_stat": { "pts": 1.0, "fg3m": 0.5, "reb": 1.25, "ast": 1.5, "stl": 2.0, "blk": 2.0, "tov": -0.5 },
+            "multi_cat": [
+              { "stats": ["pts", "reb", "ast", "stl", "blk"], "gte": 10, "min_count": 2, "pts": 1.5 },
+              { "stats": ["pts", "reb", "ast", "stl", "blk"], "gte": 10, "min_count": 3, "pts": 3.0 }
+            ]
+          }
+        }
+      },
+      "corr": { "model": "game_team", "default": { "team": 0.02, "opp": 0.05 } },
+      "ownership": { "coef": { "value": 1.55, "proj": 0.85, "bump": 2.0, "q": -0.5 }, "cap": 80 },
+      "projection": { "boom_multiple": 6.0, "bust_multiple": 4.0, "min_proj": 4.0, "opt_sims": 1500, "opt_sims_showdown": 600 },
+      "ui": {
+        "pos_colors": { "PG": "#4a9eff", "SG": "#a78bfa", "SF": "#34d399", "PF": "#fb923c", "C": "#f43f5e" },
+        "hide_columns": [],
+        "tools": ["pool", "leverage", "lineups", "lateswap", "single", "exposures", "ownership", "accuracy", "starting", "patterns", "markets", "spotlight", "legacy_upload"]
+      }
+    },
+    "NFL": {
+      "code": "NFL", "label": "NFL", "dk_sport": "NFL", "enabled": true, "data_prefix": "nfl/",
+      "team_sport": true,
+      "season": { "windows": [["09-01", "02-15"]], "note_off": "Returns in September" },
+      "lobby": {
+        "window": "lookahead", "lookahead_hours": 144, "keep_after_start_hours": 12,
+        "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"]
+      },
+      "game_types": { "1": { "kind": "classic", "csv_ct": 21 }, "96": { "kind": "showdown", "csv_ct": 96 } },
+      "position_source": "roster",
+      "use_csv_status": true,
+      "status_map": { "Q": "QUESTIONABLE", "D": "DOUBTFUL", "O": "OUT", "OUT": "OUT", "IR": "OUT", "PUP": "OUT", "NA": "OUT", "SUSP": "OUT" },
+      "play_prob": { "QUESTIONABLE": 0.85, "PROBABLE": 1.0, "": 1.0 },
+      "not_playing": ["OUT", "DOUBTFUL"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["QB", "RB", "WR", "TE", "DST"],
+          "slots": [
+            { "label": "QB", "pos": ["QB"] }, { "label": "RB", "pos": ["RB"] }, { "label": "RB", "pos": ["RB"] },
+            { "label": "WR", "pos": ["WR"] }, { "label": "WR", "pos": ["WR"] }, { "label": "WR", "pos": ["WR"] },
+            { "label": "TE", "pos": ["TE"] }, { "label": "FLEX", "pos": ["RB", "WR", "TE"] }, { "label": "DST", "pos": ["DST"] }
+          ],
+          "min_games": 2, "min_teams": 2, "late_swap": "per_game", "enforce_rules": true,
+          "field_min_salary": 48500, "pool_min_salary": 48000,
+          "stack_rules": { "qb_stack_min": 1, "no_dst_vs_qb": true, "bring_back_min": 0 }
+        },
+        "showdown": {
+          "cap": 50000, "positions": ["QB", "RB", "WR", "TE", "K", "DST"],
+          "slots": [
+            { "label": "CPT", "pos": "*", "mult": 1.5 }, { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" },
+            { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" }
+          ],
+          "min_teams": 2, "late_swap": "none", "enforce_rules": true,
+          "field_min_salary": 45000, "pool_min_salary": 44000
+        }
+      },
+      "scoring": {
+        "id": "nfl-v1", "source": "RotoWire DFS 101 (2023-03); DK Network bonuses (2020-06-27)",
+        "as_of": "2026-11-26", "verified": false,
+        "default_table": "offense", "position_tables": { "DST": "dst", "K": "k" },
+        "tables": {
+          "offense": {
+            "per_stat": {
+              "pass_yds": 0.04, "pass_td": 4, "int": -1, "rush_yds": 0.1, "rush_td": 6, "rec": 1, "rec_yds": 0.1,
+              "rec_td": 6, "fum_lost": -1, "two_pt": 2, "ret_td": 6, "fum_rec_td": 6
+            },
+            "thresholds": [
+              { "stat": "pass_yds", "gte": 300, "pts": 3 },
+              { "stat": "rush_yds", "gte": 100, "pts": 3 },
+              { "stat": "rec_yds", "gte": 100, "pts": 3 }
+            ]
+          },
+          "dst": {
+            "per_stat": { "sack": 1, "int": 2, "fum_rec": 2, "safety": 2, "blocked_kick": 2, "def_st_td": 6, "xp_return": 2 },
+            "buckets": [
+              { "stat": "points_allowed", "ranges": [[0, 0, 10], [1, 6, 7], [7, 13, 4], [14, 20, 1], [21, 27, 0], [28, 34, -1], [35, null, -4]] }
+            ]
+          },
+          "k": {
+            "note": "Kicker values unverified; misses carry no penalty until confirmed.",
+            "per_stat": { "xp": 1, "fg_0_39": 3, "fg_40_49": 4, "fg_50p": 5 }
+          }
+        }
+      },
+      "corr": {
+        "model": "factor",
+        "factors": [
+          { "name": "game", "scope": "game" }, { "name": "team", "scope": "team" },
+          { "name": "pass", "scope": "team" }, { "name": "rush", "scope": "team" }
+        ],
+        "loadings": {
+          "QB": { "game": 0.30, "team": 0.20, "pass": 0.55 },
+          "WR": { "game": 0.25, "team": 0.15, "pass": 0.45 },
+          "TE": { "game": 0.22, "team": 0.15, "pass": 0.38 },
+          "RB": { "game": 0.18, "team": 0.25, "rush": 0.40, "pass": 0.10 },
+          "DST": { "team": 0.10, "rush": 0.20, "opp:team": -0.40, "opp:pass": -0.25 },
+          "K": { "game": 0.15, "team": 0.35 }
+        }
+      },
+      "ownership": {
+        "coef": { "value": 1.40, "proj": 1.00, "bump": 1.5, "q": -0.6, "implied": 0.35 },
+        "cap": 80, "flex_split": { "RB": 0.33, "WR": 0.52, "TE": 0.15 }
+      },
+      "projection": { "boom_multiple": 4.0, "bust_multiple": 2.0, "min_proj": 2.0, "opt_sims": 800, "opt_sims_showdown": 400 },
+      "cadence": {
+        "rows": [
+          { "state": "lock_lt_3h", "lobby": 5, "salaries": 5, "context": 10, "project": 2, "opt": 5 },
+          { "state": "lock_3_24h", "lobby": 15, "salaries": 15, "context": 30, "project": 5, "opt": 15 },
+          { "state": "lock_24_144h", "lobby": 30, "salaries": 60, "context": 60, "project": 15, "opt": 60 },
+          { "state": "in_progress", "lobby": 15, "salaries": 10, "context": 10, "project": 3, "opt": null },
+          { "state": "no_group", "lobby": 360, "salaries": null, "context": null, "project": 360, "opt": null },
+          { "state": "off_season", "lobby": 1440, "salaries": null, "context": null, "project": 1440, "opt": null }
+        ],
+        "history": 360,
+        "audit": { "weekday": 1, "hour_et": 10 }
+      },
+      "ui": {
+        "pos_colors": { "QB": "#f43f5e", "RB": "#34d399", "WR": "#4a9eff", "TE": "#fb923c", "DST": "#a78bfa", "K": "#f5b942" },
+        "hide_columns": ["Minutes", "FptsPerMin", "MinutesRestricted", "BatOrder"],
+        "tools": ["pool", "leverage", "lineups", "lateswap", "single", "exposures", "ownership", "accuracy"]
+      }
+    },
+    "NHL": {
+      "code": "NHL", "label": "NHL", "dk_sport": "NHL", "enabled": false, "data_prefix": "nhl/", "team_sport": true,
+      "season": { "windows": [["09-29", "06-15"]], "note_off": "Returns in October" },
+      "lobby": { "window": "lookahead", "lookahead_hours": 48, "keep_after_start_hours": 8,
+                 "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": { "125": { "kind": "classic", "csv_ct": 125 }, "127": { "kind": "showdown", "csv_ct": 127 } },
+      "position_source": "roster", "use_csv_status": true,
+      "status_map": { "DTD": "QUESTIONABLE", "O": "OUT", "OUT": "OUT", "IR": "OUT" },
+      "play_prob": { "QUESTIONABLE": 0.85, "": 1.0 }, "not_playing": ["OUT"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["C", "W", "D", "G"],
+          "slots": [
+            { "label": "C", "pos": ["C"] }, { "label": "C", "pos": ["C"] }, { "label": "W", "pos": ["W"] },
+            { "label": "W", "pos": ["W"] }, { "label": "W", "pos": ["W"] }, { "label": "D", "pos": ["D"] },
+            { "label": "D", "pos": ["D"] }, { "label": "G", "pos": ["G"] }, { "label": "UTIL", "pos": ["C", "W", "D"] }
+          ],
+          "min_games": 2, "min_teams": 2, "late_swap": "per_game", "enforce_rules": true,
+          "field_min_salary": 48500, "pool_min_salary": 48000
+        },
+        "showdown": {
+          "cap": 50000, "positions": ["C", "W", "D", "G"],
+          "slots": [
+            { "label": "CPT", "pos": "*", "mult": 1.5 }, { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" },
+            { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" }, { "label": "FLEX", "pos": "*" }
+          ],
+          "min_teams": 2, "late_swap": "none", "enforce_rules": true, "field_min_salary": 45000, "pool_min_salary": 44000
+        }
+      },
+      "scoring": { "id": "nhl-draft", "source": "DK Network NHL 101 (2025-09-30)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.05, "opp": 0.03 } },
+      "ui": { "pos_colors": { "C": "#4a9eff", "W": "#34d399", "D": "#fb923c", "G": "#a78bfa" } }
+    },
+    "CFB": {
+      "code": "CFB", "label": "CFB", "dk_sport": "CFB", "enabled": false, "data_prefix": "cfb/", "team_sport": true,
+      "season": { "windows": [["08-20", "01-20"]], "note_off": "Returns in late August" },
+      "lobby": { "window": "lookahead", "lookahead_hours": 144, "keep_after_start_hours": 12,
+                 "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": { "94": { "kind": "classic", "csv_ct": 94 }, "95": { "kind": "showdown", "csv_ct": 95 } },
+      "position_source": "roster", "use_csv_status": true,
+      "status_map": { "Q": "QUESTIONABLE", "D": "DOUBTFUL", "O": "OUT", "OUT": "OUT" },
+      "play_prob": { "QUESTIONABLE": 0.8, "": 1.0 }, "not_playing": ["OUT", "DOUBTFUL"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["QB", "RB", "WR"],
+          "slots": [
+            { "label": "QB", "pos": ["QB"] }, { "label": "RB", "pos": ["RB"] }, { "label": "RB", "pos": ["RB"] },
+            { "label": "WR", "pos": ["WR"] }, { "label": "WR", "pos": ["WR"] }, { "label": "WR", "pos": ["WR"] },
+            { "label": "FLEX", "pos": ["RB", "WR"] }, { "label": "S-FLEX", "pos": ["QB", "RB", "WR"] }
+          ],
+          "min_games": 2, "min_teams": 2, "late_swap": "per_game", "enforce_rules": true,
+          "field_min_salary": 48500, "pool_min_salary": 48000
+        },
+        "showdown": {
+          "cap": 50000, "positions": ["QB", "RB", "WR", "TE", "K"],
+          "slots": [
+            { "label": "CPT", "pos": "*", "mult": 1.5 }, { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" },
+            { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" }, { "label": "UTIL", "pos": "*" }
+          ],
+          "min_teams": 2, "late_swap": "none", "enforce_rules": true, "field_min_salary": 45000, "pool_min_salary": 44000
+        }
+      },
+      "scoring": { "id": "cfb-draft", "source": "RotoWire CFB 101 (same offense as NFL; thresholds unverified)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.05, "opp": 0.05 } },
+      "ui": { "pos_colors": { "QB": "#f43f5e", "RB": "#34d399", "WR": "#4a9eff", "TE": "#fb923c", "K": "#f5b942" } }
+    },
+    "MLB": {
+      "code": "MLB", "label": "MLB", "dk_sport": "MLB", "enabled": false, "data_prefix": "mlb/", "team_sport": true,
+      "season": { "windows": [["03-20", "10-31"]], "note_off": "Returns in March" },
+      "lobby": { "window": "dfs_day", "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": {},
+      "position_source": "roster", "use_csv_status": true, "status_map": {}, "play_prob": { "": 1.0 }, "not_playing": ["OUT"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["P", "C", "1B", "2B", "3B", "SS", "OF"],
+          "slots": [
+            { "label": "P", "pos": ["P"] }, { "label": "P", "pos": ["P"] }, { "label": "C", "pos": ["C"] },
+            { "label": "1B", "pos": ["1B"] }, { "label": "2B", "pos": ["2B"] }, { "label": "3B", "pos": ["3B"] },
+            { "label": "SS", "pos": ["SS"] }, { "label": "OF", "pos": ["OF"] }, { "label": "OF", "pos": ["OF"] },
+            { "label": "OF", "pos": ["OF"] }
+          ],
+          "min_games": 2, "min_teams": 2, "late_swap": "per_game", "enforce_rules": true,
+          "field_min_salary": 48500, "pool_min_salary": 48000
+        }
+      },
+      "scoring": { "id": "mlb-draft", "source": "Stokastic (2026-08-03)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.08, "opp": 0.02 } },
+      "ui": { "pos_colors": { "P": "#f43f5e", "C": "#a78bfa", "1B": "#34d399", "2B": "#4a9eff", "3B": "#fb923c", "SS": "#f5b942", "OF": "#22d3ee" } }
+    },
+    "GOLF": {
+      "code": "GOLF", "label": "PGA", "dk_sport": "GOLF", "enabled": false, "data_prefix": "golf/", "team_sport": false,
+      "season": { "windows": [["01-01", "12-31"]], "note_off": "Between events" },
+      "lobby": { "window": "lookahead", "lookahead_hours": 120, "keep_after_start_hours": 96,
+                 "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": { "6": { "kind": "classic", "csv_ct": 29 }, "86": { "kind": "single_round", "csv_ct": 86 } },
+      "position_source": "roster", "use_csv_status": true, "status_map": {}, "play_prob": { "": 1.0 }, "not_playing": ["OUT"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["G"],
+          "slots": [ { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] },
+                     { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] } ],
+          "late_swap": "none", "enforce_rules": true, "field_min_salary": 48000, "pool_min_salary": 47000
+        },
+        "single_round": {
+          "cap": 50000, "positions": ["G"],
+          "slots": [ { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] },
+                     { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] }, { "label": "G", "pos": ["G"] } ],
+          "late_swap": "none", "enforce_rules": true, "field_min_salary": 48000, "pool_min_salary": 47000
+        }
+      },
+      "scoring": { "id": "golf-draft", "source": "DK Network (upd. 2024-03-07)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.0, "opp": 0.0 } },
+      "ui": { "pos_colors": { "G": "#34d399" } }
+    },
+    "MMA": {
+      "code": "MMA", "label": "MMA", "dk_sport": "MMA", "enabled": false, "data_prefix": "mma/", "team_sport": false,
+      "season": { "windows": [["01-01", "12-31"]], "note_off": "Between cards" },
+      "lobby": { "window": "lookahead", "lookahead_hours": 168, "keep_after_start_hours": 8,
+                 "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": { "168": { "kind": "classic", "csv_ct": 168 } },
+      "position_source": "roster", "use_csv_status": true, "status_map": {}, "play_prob": { "": 1.0 }, "not_playing": ["OUT"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["F"],
+          "slots": [ { "label": "F", "pos": ["F"] }, { "label": "F", "pos": ["F"] }, { "label": "F", "pos": ["F"] },
+                     { "label": "F", "pos": ["F"] }, { "label": "F", "pos": ["F"] }, { "label": "F", "pos": ["F"] } ],
+          "late_swap": "per_game", "enforce_rules": true, "field_min_salary": 48000, "pool_min_salary": 47000
+        }
+      },
+      "scoring": { "id": "mma-draft", "source": "RotoWire scoring change (2021-01)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.0, "opp": 0.0 } },
+      "ui": { "pos_colors": { "F": "#f43f5e" } }
+    },
+    "NAS": {
+      "code": "NAS", "label": "NASCAR", "dk_sport": "NAS", "enabled": false, "data_prefix": "nas/", "team_sport": false,
+      "season": { "windows": [["02-01", "11-15"]], "note_off": "Returns in February" },
+      "lobby": { "window": "lookahead", "lookahead_hours": 120, "keep_after_start_hours": 8,
+                 "skip_words": ["tiers", "snake", "pick6", "in-game", "best ball", "arcade", "single stat"] },
+      "game_types": { "173": { "kind": "classic", "csv_ct": 173 } },
+      "position_source": "roster", "use_csv_status": true, "status_map": {}, "play_prob": { "": 1.0 }, "not_playing": ["OUT"],
+      "kinds": {
+        "classic": {
+          "cap": 50000, "positions": ["D"],
+          "slots": [ { "label": "D", "pos": ["D"] }, { "label": "D", "pos": ["D"] }, { "label": "D", "pos": ["D"] },
+                     { "label": "D", "pos": ["D"] }, { "label": "D", "pos": ["D"] }, { "label": "D", "pos": ["D"] } ],
+          "late_swap": "none", "enforce_rules": true, "field_min_salary": 48000, "pool_min_salary": 47000
+        }
+      },
+      "scoring": { "id": "nas-draft", "source": "Stokastic (2026-06-17); DK Network (2020)", "as_of": "2026-11-26", "verified": false, "tables": null },
+      "corr": { "model": "game_team", "default": { "team": 0.0, "opp": 0.0 } },
+      "ui": { "pos_colors": { "D": "#fb923c" } }
+    }
+  }
+}

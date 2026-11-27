@@ -3,6 +3,12 @@
 // correlated, right-skewed player outcomes (game + team factors, gamma
 // marginals), Questionable players can sit, field drafted from projected
 // ownership, DraftKings-style payout curve.
+//
+// Every roster rule can come from a sport spec (sports.js specFor). Without one,
+// the NBA constants below apply exactly as before. Specs with a factor
+// correlation model (NFL) sample with per-position factor loadings instead of
+// the two-scalar game/team model.
+import { factorLoadings } from "./sports.js";
 
 export const CLASSIC_SLOTS = [
   { label: "PG", mask: 1 }, { label: "SG", mask: 2 }, { label: "SF", mask: 4 }, { label: "PF", mask: 8 },
@@ -16,12 +22,17 @@ export const SALARY_CAP = 50000;
 const POS = ["PG", "SG", "SF", "PF", "C"];
 const PLAY_PROB = { Questionable: 0.7, Probable: 0.97 };
 
-export function posCode(positions) {
+// position bitmask; unknown or missing positions give 0, which fits no slot (fail closed)
+export function posCode(positions, spec) {
+  const pos = spec ? spec.positions : POS;
   let c = 0;
-  for (const p of positions || []) { const i = POS.indexOf(p); if (i >= 0) c |= 1 << i; }
-  return c || 31;
+  for (const p of positions || []) { const i = pos.indexOf(p); if (i >= 0) c |= 1 << i; }
+  return c;
 }
-export function slotsFor(kind) { return kind === "showdown" ? SHOWDOWN_SLOTS : CLASSIC_SLOTS; }
+export function slotsFor(kind, spec) {
+  if (spec && spec.slots) return spec.slots;
+  return kind === "showdown" ? SHOWDOWN_SLOTS : CLASSIC_SLOTS;
+}
 export function slotSalary(p, slot) { return slot.mult ? (p.cptSalary || Math.round(p.salary * 1.5)) : p.salary; }
 export function slotId(p, slot) { return slot.mult ? p.cptId : p.dkId; }
 
@@ -42,8 +53,9 @@ export function rngFrom(seed) {
 // ── players → simulation arrays ─────────────────────────────────────────────
 // players: parsed projection rows. Players already playing (late swap) use
 // their live points so far plus the projection for the rest of the game.
-export function buildSim(players, now) {
+export function buildSim(players, now, spec) {
   const teams = {}, games = {};
+  const playProb = spec && spec.playProb ? spec.playProb : PLAY_PROB;
   const P = players.length;
   const mu = new Float64Array(P), sd = new Float64Array(P), pplay = new Float64Array(P);
   // per-player outcome percentiles at U_SAMPLE (learned from history), when published
@@ -55,7 +67,7 @@ export function buildSim(players, now) {
     const gk = p.corrGame || [t, o].sort().join("@");
     if (!(gk in games)) games[gk] = Object.keys(games).length;
     team[i] = teams[t]; game[i] = games[gk];
-    code[i] = posCode(p.positions);
+    code[i] = posCode(p.positions, spec);
     const started = p.gameStart && now >= Date.parse(p.gameStart);
     locked[i] = started ? 1 : 0;
     const mean = p.mean != null && !isNaN(p.mean) ? p.mean : p.proj;   // proj is the median
@@ -65,11 +77,25 @@ export function buildSim(players, now) {
       mu[i] = p.liveFP + mean * left; sd[i] = s * Math.sqrt(left); pplay[i] = 1;
     } else {
       mu[i] = Math.max(0, mean); sd[i] = Math.max(s, 0.15 * mean);
-      pplay[i] = started ? 1 : (PLAY_PROB[p.injury] || 1);
+      pplay[i] = started ? 1 : (playProb[p.injury] || 1);
       if (Array.isArray(p.q) && p.q.length === U_SAMPLE.length && p.q.every((v) => !isNaN(v))) Q[i] = p.q;
     }
   });
-  return { P, mu, sd, pplay, Q, team, game, locked, code, nTeam: Object.keys(teams).length, nGame: Object.keys(games).length };
+  const sim = { P, mu, sd, pplay, Q, team, game, locked, code, nTeam: Object.keys(teams).length, nGame: Object.keys(games).length };
+  if (spec) {
+    sim.spec = spec;
+    const opp = new Int32Array(P);
+    players.forEach((p, i) => { const o = (p.opp || "").toUpperCase(); opp[i] = o in teams ? teams[o] : -1; });
+    sim.opp = opp;
+    if (spec.corr && spec.corr.model === "factor") {
+      const f = factorLoadings(players.map((p) => ({
+        position: (p.positions || [])[0] || "", team: (p.team || "").toUpperCase(), opp: (p.opp || "").toUpperCase(),
+        game: p.corrGame || [(p.team || "").toUpperCase(), (p.opp || "").toUpperCase()].sort().join("@"),
+      })), spec.corr);
+      sim.load = f.rows; sim.idio = f.idio; sim.nFactor = f.keys.length;
+    }
+  }
+  return sim;
 }
 
 // percentiles the pipeline publishes (distribution.U_SAMPLE)
@@ -90,6 +116,7 @@ export function fromCurve(q, u) {
 
 // n correlated simulated slates: Float32Array of n*P
 export function sampleScores(sim, n, rng, corr) {
+  if (sim.load) return sampleScoresFactor(sim, n, rng);
   const { P, mu, sd, pplay, Q, team, game, nTeam, nGame } = sim;
   const rg = Math.min(Math.max((corr && corr.opp) || 0.04, 0), 0.3);
   const rt = Math.min(Math.max(((corr && corr.team) || 0.04) - rg, 0), 0.3);
@@ -112,6 +139,58 @@ export function sampleScores(sim, n, rng, corr) {
     }
   }
   return out;
+}
+
+// factor copula: z = sum_k load[i][k] * F_k + idio_i * e_i (same model as sim.py)
+function sampleScoresFactor(sim, n, rng) {
+  const { P, mu, sd, pplay, Q, load, idio, nFactor } = sim;
+  const k = new Float64Array(P), h = new Float64Array(P);
+  for (let i = 0; i < P; i++) { const kk = sd[i] > 0 && mu[i] > 0 ? Math.max((mu[i] / sd[i]) ** 2, 1) : 1e9; k[i] = kk; h[i] = 1 / (9 * kk); }
+  const out = new Float32Array(n * P);
+  const F = new Float64Array(nFactor);
+  for (let s = 0; s < n; s++) {
+    for (let f = 0; f < nFactor; f++) F[f] = rng.normal();
+    const base = s * P;
+    for (let i = 0; i < P; i++) {
+      if (mu[i] <= 0) { out[base + i] = 0; continue; }
+      if (pplay[i] < 1 && rng() > pplay[i]) { out[base + i] = 0; continue; }
+      let z = idio[i] * rng.normal();
+      const row = load[i];
+      for (let j = 0; j < row.length; j++) z += row[j][1] * F[row[j][0]];
+      if (Q && Q[i]) { out[base + i] = fromCurve(Q[i], normCdf(z)); continue; }
+      const w = Math.max(1 - h[i] + z * Math.sqrt(h[i]), 0);
+      out[base + i] = sd[i] > 0 ? mu[i] * w * w * w : mu[i];
+    }
+  }
+  return out;
+}
+
+// the spec's lineup rules on a set of player indices (slot fit is checked
+// separately with canAssign): DraftKings' team/game minimums plus the registry
+// stack rules; `stack: false` keeps only what a public lineup must satisfy.
+export function rulesOk(lu, sim, opts) {
+  const spec = sim.spec;
+  if (!spec || !spec.enforceRules) return true;
+  const ids = new Set(lu);
+  if (ids.size !== lu.length) return false;
+  if (new Set(lu.map((p) => sim.team[p])).size < spec.minTeams) return false;
+  if (spec.slots.some((s) => s.mult)) return true;
+  if (new Set(lu.map((p) => sim.game[p])).size < spec.minGames) return false;
+  const sr = spec.stackRules;
+  if (!sr) return true;
+  const bit = (pos) => (spec.positions.includes(pos) ? 1 << spec.positions.indexOf(pos) : 0);
+  const qb = bit("QB"), dst = bit("DST"), catcher = bit("WR") | bit("TE"), skill = catcher | bit("RB");
+  const qbs = lu.filter((p) => sim.code[p] & qb);
+  if (sr.no_dst_vs_qb && dst && sim.opp) {
+    for (const d of lu.filter((p) => sim.code[p] & dst)) if (qbs.some((q) => sim.opp[q] === sim.team[d])) return false;
+  }
+  if (opts && opts.stack === false) return true;
+  const m = sr.qb_stack_min || 0, b = sr.bring_back_min || 0;
+  for (const q of qbs) {
+    if (m && lu.filter((p) => p !== q && (sim.code[p] & catcher) && sim.team[p] === sim.team[q]).length < m) return false;
+    if (b && lu.filter((p) => (sim.code[p] & skill) && sim.team[p] === sim.opp[q]).length < b) return false;
+  }
+  return true;
 }
 
 // ── payouts ─────────────────────────────────────────────────────────────────
@@ -178,7 +257,7 @@ function popcount(x) { let c = 0; while (x) { c += x & 1; x >>= 1; } return c; }
 // open: slot objects to fill. Returns array of player indices for `open` (slot order) or null.
 // Showdown CPT is handled by evaluating each candidate captain.
 export function bestFill(score, sim, players, fixed, open, opts = {}) {
-  const cap = opts.cap || SALARY_CAP;
+  const cap = opts.cap || (sim.spec && sim.spec.cap) || SALARY_CAP;
   const exclude = opts.exclude || new Set();
   const usedFixed = new Set(fixed.map((f) => f.p));
   let budget = cap;
@@ -201,7 +280,7 @@ export function bestFill(score, sim, players, fixed, open, opts = {}) {
       if (cs > budget) continue;
       const fill = fillGeneric(score, sim, players, avail.filter((x) => x !== c), rest, budget - cs, opts);
       if (!fill) continue;
-      const v = 1.5 * score[c] + fill.reduce((s, p) => s + score[p], 0);
+      const v = open[cptSlot].mult * score[c] + fill.reduce((s, p) => s + score[p], 0);
       if (v > bestV) { bestV = v; best = [c, ...fill]; }
     }
     if (!best) return null;
@@ -209,8 +288,36 @@ export function bestFill(score, sim, players, fixed, open, opts = {}) {
     open.forEach((s, k) => { out[k] = k === cptSlot ? best[0] : best[1 + r++]; });
     return out;
   }
-  const chosen = fillGeneric(score, sim, players, avail, open, budget, opts);
+  let fopts = opts;
+  if (sim.spec && sim.spec.enforceRules) {
+    // the spec's rules apply to the whole lineup: locked players plus the fill
+    const fixedP = fixed.map((f) => f.p).filter((p) => p >= 0);
+    const ruleOpts = { stack: opts.stack };
+    fopts = { ...opts, fullOk: (lu) => rulesOk(lu.concat(fixedP), sim, ruleOpts),
+              seeds: opts.stack === false || fixedP.length ? null : stackSeeds(score, sim, avail) };
+  }
+  const chosen = fillGeneric(score, sim, players, avail, open, budget, fopts);
   return chosen ? assignSlots(chosen, open, players, sim) : null;
+}
+
+// starting players for rule-satisfying fills: the top QBs with their best pass
+// catchers (and bring-backs when the spec requires them)
+function stackSeeds(score, sim, avail) {
+  const spec = sim.spec, sr = spec.stackRules;
+  if (!sr || !spec.positions.includes("QB")) return null;
+  const bit = (pos) => (spec.positions.includes(pos) ? 1 << spec.positions.indexOf(pos) : 0);
+  const qb = bit("QB"), catcher = bit("WR") | bit("TE"), skill = catcher | bit("RB");
+  const m = sr.qb_stack_min || 0, b = sr.bring_back_min || 0;
+  const byScore = (x, y) => score[y] - score[x];
+  const seeds = [];
+  for (const q of avail.filter((p) => sim.code[p] & qb).sort(byScore).slice(0, 4)) {
+    const mates = avail.filter((p) => (sim.code[p] & catcher) && sim.team[p] === sim.team[q]).sort(byScore);
+    const backs = sim.opp ? avail.filter((p) => (sim.code[p] & skill) && sim.team[p] === sim.opp[q]).sort(byScore) : [];
+    if (mates.length < m || backs.length < b) continue;
+    seeds.push([q, ...mates.slice(0, m), ...backs.slice(0, b)]);
+    if (m && mates.length > m) seeds.push([q, ...mates.slice(1, m + 1), ...backs.slice(0, b)]);
+  }
+  return seeds;
 }
 
 function fillGeneric(score, sim, players, avail, open, budget, opts) {
@@ -222,18 +329,25 @@ function fillGeneric(score, sim, players, avail, open, budget, opts) {
   const teamMax = opts.maxPerTeam || 99;
   const teamCount = (lu) => { const c = {}; let m = 0; lu.forEach((p) => { c[sim.team[p]] = (c[sim.team[p]] || 0) + 1; m = Math.max(m, c[sim.team[p]]); }); return m; };
   const baseTeams = opts.fixedTeams || [];
-  const legal = (lu) => canAssign(lu.map((p) => sim.code[p]), masks) && teamCount(lu.concat(baseTeams)) <= teamMax;
+  const fullOk = opts.fullOk;
+  const legal = (lu) => canAssign(lu.map((p) => sim.code[p]), masks) && teamCount(lu.concat(baseTeams)) <= teamMax &&
+    (!fullOk || lu.length < n || fullOk(lu));
   let best = null, bestV = -1;
-  for (const mode of ["value", "points"]) {
+  const starts = [[]].concat(opts.seeds || []);
+  for (const seed of starts) for (const mode of ["value", "points"]) {
+    if (seed.length && mode === "points") continue;
+    if (seed.length && (seed.length > n || !canAssign(seed.map((p) => sim.code[p]), masks))) continue;
     const order = avail.slice().sort((x, y) => mode === "value" ? score[y] / sal(y) - score[x] / sal(x) : score[y] - score[x]);
-    let lu = [], spent = 0;
+    let lu = seed.slice(), spent = seed.reduce((a, p) => a + sal(p), 0);
+    if (spent + cheapest(n - lu.length) > budget) continue;
     for (const p of order) {
       if (lu.length === n) break;
+      if (lu.includes(p)) continue;
       if (spent + sal(p) + cheapest(n - lu.length - 1) > budget) continue;
       if (!legal(lu.concat([p]))) continue;
       lu.push(p); spent += sal(p);
     }
-    if (lu.length < n) continue;
+    if (lu.length < n || (fullOk && !fullOk(lu))) continue;
     lu = improve(lu, score, avail, budget, legal, sal, 10);
     const v = lu.reduce((s, p) => s + score[p], 0);
     if (v > bestV) { bestV = v; best = lu; }
@@ -242,7 +356,7 @@ function fillGeneric(score, sim, players, avail, open, budget, opts) {
   // only for positions that are already filled). Always also start from the
   // cheapest legal lineup, which is feasible whenever any lineup is, and climb.
   const cheap = cheapestLegal(avail, masks, sal, sim, budget, legal);
-  if (cheap) {
+  if (cheap && (!fullOk || fullOk(cheap))) {
     const lu = improve(cheap, score, avail, budget, legal, sal, 30);
     const v = lu.reduce((s, p) => s + score[p], 0);
     if (v > bestV) { bestV = v; best = lu; }
@@ -301,8 +415,11 @@ function improve(lu, score, avail, budget, legal, sal, maxPass = 10) {
 }
 
 // ── field ───────────────────────────────────────────────────────────────────
-export function sampleField(sim, players, kind, n, rng) {
-  const slots = slotsFor(kind);
+export function sampleField(sim, players, kind, n, rng, spec) {
+  spec = spec || sim.spec;
+  const slots = slotsFor(kind, spec);
+  const cap = spec ? spec.cap : SALARY_CAP;
+  const size = slots.length, flex = size - 1;
   const w = players.map((p) => Math.log(Math.max(p.own || 0.05, 0.05) / 100));
   const out = [];
   let tries = 0;
@@ -310,23 +427,58 @@ export function sampleField(sim, players, kind, n, rng) {
     tries++;
     const keys = w.map((x) => x + rng.gumbel());
     const order = keys.map((_, i) => i).filter((i) => sim.mu[i] > 0).sort((x, y) => keys[y] - keys[x]);
-    if (kind === "showdown") {
-      const cpt = order[0]; let spent = slotSalary(players[cpt], slots[0]); const u = [];
-      for (const p of order.slice(1)) { if (u.length === 5) break; if (spent + players[p].salary > SALARY_CAP) continue; u.push(p); spent += players[p].salary; }
-      if (u.length === 5 && spent >= 45000 && new Set([cpt, ...u].map((p) => sim.team[p])).size === 2) out.push([[cpt, 1.5], ...u.map((p) => [p, 1])]);
+    if (kind === "showdown" && spec && spec.sport !== "NBA") {
+      const lu = targetedShowdown(order, players, sim, slots, cap, spec.fieldMinSalary, rng);
+      if (lu) out.push(lu);
       continue;
     }
+    if (kind === "showdown") {
+      const minSd = spec ? spec.fieldMinSalary : 45000;
+      const cpt = order[0]; let spent = slotSalary(players[cpt], slots[0]); const u = [];
+      for (const p of order.slice(1)) { if (u.length === flex) break; if (spent + players[p].salary > cap) continue; u.push(p); spent += players[p].salary; }
+      if (u.length === flex && spent >= minSd && new Set([cpt, ...u].map((p) => sim.team[p])).size === 2) out.push([[cpt, slots[0].mult || 1.5], ...u.map((p) => [p, 1])]);
+      continue;
+    }
+    const minCl = spec ? spec.fieldMinSalary : 48500;
     const masks = slots.map((s) => s.mask), lu = []; let spent = 0;
     const minSal = Math.min(...players.map((p) => p.salary));
     for (const p of order) {
-      if (lu.length === 8) break;
-      if (spent + players[p].salary + (7 - lu.length) * minSal > SALARY_CAP) continue;
+      if (lu.length === size) break;
+      if (spent + players[p].salary + (flex - lu.length) * minSal > cap) continue;
       if (!canAssign(lu.concat([p]).map((q) => sim.code[q]), masks)) continue;
       lu.push(p); spent += players[p].salary;
     }
-    if (lu.length === 8 && spent >= 48500) out.push(lu.map((p) => [p, 1]));
+    if (lu.length === size && spent >= minCl && rulesOk(lu, sim, { stack: false })) out.push(lu.map((p) => [p, 1]));
   }
   return out;
+}
+
+// Registry-sport showdown lineup that spends like the public (same algorithm as
+// sim.py _sample_field_showdown_targeted): a spend target cap - |N(0,1)| x 1500
+// (at least the field minimum); players are taken in ownership-key order only
+// while the cap and the target stay reachable; the last pick adds the second team.
+export const FIELD_SPEND_SD = 1500;
+function targetedShowdown(order, players, sim, slots, cap, fieldMin, rng) {
+  const flex = slots.length - 1, cpt = order[0];
+  if (cpt == null) return null;
+  const target = Math.max(fieldMin, cap - Math.abs(rng.normal()) * FIELD_SPEND_SD);
+  let spent = slotSalary(players[cpt], slots[0]);
+  if (spent > cap) return null;
+  const asc = order.slice().sort((x, y) => players[x].salary - players[y].salary);
+  const extreme = (list, r, used) => { let t = 0, k = 0; for (const j of list) { if (k === r) break; if (!used.has(j)) { t += players[j].salary; k++; } } return k === r ? t : null; };
+  const used = new Set([cpt]), u = [];
+  for (const p of order.slice(1)) {
+    const r = flex - u.length - 1, s2 = spent + players[p].salary;
+    used.add(p);
+    const lo = extreme(asc, r, used), hi = extreme(asc.slice().reverse(), r, used);
+    let ok = lo != null && s2 + lo <= cap && s2 + hi >= target;
+    if (ok && r === 0 && new Set([cpt, ...u, p].map((q) => sim.team[q])).size < 2) ok = false;
+    if (!ok) { used.delete(p); continue; }
+    u.push(p); spent = s2;
+    if (u.length === flex) break;
+  }
+  if (u.length !== flex || spent < fieldMin || new Set([cpt, ...u].map((q) => sim.team[q])).size < 2) return null;
+  return [[cpt, slots[0].mult || 1.5], ...u.map((p) => [p, 1])];
 }
 
 // ── contest simulation: ROI for each candidate lineup ───────────────────────
@@ -338,7 +490,7 @@ export function simulateContest(sim, players, lineups, opts, onProgress) {
   const fieldSize = Math.max(2, opts.fieldSize || 10000);
   const fee = opts.entryFee || 0;
   const rng = rngFrom(opts.seed || 12345);
-  const field = opts.field || sampleField(sim, players, opts.kind, Math.min(opts.fieldSample || 2000, fieldSize), rng);
+  const field = opts.field || sampleField(sim, players, opts.kind, Math.min(opts.fieldSample || 2000, fieldSize), rng, opts.spec);
   const pay = payoutTable(opts);
   const F = field.length, L = lineups.length, P = sim.P;
   const sum = new Float64Array(L), sum2 = new Float64Array(L), win = new Float64Array(L), cash = new Float64Array(L),
@@ -363,7 +515,8 @@ export function simulateContest(sim, players, lineups, opts, onProgress) {
         // beating b of the F sampled lineups places you, in the real field, somewhere
         // between ranks b*N/F+1 and (b+1)*N/F: average the prize over that range
         const beaten = F - lo;
-        const r0 = (beaten * fieldSize) / F, r1 = ((beaten + 1) * fieldSize) / F;
+        // an empty field (F = 0) would give r1 = Infinity and NaN payouts: treat it as one rank band
+        const r0 = F ? (beaten * fieldSize) / F : 0, r1 = F ? ((beaten + 1) * fieldSize) / F : fieldSize;
         const a0 = Math.floor(r0), a1 = Math.max(a0 + 1, Math.ceil(r1));
         payout[l] += (cum[Math.min(a1, cum.length - 1)] - cum[Math.min(a0, cum.length - 1)]) / (a1 - a0);
         if (beaten === 0) win[l] += 1 / Math.max(1, r1);          // chance of first within that range

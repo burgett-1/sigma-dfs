@@ -4,6 +4,7 @@
 // original lineup and its candidates play the same simulated contests, so the
 // pre-swap vs post-swap ROI comparison is apples to apples.
 import { buildSim, bestFill, rngFrom, sampleScores, sampleField, simulateContest, slotsFor, slotSalary, CLASSIC_SLOTS, SHOWDOWN_SLOTS } from "./engine.js";
+import { slotColumnsMatch } from "./sports.js";
 
 function splitLine(line) {
   const out = []; let cur = "", q = false;
@@ -12,18 +13,26 @@ function splitLine(line) {
 }
 
 // DraftKings "edit entries" CSV: Entry ID, Contest Name, Contest ID, Entry Fee, <slots>…
-export function parseEntries(text) {
+// spec: a sport spec (or a list of them, e.g. the sport's classic and showdown).
+// With one, the header's slot columns must equal that spec's labels as a
+// multiset; without one, NBA classic / showdown are recognised as before.
+export function parseEntries(text, spec) {
   const lines = text.replace(/\r/g, "").split("\n");
-  let h = -1, head = null;
+  const specs = spec ? (Array.isArray(spec) ? spec : [spec]).filter(Boolean) : null;
+  let h = -1, head = null, match = null;
   for (let i = 0; i < lines.length; i++) {
     const c = splitLine(lines[i]).map((x) => x.trim().toUpperCase());
-    if (c.includes("ENTRY ID") && (c.includes("UTIL") || c.includes("CPT"))) { h = i; head = c; break; }
+    if (!c.includes("ENTRY ID")) continue;
+    if (specs) {
+      match = specs.find((sp) => slotColumnsMatch(c, sp));
+      if (match) { h = i; head = c; break; }
+    } else if (c.includes("UTIL") || c.includes("CPT")) { h = i; head = c; break; }
   }
   if (h < 0) return null;
-  const labels = ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "CPT"];
+  const labels = match ? [...new Set(match.slots.map((s) => s.label))] : ["PG", "SG", "SF", "PF", "C", "G", "F", "UTIL", "CPT"];
   const slotCols = [];
   head.forEach((c, i) => { if (labels.includes(c)) slotCols.push({ label: c, col: i }); });
-  const kind = slotCols.some((s) => s.label === "CPT") ? "showdown" : "classic";
+  const kind = match ? match.kind : slotCols.some((s) => s.label === "CPT") ? "showdown" : "classic";
   const iId = head.indexOf("ENTRY ID"), iFee = head.indexOf("ENTRY FEE"), iContest = head.indexOf("CONTEST NAME");
   const entries = [];
   for (let r = h + 1; r < lines.length; r++) {
@@ -38,14 +47,15 @@ export function parseEntries(text) {
     entries.push({ row: r, cols: c, entryId: id, contest: iContest >= 0 ? c[iContest] : "",
       fee: iFee >= 0 ? Number(String(c[iFee]).replace(/[$,]/g, "")) || 0 : 0, slots });
   }
-  return { kind, lines, header: h, slotCols, entries };
+  return { kind, lines, header: h, slotCols, entries, sport: match ? match.sport : undefined };
 }
 
 export function runLateSwap(players, doc, opts, onProgress) {
   const now = opts.now || Date.now();
-  const sim = buildSim(players, now);
+  const spec = opts.spec || undefined;
+  const sim = buildSim(players, now, spec);
   const kind = doc.kind;
-  const slotDefs = slotsFor(kind);
+  const slotDefs = slotsFor(kind, spec);
   const byId = new Map(), byCpt = new Map();
   players.forEach((p, i) => { if (p.dkId) byId.set(p.dkId, i); if (p.cptId) byCpt.set(p.cptId, i); });
   const exclude = new Set(opts.exclude || []);
@@ -89,8 +99,9 @@ export function runLateSwap(players, doc, opts, onProgress) {
     const fixedForFill = fixed.filter((f) => f.p >= 0);
     const fixedTeams = fixedForFill.map((f) => sim.team[f.p]);
     if (open.length && !unknown) {
+      // late swap keeps DraftKings' own rules only (stacks are a build-time preference)
       const fillWith = (score) => bestFill(score, sim, players, fixedForFill, open,
-        { exclude, unlockedOnly: true, fixedTeams });
+        { exclude, unlockedOnly: true, fixedTeams, stack: false });
       const pf = fillWith(proj);
       if (pf) add(toLineup(pf), "projection");
       for (let s = 0; s < nCand; s++) {
@@ -104,7 +115,7 @@ export function runLateSwap(players, doc, opts, onProgress) {
     if (onProgress) onProgress(0.3 * (ei + 1) / doc.entries.length);
   });
   // every candidate of every entry plays the same simulated contests
-  const field = sampleField(sim, players, kind, Math.min(opts.fieldSample || 2000, opts.fieldSize || 10000), rngFrom((opts.seed || 777) + 1));
+  const field = sampleField(sim, players, kind, Math.min(opts.fieldSample || 2000, opts.fieldSize || 10000), rngFrom((opts.seed || 777) + 1), spec);
   const res = simulateContest(sim, players, all, { ...opts, kind, field, seed: (opts.seed || 777) + 2 },
     (f) => onProgress && onProgress(0.3 + 0.7 * f));
   const out = perEntry.map((b) => {
@@ -156,8 +167,8 @@ function csvCell(c) {
 // contest names, fees and DraftKings' player list stay exactly as downloaded,
 // which is what the Edit Entries upload checks. Cells are DraftKings player IDs.
 // lineups: [{ labels: ["PG",...], ids: [draftableId,...] }] in the file's slot order.
-export function fillEntries(text, lineups) {
-  const doc = parseEntries(text);
+export function fillEntries(text, lineups, spec) {
+  const doc = parseEntries(text, spec);
   if (!doc) return { error: "This isn't a DraftKings entries file (no Entry ID / position header)." };
   if (!doc.entries.length) return { error: "The entries file has no entries." };
   // DraftKings lists every player of that slate (with IDs) in the same file: make sure

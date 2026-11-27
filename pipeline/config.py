@@ -14,6 +14,8 @@ DATA_DIR = Path(os.environ.get("SIGMA_DATA_DIR", ROOT / "data"))
 HISTORY_DIR = DATA_DIR / "history"
 STATE_DIR = DATA_DIR / "state"
 SLATES_DIR = DATA_DIR / "slates"
+# raw third-party downloads (nflverse, ...): outside data/, never published
+CACHE_DIR = Path(os.environ.get("SIGMA_CACHE_DIR", Path.home() / ".cache" / "sigma-dfs"))
 
 ET = ZoneInfo("America/New_York")
 

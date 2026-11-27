@@ -1,0 +1,168 @@
+{
+"injuries": [
+{
+"displayName": "Arizona Cardinals",
+"injuries": [
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Karson Sharar"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Hunter Long"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Carson Beck"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Kedon Slovis"
+}
+},
+{
+"status": "Injured Reserve",
+"athlete": {
+"displayName": "Jeremiyah Love"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Josh Johnson"
+}
+}
+]
+},
+{
+"displayName": "Atlanta Falcons",
+"injuries": [
+{
+"status": "Active",
+"athlete": {
+"displayName": "James Pearce Jr."
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Kendal Daniels"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Jahan Dotson"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Za'Darius Smith"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Cameron Thomas"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Divine Deablo"
+}
+}
+]
+},
+{
+"displayName": "Baltimore Ravens",
+"injuries": [
+{
+"status": "Active",
+"athlete": {
+"displayName": "Mike Green"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Jaylinn Hawkins"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Rashod Bateman"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Zay Flowers"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Derrick Henry"
+}
+},
+{
+"status": "Questionable",
+"athlete": {
+"displayName": "Olaivavega Ioane"
+}
+}
+]
+},
+{
+"displayName": "Buffalo Bills",
+"injuries": [
+{
+"status": "Active",
+"athlete": {
+"displayName": "T.J. Sanders"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Dorian Williams"
+}
+},
+{
+"status": "Active",
+"athlete": {
+"displayName": "Dalton Kincaid"
+}
+},
+{
+"status": "Out",
+"athlete": {
+"displayName": "Christian Benford"
+}
+},
+{
+"status": "Out",
+"athlete": {
+"displayName": "Jalon Kilgore"
+}
+},
+{
+"status": "Out",
+"athlete": {
+"displayName": "Jude Bowry"
+}
+}
+]
+}
+]
+}

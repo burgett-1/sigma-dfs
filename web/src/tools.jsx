@@ -3,6 +3,7 @@
 import { Component, useState, useRef, useEffect, useMemo } from "react";
 import { slotsFor, slotSalary, buildSim, bestFill, SALARY_CAP } from "./engine.js";
 import { parseEntries, exportEntries } from "./lateswap.js";
+import { detectEntriesSport } from "./sports.js";
 
 import { OH, CARD, BR, MU, GR, RE, YE, TX, ACC, ACC2, SURF2, LINE2, alpha } from "./theme.js";
 import { BarList, Sparkline } from "./charts.jsx";
@@ -71,8 +72,8 @@ export function useSimWorker() {
 }
 
 // ── slate picker ────────────────────────────────────────────────────────────
-export function SlatePicker({ slates, current, onPick, fmtClock }) {
-  if (!slates.length) return <div style={card}><div style={{ color: MU }}>{"No DraftKings NBA slates are open right now."}</div></div>;
+export function SlatePicker({ slates, current, onPick, fmtClock, sport }) {
+  if (!slates.length) return <div style={card}><div style={{ color: MU }}>{"No DraftKings " + (sport || "NBA") + " slates are open right now."}</div></div>;
   return (
     <div>
       <div style={{ ...card, marginBottom: 12 }}>
@@ -246,7 +247,9 @@ export function PatternsView({ patterns, spotlight, slate, players, likedExposur
 }
 
 // ── Late Swap tool ──────────────────────────────────────────────────────────
-export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
+// specs: {classic, showdown} sport specs (sports.js specFor) for non-NBA sports; null = NBA as before.
+// registry: lets an entries file from another sport be named ("switch sport").
+export function LateSwapTool({ players, slate, corr, runSim, defaults, specs, registry, sport }) {
   const [doc, setDoc] = useState(null), [err, setErr] = useState("");
   const [cfg, setCfg] = useState({ fieldSize: defaults.fieldSize || 10000, entryFee: defaults.entryFee || 15, firstPct: defaults.firstPct || 20, sims: 20000 });
   const [res, setRes] = useState(null), [busy, setBusy] = useState(0), [chosen, setChosen] = useState(new Set());
@@ -261,7 +264,13 @@ export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
     const f = e.target.files[0]; if (!f) return;
     const r = new FileReader();
     r.onload = (ev) => {
-      const d = parseEntries(ev.target.result);
+      const text = ev.target.result;
+      const d = parseEntries(text, specs ? [specs.classic, specs.showdown] : undefined);
+      if (!d && registry) {
+        const head = text.replace(/\r/g, "").split("\n").map((l) => l.split(",")).find((c) => c.map((x) => x.trim().toUpperCase()).includes("ENTRY ID"));
+        const other = head ? detectEntriesSport(head, registry) : null;
+        if (other && other.sport !== (sport || "NBA")) { setErr("This entries file is for " + other.sport + ". Switch sport?"); return; }
+      }
       if (!d || !d.entries.length) { setErr("Couldn't find entries. Use DraftKings → My Contests → Upcoming/Live → Edit Entries → Download."); return; }
       if (slate && d.kind !== slate.kind) { setErr("These entries are " + d.kind + " but the selected slate is " + slate.kind + ". Pick the matching slate first."); }
       else setErr("");
@@ -277,6 +286,7 @@ export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
     const opts = { now: Date.now(), sims: Number(cfg.sims) || 20000, fieldSize: Number(cfg.fieldSize) || 10000,
       entryFee: Number(cfg.entryFee) || 0, firstPct: Number(cfg.firstPct) || 20, corr,
       exclude: exclude.map((n) => idx[n]).filter((x) => x != null), include: include.map((n) => idx[n]).filter((x) => x != null) };
+    if (specs) opts.spec = specs[doc.kind];
     runSim("lateswap", { players, doc, opts }, (f) => setBusy(Math.max(0.01, f))).then((r) => {
       setRes(r); setBusy(0); setPage(0);
       setChosen(new Set(r.entries.filter((e) => e.changed && e.after.roi > e.before.roi).map((e) => e.entryId)));
@@ -423,15 +433,16 @@ function seatPlayers(ps, masks, sim) {
 function bits(x) { let c = 0; while (x) { c += x & 1; x >>= 1; } return c; }
 
 // ── Single Lineup Simulator ─────────────────────────────────────────────────
-export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
+export function SingleLineupTool({ players, slate, corr, runSim, defaults, spec }) {
   const kind = slate ? slate.kind : "classic";
-  const slots = slotsFor(kind);
+  const slots = slotsFor(kind, spec || undefined);
+  const cap = spec ? spec.cap : SALARY_CAP;
   const [roster, setRoster] = useState(() => slots.map(() => ({ p: null, locked: false })));
   const [q, setQ] = useState(""), [res, setRes] = useState(null), [busy, setBusy] = useState(0), [msg, setMsg] = useState("");
   const [cfg, setCfg] = useState({ fieldSize: defaults.fieldSize || 10000, entryFee: defaults.entryFee || 15, firstPct: defaults.firstPct || 20, sims: 20000 });
-  useEffect(() => { setRoster(slotsFor(kind).map(() => ({ p: null, locked: false }))); setRes(null); }, [kind, slate && slate.id]);
+  useEffect(() => { setRoster(slotsFor(kind, spec || undefined).map(() => ({ p: null, locked: false }))); setRes(null); }, [kind, slate && slate.id, spec]);
   const now = Date.now();
-  const sim = useMemo(() => buildSim(players, 0), [players]);   // position codes / teams only
+  const sim = useMemo(() => buildSim(players, 0, spec || undefined), [players, spec]);   // position codes / teams only
   const used = new Set(roster.map((r) => r.p).filter((p) => p != null));
   const salary = roster.reduce((s, r, k) => s + (r.p != null ? slotSalary(players[r.p], slots[k]) : 0), 0);
   const proj = roster.reduce((s, r, k) => s + (r.p != null ? players[r.p].proj * (slots[k].mult || 1) : 0), 0);
@@ -473,10 +484,11 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
     const lineup = roster.map((r, k) => [r.p, slots[k].mult || 1]);
     const opts = { now, kind, corr, sims: Number(cfg.sims) || 20000, fieldSize: Number(cfg.fieldSize) || 10000,
       entryFee: Number(cfg.entryFee) || 0, firstPct: Number(cfg.firstPct) || 20, seed: 4242 };
+    if (spec) opts.spec = spec;
     runSim("single", { players, lineup, opts }, (f) => setBusy(Math.max(0.01, f)))
       .then((r) => { setRes(r); setBusy(0); }).catch((e) => { setMsg(e.message); setBusy(0); });
   }
-  const over = salary > SALARY_CAP;
+  const over = salary > cap;
   return (
     <div>
       <div style={{ ...card, marginBottom: 12 }}>
@@ -487,7 +499,7 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
         <div style={card}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 13 }}>
             <b>{"Your lineup"}</b>
-            <span><span style={{ color: over ? RE : OH, fontWeight: 800 }}>{money(salary)}</span><span style={{ color: MU }}>{" / " + money(SALARY_CAP) + " · " + money(SALARY_CAP - salary) + " left · proj " + fmt(proj)}</span></span>
+            <span><span style={{ color: over ? RE : OH, fontWeight: 800 }}>{money(salary)}</span><span style={{ color: MU }}>{" / " + money(cap) + " · " + money(cap - salary) + " left · proj " + fmt(proj)}</span></span>
           </div>
           {roster.map((r, k) => {
             const p = r.p != null ? players[r.p] : null;
