@@ -4,8 +4,9 @@ Every pass (about once a minute) re-reads the injury report, starting lineups,
 DraftKings and the betting markets, re-projects every player and publishes to
 the `data` branch the site reads.
 
-Lineups are built only when you ask: the site's "Run simulations" button sends
-a request on your private control channel (an ntfy topic). The loop picks it up
+Lineups are built only when you ask: in owner mode the site's "Run on my Mac"
+button sends an HMAC-signed request on your private control channel (a secret
+ntfy topic set up with `python -m pipeline.owner_setup`). The loop picks it up
 within a few seconds, runs 10,000 lineups x 1,000,000 simulated contests for that
 slate with the projections as they stand, publishes the pool, then upgrades it
 to exactly-solved lineups. Progress is published in run_status.json.
@@ -24,7 +25,7 @@ import sys
 import time
 from datetime import datetime, timezone
 
-from . import contests, patterns, run as runner
+from . import contest_reminders, contests, owner, patterns, run as runner
 from .config import DATA_DIR
 from .http import session
 
@@ -66,19 +67,35 @@ def publish() -> bool:
 
 
 class Control:
-    """Run requests from the site, delivered through an ntfy topic only you and your
-    site know. The site posts {"action": "run", "slate_id": ..., "req": ...}."""
+    """Owner run requests from the site, delivered on a secret ntfy topic and
+    signed with the owner's key (pipeline/owner.py). Unsigned, stale, replayed or
+    rate-limited messages are dropped; the log shows reason counts only, never
+    the message, key or topic."""
+    LOG_EVERY = 60.0
 
-    def __init__(self, server: str, topic: str):
-        self.url = f"{server.rstrip('/')}/{topic}/json"
+    def __init__(self, cfg: dict, nonces: "owner.NonceStore | None" = None,
+                 limiter: "owner.RateLimiter | None" = None):
+        self.cfg = cfg
+        self.url = f"{cfg['server'].rstrip('/')}/{cfg['topic']}/json"
         self.since = str(int(time.time()))      # ignore requests sent before we started
+        self.nonces = nonces if nonces is not None else owner.NonceStore()
+        self.limiter = limiter if limiter is not None else owner.RateLimiter()
+        self.ignored: dict[str, int] = {}
+        self._logged = 0.0
+
+    def _summary(self) -> None:
+        if self.ignored and time.time() - self._logged >= self.LOG_EVERY:
+            n = sum(self.ignored.values())
+            log.info("control: ignored %d request%s (%s)", n, "" if n == 1 else "s",
+                     ", ".join(f"{k} {v}" for k, v in sorted(self.ignored.items())))
+            self.ignored, self._logged = {}, time.time()
 
     def poll(self) -> list[dict]:
         try:
             r = session().get(self.url, params={"poll": "1", "since": self.since}, timeout=15)
             r.raise_for_status()
         except Exception as e:  # noqa: BLE001
-            log.debug("control poll failed: %s", e)
+            log.debug("control poll failed: %s", type(e).__name__)
             return []
         out = []
         for line in r.text.splitlines():
@@ -86,16 +103,35 @@ class Control:
                 ev = json.loads(line)
             except ValueError:
                 continue
-            if ev.get("event") != "message":
+            if not isinstance(ev, dict) or ev.get("event") != "message":
                 continue
             self.since = ev.get("id") or self.since
-            try:
-                msg = json.loads(ev.get("message") or "{}")
-            except ValueError:
-                continue
-            if msg.get("action") == "run" and msg.get("slate_id"):
-                out.append(msg)
+            ok, why, req = owner.verify(ev.get("message") or "", self.cfg, time.time(), self.nonces, self.limiter)
+            if ok:
+                log.info("control: accepted run slate=%s req=%s", req["slate_id"], req["req"])
+                out = [req]                     # only the newest valid request is run
+            else:
+                self.ignored[why] = self.ignored.get(why, 0) + 1
+        self._summary()
         return out
+
+    def run(self, req: dict, do_notify: bool) -> None:
+        """handle_request inside the rate limiter."""
+        self.limiter.start()
+        try:
+            handle_request(req, do_notify=do_notify)
+        finally:
+            self.limiter.finish()
+
+
+def make_control() -> "Control | None":
+    """Remote runs only with a valid private owner config; CONTROL_TOPIC is ignored."""
+    cfg = owner.load_config()
+    if cfg:
+        return Control(cfg)
+    if os.environ.get("CONTROL_TOPIC", "").strip():
+        log.info("Remote runs are off until you run `python -m pipeline.owner_setup`. The old CONTROL_TOPIC is ignored.")
+    return None
 
 
 class NewsWatch:
@@ -187,8 +223,7 @@ def main(argv=None) -> int:
     ap.add_argument("--force", action="store_true")
     args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
-    topic = os.environ.get("CONTROL_TOPIC", "").strip()
-    control = Control(os.environ.get("NTFY_SERVER", "https://ntfy.sh"), topic) if topic else None
+    control = make_control()
     deadline = time.time() + args.minutes * 60
     last_patterns = 0.0
     last_industry = 0.0
@@ -210,7 +245,7 @@ def main(argv=None) -> int:
         try:
             reqs = control.poll() if control else []
             if reqs:
-                handle_request(reqs[-1], do_notify=not args.no_notify)
+                control.run(reqs[-1], do_notify=not args.no_notify)
             else:
                 res = runner.run(datetime.now(timezone.utc), do_notify=not args.no_notify,
                                  force=args.force and first)
@@ -234,6 +269,11 @@ def main(argv=None) -> int:
         finally:
             faulthandler.cancel_dump_traceback_later()
         first = False
+        try:                          # new contest-standings exports in Downloads: import right away
+            if contests.watch():
+                publish()
+        except Exception as e:  # noqa: BLE001
+            log.warning("contest watch failed: %s", e)
         # historical pattern mining in quiet moments, a few nights at a time
         if time.time() - last_patterns > 600 and deadline - time.time() > 240:
             faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
@@ -251,6 +291,10 @@ def main(argv=None) -> int:
                     log.info("imported contests %s; report: %s", res["new"], contests.PRIVATE / "report.html")
             except Exception as e:  # noqa: BLE001
                 log.warning("contest import failed: %s", e)
+            try:                      # remind the owner to export yesterday's contest results
+                contest_reminders.check(datetime.now(timezone.utc))
+            except Exception as e:  # noqa: BLE001
+                log.warning("contest reminder failed: %s", e)
             try:                      # industry yardstick (private), until the first lock
                 if time.time() - last_industry > 1800:
                     runner.snapshot_industry(datetime.now(timezone.utc))
@@ -283,7 +327,7 @@ def main(argv=None) -> int:
                 if reqs:
                     faulthandler.dump_traceback_later(PASS_TIMEOUT, exit=True)
                     try:
-                        handle_request(reqs[-1], do_notify=not args.no_notify)
+                        control.run(reqs[-1], do_notify=not args.no_notify)
                     except Exception as e:  # noqa: BLE001
                         log.exception("simulation request failed: %s", e)
                     finally:

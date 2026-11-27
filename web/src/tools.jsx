@@ -4,12 +4,14 @@ import { Component, useState, useRef, useEffect, useMemo } from "react";
 import { slotsFor, slotSalary, buildSim, bestFill, SALARY_CAP } from "./engine.js";
 import { parseEntries, exportEntries } from "./lateswap.js";
 
-const OH = "#ff6b00", CARD = "#1a1a24", BR = "#2a2a3a", MU = "#7a7a9a", GR = "#00c97a", RE = "#ff4466", YE = "#f5b942";
-const card = { background: CARD, border: "1px solid " + BR, borderRadius: 10, padding: 16 };
-const sl = { fontSize: 11, fontWeight: 700, color: OH, textTransform: "uppercase", letterSpacing: 1, marginBottom: 12 };
-const inp = { background: "#111118", border: "1px solid " + BR, borderRadius: 6, color: "#e8e8f0", padding: "7px 9px", fontSize: 13, boxSizing: "border-box" };
-const btn = (bg, fg) => ({ padding: "7px 13px", background: bg, color: fg || "#fff", border: "1px solid " + (fg || bg) + "55", borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer" });
-const pill = (c) => ({ display: "inline-block", padding: "2px 7px", borderRadius: 4, fontSize: 11, fontWeight: 700, background: c + "22", color: c });
+import { OH, CARD, BR, MU, GR, RE, YE, TX, ACC, ACC2, SURF2, LINE2, alpha } from "./theme.js";
+import { BarList, Sparkline } from "./charts.jsx";
+import { SampleBadge, LockCountdown } from "./hud.jsx";
+const card = { background: CARD, border: "1px solid " + BR, borderRadius: 12, padding: 16, minWidth: 0 };
+const sl = { fontSize: 11, fontWeight: 700, color: ACC, textTransform: "uppercase", letterSpacing: ".12em", marginBottom: 12 };
+const inp = { background: SURF2, border: "1px solid " + BR, borderRadius: 6, color: TX, padding: "7px 9px", fontSize: 13, boxSizing: "border-box" };
+const btn = (bg, fg) => ({ padding: "7px 13px", background: bg, color: fg || "#fff", border: "1px solid " + alpha(fg || bg, 33), borderRadius: 6, fontSize: 12, fontWeight: 700, cursor: "pointer" });
+const pill = (c) => ({ display: "inline-block", padding: "2px 7px", borderRadius: 4, fontSize: 11, fontWeight: 700, background: alpha(c, 13), color: c });
 const fmt = (x, d = 1) => (x == null || isNaN(x) ? "—" : Number(x).toFixed(d));
 const money = (x) => "$" + Number(x || 0).toLocaleString();
 const roiCol = (x) => (x >= 0 ? GR : RE);
@@ -20,7 +22,7 @@ export class ToolBoundary extends Component {
   static getDerivedStateFromError(error) { return { error }; }
   render() {
     if (this.state.error) {
-      return <div style={card}><div style={sl}>{"Something went wrong in this tool"}</div>
+      return <div style={card} role="alert"><div style={sl}>{"This tool hit an error — other tools still work."}</div>
         <div style={{ fontSize: 12, color: MU }}>{String(this.state.error.message || this.state.error)}</div>
         <button style={{ ...btn(OH), marginTop: 10 }} onClick={() => this.setState({ error: null })}>{"Try again"}</button></div>;
     }
@@ -37,7 +39,7 @@ export function StarterIcon({ p }) {
   return (
     <span title={tip + (p.unexpected === "starting" ? " — unexpected start" : "")}
       style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", width: 15, height: 15, borderRadius: 3,
-        marginLeft: 5, fontSize: 10, fontWeight: 900, color: "#0f0f13", background: confirmed ? GR : YE, verticalAlign: "middle" }}>
+        marginLeft: 5, fontSize: 10, fontWeight: 900, color: "#05070d", background: confirmed ? GR : YE, verticalAlign: "middle" }}>
       {"S"}
     </span>
   );
@@ -79,17 +81,23 @@ export function SlatePicker({ slates, current, onPick, fmtClock }) {
       </div>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(300px,1fr))", gap: 12 }}>
         {slates.map((s) => (
-          <div key={s.id} onClick={() => onPick(s)} style={{ ...card, cursor: "pointer", borderColor: s.id === current ? OH : BR }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <div key={s.id} className="anim-in" role="button" tabIndex={0} onClick={() => onPick(s)} onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onPick(s); } }}
+            style={{ ...card, cursor: "pointer", borderColor: s.id === current ? LINE2 : BR, boxShadow: s.id === current ? "var(--glow)" : "none" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8, gap: 8 }}>
               <b style={{ fontSize: 16 }}>{s.name}</b>
               <span style={pill(s.kind === "showdown" ? "#a78bfa" : "#4a9eff")}>{s.kind === "showdown" ? "SHOWDOWN" : "CLASSIC"}</span>
             </div>
-            <div style={{ fontSize: 12, color: MU, marginBottom: 8 }}>
-              {s.game_count + " game" + (s.game_count !== 1 ? "s" : "") + " · first lock " + fmtClock(s.games[0] && s.games[0].start_utc)}
-              {s.contest_locked ? <span style={{ ...pill(YE), marginLeft: 6 }}>{s.locked ? "ALL LOCKED" : "LOCKED · late swap open"}</span> : null}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8, marginBottom: 8 }}>
+              <span style={{ fontSize: 12, color: MU }}>{s.game_count + " game" + (s.game_count !== 1 ? "s" : "") + " · first lock " + fmtClock(s.start_utc || (s.games[0] && s.games[0].start_utc))}</span>
+              <span style={{ fontSize: 18, color: ACC }}><LockCountdown target={s.start_utc || (s.games[0] && s.games[0].start_utc)} locked={!!s.contest_locked} /></span>
+            </div>
+            <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
+              {s.size_bucket ? <span style={pill(ACC2)}>{s.size_bucket.toUpperCase() + " SLATE"}</span> : null}
+              {s.lineups_file ? <span style={pill(s.lineups_phase === "exact" ? GR : YE)}>{s.lineups_phase === "exact" ? "EXACT LINEUPS" : "FAST LINEUPS"}</span> : <span style={pill(MU)}>{"NO SIMS YET"}</span>}
+              {s.contest_locked ? <span style={pill(YE)}>{s.locked ? "ALL LOCKED" : "LOCKED · late swap open"}</span> : null}
             </div>
             <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-              {s.games.map((g) => <span key={g.name} style={pill(g.locked ? MU : "#4a9eff")}>{(g.locked ? "🔒 " : "") + g.away + " @ " + g.home + " " + (g.start_et || "")}</span>)}
+              {s.games.map((g) => <span key={g.name} className="num" style={pill(g.locked ? MU : ACC)}>{(g.locked ? "🔒 " : "") + g.away + " @ " + g.home + " " + (g.start_et || "")}</span>)}
             </div>
           </div>
         ))}
@@ -147,19 +155,22 @@ export function PatternsView({ patterns, spotlight, slate, players, likedExposur
   const strong = cards.filter((c) => c.strong), other = cards.filter((c) => !c.strong);
   const guide = players.filter((p) => p.proj > 0 && p.optExp != null).sort((a, c) => c.optExp - a.optExp).slice(0, 40);
   const Tile = ({ big, label, sub }) => (
-    <div style={{ background: "#111118", borderRadius: 8, padding: "12px 14px" }}>
-      <div style={{ fontSize: 22, fontWeight: 800, color: OH }}>{big}</div>
+    <div className="kpi" style={{ padding: "12px 14px" }}>
+      <div className="kpi-value" style={{ fontSize: 22, color: ACC }}>{big}</div>
       <div style={{ fontSize: 13, fontWeight: 700, marginTop: 2 }}>{label}</div>
       {sub ? <div style={{ fontSize: 11, color: MU, marginTop: 2 }}>{sub}</div> : null}
     </div>
   );
   const Card = ({ c }) => (
-    <div style={{ ...card, borderColor: c.strong ? OH : BR, background: c.strong ? "#2a1a0e" : CARD, marginBottom: 10 }}>
+    <div style={{ ...card, borderColor: c.strong ? alpha(OH, 55) : BR, background: c.strong ? alpha(OH, 8) : CARD, marginBottom: 10 }}>
       <div style={{ display: "flex", justifyContent: "space-between", gap: 8, alignItems: "flex-start" }}>
         <b style={{ fontSize: c.strong ? 15 : 13 }}>{c.headline}</b>
-        {c.strong ? <span style={pill(OH)}>{"STRONG MATCH"}</span> : <span style={pill(MU)}>{c.type === "same_situation" ? "SAME SITUATION" : c.type === "winning_profile" ? "PROFILE" : "SURPRISE START"}</span>}
+        <span style={{ display: "flex", gap: 4, flexWrap: "wrap", justifyContent: "flex-end" }}>
+          {c.strength != null ? <span className="num" style={pill(ACC)}>{"strength " + fmt(c.strength, 2)}</span> : null}
+          {c.strong ? <span style={pill(OH)}>{"STRONG MATCH"}</span> : <span style={pill(MU)}>{c.type === "same_situation" ? "SAME SITUATION" : c.type === "winning_profile" ? "PROFILE" : "SURPRISE START"}</span>}
+        </span>
       </div>
-      <div style={{ fontSize: 13, color: "#c8c8d8", marginTop: 6 }}>{c.detail}</div>
+      <div style={{ fontSize: 13, color: TX, marginTop: 6 }}>{c.detail}</div>
       <div style={{ fontSize: 11, color: MU, marginTop: 6 }}>{c.team + " · " + money(c.salary) + " · proj " + fmt(c.proj) + " · own " + fmt(c.own) + "%"}</div>
     </div>
   );
@@ -174,7 +185,10 @@ export function PatternsView({ patterns, spotlight, slate, players, likedExposur
       {kind === "showdown" ? <div style={{ ...card, marginBottom: 12, color: MU, fontSize: 13 }}>{"Historical winning-lineup analysis covers classic slates. Showdown uses the same projections and contest simulation."}</div> : null}
       {kind !== "showdown" && (patterns && patterns.nights) ? (
         <div style={{ ...card, marginBottom: 12 }}>
-          <div style={sl}>{"What wins on slates like this" + (bucketName ? " (" + (b.label || bucketName) + ")" : "")}</div>
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 8, flexWrap: "wrap", alignItems: "flex-start" }}>
+            <div style={sl}>{"What wins on slates like this" + (bucketName ? " (" + (b.label || bucketName) + ")" : "")}</div>
+            <SampleBadge n={b.lineups_analysed || patterns.lineups_analysed || 0} unit="lineups" small={300} extra={(patterns.nights || 0) + " nights"} />
+          </div>
           <div style={{ fontSize: 12, color: MU, marginBottom: 10 }}>{"From " + (b.slates || patterns.slates_analysed || 0) + " verified historical slates of this size: the 20 best possible lineups of each."}</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(190px,1fr))", gap: 10 }}>
             <Tile big={money(st.salary_used_median)} label="Salary used (typical)" sub={fmt(st.pct_using_49k_plus, 0) + "% used $49K or more"} />
@@ -183,6 +197,28 @@ export function PatternsView({ patterns, spotlight, slate, players, likedExposur
             <Tile big={fmt(why.teammate_out_pct, 0) + "%"} label="Players with a teammate out" sub="of all players in winning lineups" />
             <Tile big={fmt(why.minutes_spike_pct, 0) + "%"} label="Got a minutes spike" sub="6+ more minutes than usual" />
             <Tile big={fmt(why.pct_outside_top20_projected_value, 0) + "%"} label="Weren't obvious values" sub="outside the top-20 projected values" />
+          </div>
+          <div className="grid-2" style={{ marginTop: 14 }}>
+            <div>
+              <div style={{ ...sl, marginBottom: 8 }}>{"Salary tiers per winning lineup"}</div>
+              <BarList max={8} format={(v) => fmt(v, 2)} label="Average players per salary tier in winning lineups" items={[
+                { label: "Studs ($9K+)", value: st.avg_studs_9k_plus, color: ACC },
+                { label: "Mid ($5K–9K)", value: st.avg_mid_5k_9k, color: ACC },
+                { label: "Value (under $5K)", value: st.avg_value_under_5k, color: ACC2 },
+                { label: "Punts ($3.5K or less)", value: st.avg_punts_3_5k_or_less, color: ACC2 },
+              ]} />
+            </div>
+            <div>
+              <div style={{ ...sl, marginBottom: 8 }}>{"Why players hit"}</div>
+              <BarList max={100} format={(v) => fmt(v, 0) + "%"} label="Share of winning-lineup players with each situation" items={[
+                { label: "Minutes spike", value: why.minutes_spike_pct },
+                { label: "High-total game", value: why.high_total_game_pct },
+                { label: "Blowout game", value: why.blowout_game_pct },
+                { label: "Teammate out", value: why.teammate_out_pct },
+                { label: "Surprise start", value: why.surprise_start_pct },
+                { label: "Overtime", value: why.overtime_pct },
+              ]} />
+            </div>
           </div>
         </div>) : null}
       <div style={{ ...card, marginBottom: 12 }}>
@@ -294,8 +330,8 @@ export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
             <QuickFilters search={search} setSearch={setSearch} teams={teams} selTeams={selTeams} setSelTeams={setSelTeams}
               extra={<label style={{ fontSize: 12, color: MU }}><input type="checkbox" checked={onlyChanged} onChange={(e) => setOnlyChanged(e.target.checked)} />{" only changed"}</label>} />
             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              <button onClick={() => setChosen(new Set(shown.filter((e) => e.changed && e.after.roi > e.before.roi).map((e) => e.entryId).concat(Array.from(chosen))))} style={btn(GR + "22", GR)}>{"👍 Select all improving (shown)"}</button>
-              <button onClick={() => setChosen(new Set())} style={btn(RE + "11", RE)}>{"Clear selection"}</button>
+              <button onClick={() => setChosen(new Set(shown.filter((e) => e.changed && e.after.roi > e.before.roi).map((e) => e.entryId).concat(Array.from(chosen))))} style={btn(alpha(GR, 13), GR)}>{"👍 Select all improving (shown)"}</button>
+              <button onClick={() => setChosen(new Set())} style={btn(alpha(RE, 7), RE)}>{"Clear selection"}</button>
               <button disabled={!chosen.size} onClick={download} style={{ ...btn(OH), opacity: chosen.size ? 1 : 0.5 }}>{"⬇ Download DK upload file (" + chosen.size + " swaps)"}</button>
             </div>
           </div>
@@ -310,7 +346,7 @@ export function LateSwapTool({ players, slate, corr, runSim, defaults }) {
 }
 
 function Stat({ big, label, col }) {
-  return <div style={{ ...card, padding: 12, textAlign: "center" }}><div style={{ fontSize: 22, fontWeight: 800, color: col }}>{big}</div><div style={{ fontSize: 11, color: MU, marginTop: 3 }}>{label}</div></div>;
+  return <div className="kpi" style={{ textAlign: "center" }}><div className="kpi-value" style={{ fontSize: 22, color: col }}>{big}</div><div style={{ fontSize: 11, color: MU, marginTop: 3 }}>{label}</div></div>;
 }
 function Pager({ pg, pages, setPage, total }) {
   if (pages <= 1) return null;
@@ -341,13 +377,13 @@ function PlayerPicker({ label, players, value, onChange }) {
 function SwapCard({ e, players, chosen, onToggle }) {
   const before = e.before ? e.before.players : [], after = e.after ? e.after.players : before;
   return (
-    <div style={{ ...card, marginBottom: 8, borderColor: chosen ? GR + "88" : BR }}>
+    <div style={{ ...card, marginBottom: 8, borderColor: chosen ? alpha(GR, 53) : BR }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: 8, marginBottom: 8 }}>
         <div style={{ fontSize: 12, color: MU }}>{"Entry " + e.entryId + " · " + (e.contest || "")}</div>
         <div style={{ display: "flex", gap: 10, alignItems: "center", fontSize: 13 }}>
           {e.unknown ? <span style={pill(YE)}>{"players not on this slate: pick the matching slate"}</span> : null}
           {e.before ? <span>{"ROI "}<b style={{ color: roiCol(e.before.roi) }}>{fmt(e.before.roi)}%</b>{" → "}<b style={{ color: roiCol(e.after.roi) }}>{fmt(e.after.roi)}%</b></span> : null}
-          {e.changed ? <button onClick={onToggle} style={btn(chosen ? GR + "22" : "transparent", chosen ? GR : MU)}>{chosen ? "👍 Swap selected" : "Select swap"}</button>
+          {e.changed ? <button onClick={onToggle} style={btn(chosen ? alpha(GR, 13) : "transparent", chosen ? GR : MU)}>{chosen ? "👍 Swap selected" : "Select swap"}</button>
             : <span style={pill(MU)}>{e.openSlots ? "already optimal" : "fully locked"}</span>}
         </div>
       </div>
@@ -356,10 +392,10 @@ function SwapCard({ e, players, chosen, onToggle }) {
           const b = before[k], a = after[k], changed = b !== a;
           const pb = b != null && b >= 0 ? players[b] : null, pa = a != null && a >= 0 ? players[a] : null;
           return (
-            <div key={k} style={{ background: changed ? "#0e2a1c" : "#111118", borderRadius: 6, padding: "6px 8px", fontSize: 12 }}>
+            <div key={k} style={{ background: changed ? alpha(GR, 15) : SURF2, borderRadius: 6, padding: "6px 8px", fontSize: 12 }}>
               <div style={{ color: MU, fontSize: 10, fontWeight: 700 }}>{s.label}{s.locked ? <LockIcon /> : null}</div>
               {changed && pb ? <div style={{ color: MU, textDecoration: "line-through" }}>{pb.name}</div> : null}
-              <div style={{ fontWeight: 700, color: changed ? GR : "#e8e8f0" }}>{pa ? pa.name : s.cell || "—"}{pa ? <StarterIcon p={pa} /> : null}</div>
+              <div style={{ fontWeight: 700, color: changed ? GR : TX }}>{pa ? pa.name : s.cell || "—"}{pa ? <StarterIcon p={pa} /> : null}</div>
             </div>
           );
         })}
@@ -447,7 +483,7 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
         <div style={sl}>{"Single Lineup Simulator"}</div>
         <div style={{ fontSize: 12, color: MU }}>{"Hand-build a lineup for " + (slate ? slate.name : "this slate") + " and simulate it against a full contest field. Separate from the 10,000-lineup pool and from late swap."}</div>
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "minmax(0,1.4fr) minmax(0,1fr)", gap: 12 }}>
+      <div className="sim-grid">
         <div style={card}>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 10, fontSize: 13 }}>
             <b>{"Your lineup"}</b>
@@ -456,7 +492,7 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
           {roster.map((r, k) => {
             const p = r.p != null ? players[r.p] : null;
             return (
-              <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 10px", marginBottom: 6, borderRadius: 8, background: "#111118", border: "1px solid " + (r.locked ? OH : BR) }}>
+              <div key={k} style={{ display: "flex", alignItems: "center", gap: 8, padding: "9px 10px", marginBottom: 6, borderRadius: 8, background: SURF2, border: "1px solid " + (r.locked ? OH : BR) }}>
                 <span style={{ width: 44, fontSize: 11, fontWeight: 800, color: slots[k].mult ? "#a78bfa" : MU }}>{slots[k].label}</span>
                 {p ? (
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -467,14 +503,14 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
                 {p ? <button title={r.locked ? "Unlock to remove" : "Remove"} disabled={r.locked} onClick={() => remove(k)}
                   style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: r.locked ? BR : RE, color: "#fff", fontWeight: 900, fontSize: 16, cursor: r.locked ? "not-allowed" : "pointer", opacity: r.locked ? 0.4 : 1 }}>{"−"}</button> : null}
                 {p ? <button title={r.locked ? "Unlock" : "Lock (kept through Clear)"} onClick={() => toggleLock(k)}
-                  style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid " + (r.locked ? OH : BR), background: r.locked ? OH + "33" : "transparent", cursor: "pointer", fontSize: 13 }}>{r.locked ? "🔒" : "🔓"}</button> : null}
+                  style={{ width: 28, height: 28, borderRadius: 6, border: "1px solid " + (r.locked ? OH : BR), background: r.locked ? alpha(OH, 20) : "transparent", cursor: "pointer", fontSize: 13 }}>{r.locked ? "🔒" : "🔓"}</button> : null}
               </div>
             );
           })}
           {msg ? <div style={{ color: YE, fontSize: 12, margin: "6px 0" }}>{msg}</div> : null}
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginTop: 8 }}>
             <button onClick={complete} disabled={full} style={{ ...btn(OH), opacity: full ? 0.5 : 1 }}>{"✨ Complete lineup"}</button>
-            <button onClick={clear} style={btn(RE + "22", RE)}>{"Clear"}</button>
+            <button onClick={clear} style={btn(alpha(RE, 13), RE)}>{"Clear"}</button>
           </div>
           {full ? (
             <div style={{ marginTop: 14, borderTop: "1px solid " + BR, paddingTop: 12 }}>
@@ -490,8 +526,8 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
               <Stat big={fmt(res.cash) + "%"} label="Cash rate" col={OH} />
               <Stat big={fmt(res.top1, 2) + "%"} label="Top 1%" col={OH} />
               <Stat big={fmt(res.win, 3) + "%"} label="Win" col={OH} />
-              <Stat big={fmt(res.mean)} label={"Avg pts (± " + fmt(res.sd) + ")"} col={"#e8e8f0"} />
-              <Stat big={"$" + fmt(res.ev, 2)} label="Avg payout" col={"#e8e8f0"} />
+              <Stat big={fmt(res.mean)} label={"Avg pts (± " + fmt(res.sd) + ")"} col={TX} />
+              <Stat big={"$" + fmt(res.ev, 2)} label="Avg payout" col={TX} />
             </div>
           ) : null}
         </div>
@@ -501,12 +537,12 @@ export function SingleLineupTool({ players, slate, corr, runSim, defaults }) {
             {list.map((i) => {
               const p = players[i], started = p.gameStart && now >= Date.parse(p.gameStart);
               return (
-                <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 4px", borderBottom: "1px solid " + BR + "60" }}>
+                <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, padding: "7px 4px", borderBottom: "1px solid " + alpha(BR, 38) }}>
                   <div style={{ flex: 1, minWidth: 0, fontSize: 13 }}>
                     <b>{p.name}</b><StarterIcon p={p} />{started ? <LockIcon /> : null}
                     <div style={{ fontSize: 11, color: MU }}>{(p.positions || []).join("/") + " · " + p.team + " · " + money(p.salary) + " · " + fmt(p.proj) + " pts · " + fmt(p.own) + "% own"}</div>
                   </div>
-                  <button title="Add" onClick={() => place(i)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: GR, color: "#0f0f13", fontWeight: 900, fontSize: 17, cursor: "pointer" }}>{"+"}</button>
+                  <button title="Add" onClick={() => place(i)} style={{ width: 28, height: 28, borderRadius: 6, border: "none", background: GR, color: "#05070d", fontWeight: 900, fontSize: 17, cursor: "pointer" }}>{"+"}</button>
                 </div>
               );
             })}
@@ -544,6 +580,16 @@ export function MarketsView({ doc, slate, fmtClock, onRefresh }) {
           <div>{"Lines are de-vigged (bookmaker margin removed) with Pinnacle weighted most. These same numbers feed the player projections."}</div>
         </div>
       </div>
+      {games.length ? (
+        <div style={{ ...card, marginBottom: 12 }}>
+          <div style={sl}>{"Implied team totals"}</div>
+          <BarList label="Implied team totals from the betting lines" format={(v) => fmt(v, 1)}
+            max={Math.max(1, ...games.flatMap((g) => (g.home ? [g.home_implied, g.away_implied] : Object.values(g.espn || {}).map((o) => o && o.implied))).filter((x) => typeof x === "number" && isFinite(x)))}
+            items={games.flatMap((g) => (g.home
+              ? [{ label: g.away, note: "@ " + g.home, value: g.away_implied }, { label: g.home, note: "vs " + g.away, value: g.home_implied }]
+              : Object.entries(g.espn || {}).map(([t, o]) => ({ label: t, note: "vs " + (o && o.opp || ""), value: o && o.implied }))))
+              .filter((r) => typeof r.value === "number" && isFinite(r.value)).sort((a, b) => b.value - a.value)} />
+        </div>) : null}
       {games.map((g, i) => g.home ? (
         <div key={i} style={{ ...card, marginBottom: 10 }}>
           <div style={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
@@ -554,7 +600,7 @@ export function MarketsView({ doc, slate, fmtClock, onRefresh }) {
             <Stat big={g.home + " " + spreadTxt(g.home_margin)} label={"Fair spread" + (g.open ? " (open " + spreadTxt(g.open.home_margin) + ")" : "")} col={OH} />
             <Stat big={fmt(g.total)} label={"Fair total" + (g.open ? " (open " + fmt(g.open.total) + ")" : "")} col={OH} />
             <Stat big={g.home_win != null ? fmt(g.home_win * 100, 0) + "%" : "—"} label={g.home + " win chance"} col={OH} />
-            <Stat big={fmt(g.away_implied) + " / " + fmt(g.home_implied)} label={"Implied team totals " + g.away + " / " + g.home} col={"#e8e8f0"} />
+            <Stat big={fmt(g.away_implied) + " / " + fmt(g.home_implied)} label={"Implied team totals " + g.away + " / " + g.home} col={TX} />
           </div>
           <details style={{ marginTop: 8 }}><summary style={{ cursor: "pointer", fontSize: 12, color: MU }}>{"Prices by book"}</summary>
             <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}><tbody>
@@ -600,7 +646,7 @@ export function MarketsView({ doc, slate, fmtClock, onRefresh }) {
                 <td style={{ padding: "4px 6px" }}>{p.best_under ? p.best_under[0] + " " + p.best_under[1] + " " + amer(p.best_under[2]) : "—"}</td>
               </tr>);
             })}</tbody></table></div>
-        ) : <div style={{ color: MU, fontSize: 13 }}>{doc.source && doc.source.startsWith("ESPN") ? "Player props need an odds API key on your Mac (see setup)." : "No props posted yet for this slate."}</div>}
+        ) : <div className="grid-bg" style={{ color: MU, fontSize: 13, padding: 14, border: "1px dashed " + BR, borderRadius: 8, textAlign: "center" }}>{doc.source && doc.source.startsWith("ESPN") ? "No odds key configured — ESPN lines only. Player props need an odds API key on your Mac (see setup)." : "No props posted yet for this slate."}</div>}
       </div>
     </div>
   );
@@ -614,8 +660,13 @@ function TeamRecords({ teams, codes }) {
       {rows.map((c) => {
         const t = teams[c];
         return (
-          <div key={c} style={{ background: "#111118", borderRadius: 6, padding: "8px 10px", fontSize: 12 }}>
-            <b>{c}</b><span style={{ color: MU }}>{" this season vs closing lines"}</span>
+          <div key={c} style={{ background: SURF2, borderRadius: 8, padding: "8px 10px", fontSize: 12, minWidth: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8 }}>
+              <span><b>{c}</b><span style={{ color: MU }}>{" this season vs closing lines"}</span></span>
+              <span style={{ width: 110 }} title="Running ATS record over recent games (up = covered)">
+                <Sparkline values={(t.recent || []).reduce((acc, r) => acc.concat([(acc.length ? acc[acc.length - 1] : 0) + (r.ats === "W" ? 1 : r.ats === "L" ? -1 : 0)]), [])} width={110} height={24} zero label={c + " running ATS record, recent games"} />
+              </span>
+            </div>
             <div>{"ATS " + t.ats + " (last 10: " + t.ats_last10 + ") · home " + t.ats_home + " · away " + t.ats_away}</div>
             <div>{"O/U " + t.ou + " (last 10: " + t.ou_last10 + ") · beats spread by " + fmt(t.avg_margin_vs_spread) + " pts/game"}</div>
             <div style={{ color: MU }}>{"Last season: ATS " + t.last_season_ats + " · O/U " + t.last_season_ou}</div>

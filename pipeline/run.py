@@ -125,12 +125,10 @@ def public(r: dict) -> dict:
 _MEM: dict = {}   # in-process cache shared by consecutive runs of the live loop
 
 
-def _control() -> dict | None:
-    """Where the site sends "Run simulations" requests (see pipeline/live.py)."""
-    topic = os.environ.get("CONTROL_TOPIC", "").strip()
-    if not topic:
-        return None
-    return {"server": os.environ.get("NTFY_SERVER", "https://ntfy.sh").rstrip("/"), "topic": topic}
+def _control() -> dict:
+    """What the site may know about remote runs: only that they are signed.
+    The topic and server are secrets held by the owner (see pipeline/owner.py)."""
+    return {"auth": "hmac-v1"}
 
 
 def _due(state: dict, key: str, now: datetime, minutes: float) -> bool:

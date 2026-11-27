@@ -1,23 +1,30 @@
 
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, Fragment } from "react";
 import { fillEntries } from "./lateswap.js";
 import { MarketsView, ToolBoundary, StarterIcon, LockIcon, useSimWorker, SlatePicker, QuickFilters, matchesQuick, PatternsView, LateSwapTool, SingleLineupTool } from "./tools.jsx";
+import { OH, BG, CARD, BR, MU, GR, RE, YE, TX, ACC, ACC2, SURF2, LINE2, POS_COLORS, alpha } from "./theme.js";
+import { HudStrip, ThemeToggle, EmptyState, StaleBanner, SlateOffline, LiveDot } from "./hud.jsx";
+import { LeverageRadar, PoolInsights, OwnershipLab, ModelAccuracy, PlayerOutcome } from "./insights.jsx";
+import { QuantileBox, DivergingBar, BarList } from "./charts.jsx";
+import { quantileBox, realityCheck, synthSlate, freshness, validateContestHistory } from "./datautil.js";
+import { useBrowserRun, BrowserRunPanel, RunSourceSwitch, OwnerPanel, OwnerChip } from "./runs.jsx";
+import { loadOwner, buildRunBody, runUrl } from "./owner.js";
 const SALARY_CAP_NBA=50000;
 const W1=0.605,W2=0.363,W3=0.242;
-const OH="#ff6b00",BG="#0f0f13",CARD="#1a1a24",BR="#2a2a3a",MU="#7a7a9a",GR="#00c97a",RE="#ff4466";
-const NBA_PC={PG:"#4a9eff",SG:"#a78bfa",SF:"#34d399",PF:"#fb923c",C:"#f43f5e"};
+const NBA_PC=POS_COLORS;
 const NBA_SLOTS=["PG","SG","SF","PF","C","G","F","UTIL"];
 const NBA_SLOT_OK={PG:["PG"],SG:["SG"],SF:["SF"],PF:["PF"],C:["C"],G:["PG","SG"],F:["SF","PF"],UTIL:["PG","SG","SF","PF","C"]};
 const S={
-  card:{background:CARD,border:"1px solid "+BR,borderRadius:10,padding:16},
-  nin:{width:"100%",background:"#111118",border:"1px solid "+BR,borderRadius:6,color:"#e8e8f0",padding:"7px 9px",fontSize:13,boxSizing:"border-box"},
+  card:{background:CARD,border:"1px solid "+BR,borderRadius:12,padding:16,minWidth:0},
+  nin:{width:"100%",background:SURF2,border:"1px solid "+BR,borderRadius:6,color:TX,padding:"7px 9px",fontSize:13,boxSizing:"border-box"},
   lbl:{display:"block",fontSize:11,color:MU,marginBottom:4},
-  sl:{fontSize:11,fontWeight:700,color:OH,textTransform:"uppercase",letterSpacing:1,marginBottom:12},
+  side:{padding:16,minWidth:0},
+  sl:{fontSize:11,fontWeight:700,color:ACC,textTransform:"uppercase",letterSpacing:".12em",marginBottom:12},
   tblH:{padding:"7px 9px",textAlign:"left",color:MU,fontSize:10,fontWeight:700,textTransform:"uppercase",borderBottom:"1px solid "+BR,cursor:"pointer",userSelect:"none",whiteSpace:"nowrap"},
-  tblD:{padding:"7px 9px",borderBottom:"1px solid "+BR+"20"},
+  tblD:{padding:"7px 9px",borderBottom:"1px solid "+alpha(BR, 13)},
 };
-function tabSt(a){return{padding:"7px 14px",borderRadius:6,border:"none",fontSize:12,fontWeight:700,cursor:"pointer",background:a?OH:BR,color:a?"#fff":MU};}
-function pill(col){return{display:"inline-block",padding:"2px 7px",borderRadius:4,fontSize:11,fontWeight:700,background:col+"22",color:col};}
+function tabSt(a){return{padding:"7px 14px",borderRadius:8,border:"1px solid "+(a?LINE2:BR),fontSize:12,fontWeight:700,cursor:"pointer",background:a?alpha(ACC,14):SURF2,color:a?ACC:MU};}
+function pill(col){return{display:"inline-block",padding:"2px 7px",borderRadius:4,fontSize:11,fontWeight:700,background:alpha(col, 13),color:col};}
 function safeStr(s){return s||"";}
 function toFloat(s){var v=parseFloat(safeStr(s).replace(/[$,%\s]/g,""));return isNaN(v)?0:v;}
 function toInt(s){var v=parseInt(safeStr(s).replace(/[$,%\s]/g,""));return isNaN(v)?0:v;}
@@ -49,10 +56,14 @@ function dataUrl(path){
   if(GH)return "https://raw.githubusercontent.com/"+GH.owner+"/"+GH.repo+"/data/"+path+"?t="+Date.now();
   return DATA_BASE+path+"?t="+Date.now();
 }
-const STATUS_COL={Out:RE,Doubtful:RE,Questionable:"#f5b942",Probable:"#9ad66b"};
+const STATUS_COL={Out:RE,Doubtful:RE,Questionable:YE,Probable:"#9ad66b"};
 const STATUS_ABBR={Out:"OUT",Doubtful:"D",Questionable:"Q",Probable:"P"};
 function fetchText(path){return fetch(dataUrl(path),{cache:GH&&DATA_SHA?"default":"no-store"}).then(function(r){if(!r.ok)throw new Error(r.status+" "+path);return r.text();});}
 function fetchJson(path){return fetchText(path).then(function(t){return JSON.parse(t);});}
+// ?slate=<id> opens a slate that is no longer listed (archived replay)
+function urlSlate(){try{var v=new URLSearchParams(window.location.search).get("slate");return v&&/^\d{1,12}$/.test(v)?Number(v):null;}catch(e){return null;}}
+function lastSavedSlate(){try{var s=JSON.parse(localStorage.getItem("sigma_slate")||"null");return s&&s.id!=null?s.id:null;}catch(e){return null;}}
+const SLATE_TABS=["pool","leverage","lineups","lateswap","single","exposures"];
 function fmtClock(iso){if(!iso)return"—";var d=new Date(iso);return d.toLocaleTimeString([],{hour:"numeric",minute:"2-digit"});}
 function minsAgo(iso){if(!iso)return"";var m=Math.round((Date.now()-new Date(iso).getTime())/60000);return m<1?"just now":m<60?m+" min ago":Math.round(m/60)+" hr ago";}
 // Map the server's simulated pool onto player objects. A lineup's id is its
@@ -73,6 +84,14 @@ function buildLiveLineups(doc,players){
       pf:l.pf||null,lowOwned:l.low_owned,dupes:l.dupes||0});
   }
   return out;
+}
+// what the Simulation card, HUD and Pool Insights show about a lineups document
+// (the shared Mac pool, or this visitor's own browser run)
+function poolInfoOf(doc,count){
+  return {generated_at:doc.generated_at,phase:doc.phase,sims:doc.sims,field:doc.field_size,count:count,
+    gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation,inputs:doc.inputs,slate_id:doc.slate_id,
+    cover:doc.portfolio_cover||null,coverSims:doc.portfolio_sims||0,fieldWin:doc.field_win_pct,exact:doc.exact,
+    source:doc.source||"mac",seed:doc.seed,fieldSample:doc.field_sample};
 }
 function starterBadge(p){
   var benched=p.unexpected==="benched"?<span title="Usual starter, not starting tonight" style={{marginLeft:5,fontSize:9,color:RE,fontWeight:800}}>{"NOT STARTING"}</span>:null;
@@ -504,7 +523,7 @@ function EntryManager(props){
         {"📋 Entry Manager"}{entries.length>0?<span style={{background:"#6366f1",color:"#fff",borderRadius:10,padding:"1px 6px",fontSize:10,marginLeft:2}}>{entries.length}</span>:null}
       </button>
       {open?(
-        <div style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:CARD,border:"1px solid "+BR,borderRadius:12,zIndex:1000,width:560,maxHeight:"80vh",boxShadow:"0 16px 48px #000000bb",display:"flex",flexDirection:"column"}}>
+        <div className="modal" role="dialog" aria-label="Entry Manager" style={{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:CARD,border:"1px solid "+BR,borderRadius:12,zIndex:1000,width:560,maxHeight:"80vh",boxShadow:"0 16px 48px #000000bb",display:"flex",flexDirection:"column"}}>
           <div style={{padding:"14px 18px",borderBottom:"1px solid "+BR,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
             <span style={{fontSize:14,fontWeight:800,color:"#818cf8"}}>{"📋 Entry Manager"}</span>
             <button onClick={function(){setOpen(false);}} style={{background:"transparent",border:"none",color:MU,fontSize:18,cursor:"pointer",lineHeight:1}}>{"×"}</button>
@@ -512,7 +531,7 @@ function EntryManager(props){
           <div style={{padding:"14px 18px",borderBottom:"1px solid "+BR,flexShrink:0}}>
             <div style={{fontSize:11,color:MU,marginBottom:8}}>{"Upload your DraftKings contest CSV to set your lineup capacity:"}</div>
             <input ref={fileRef} type="file" accept=".csv,.txt" style={{display:"none"}} onChange={onCsvFile}/>
-            <div onClick={function(){if(fileRef.current)fileRef.current.click();}} style={{border:"2px dashed "+(csvOk?GR:BR),borderRadius:8,padding:"10px",textAlign:"center",cursor:"pointer",background:csvOk?GR+"08":"transparent",marginBottom:6}}>
+            <div onClick={function(){if(fileRef.current)fileRef.current.click();}} style={{border:"2px dashed "+(csvOk?GR:BR),borderRadius:8,padding:"10px",textAlign:"center",cursor:"pointer",background:csvOk?alpha(GR, 3):"transparent",marginBottom:6}}>
               <div style={{fontSize:12,fontWeight:csvOk?700:400,color:csvOk?GR:MU}}>{csvOk?"✅ Capacity: "+capacity+" lineups · "+entries.length+" added · "+remaining+" remaining":"Click to upload DraftKings contest CSV"}</div>
             </div>
             {csvErr?<div style={{fontSize:11,color:RE}}>{csvErr}</div>:null}
@@ -530,9 +549,9 @@ function EntryManager(props){
           </div>
           <div style={{padding:"10px 18px",borderBottom:"1px solid "+BR,display:"flex",gap:8,alignItems:"center",flexShrink:0}}>
             <button onClick={function(){props.onAddLineups(addLineups);}} style={{padding:"7px 14px",background:"#6366f122",color:"#818cf8",border:"1px solid #6366f144",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"+ Add Liked Lineups"}</button>
-            {entries.length>0?<button onClick={clearAll} style={{padding:"7px 14px",background:RE+"11",color:RE,border:"1px solid "+RE+"33",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"Clear All"}</button>:null}
+            {entries.length>0?<button onClick={clearAll} style={{padding:"7px 14px",background:alpha(RE, 7),color:RE,border:"1px solid "+alpha(RE, 20),borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"Clear All"}</button>:null}
             <div style={{marginLeft:"auto"}}>
-              <button onClick={doExport} disabled={!entries.length} style={{padding:"7px 14px",background:entries.length>0?GR+"22":BR,color:entries.length>0?GR:MU,border:"1px solid "+(entries.length>0?GR+"44":BR),borderRadius:6,fontSize:12,fontWeight:700,cursor:entries.length>0?"pointer":"default",opacity:entries.length>0?1:0.5}}>{"⬇ Export "+entries.length+" Lineup"+(entries.length!==1?"s":"")}</button>
+              <button onClick={doExport} disabled={!entries.length} style={{padding:"7px 14px",background:entries.length>0?alpha(GR, 13):BR,color:entries.length>0?GR:MU,border:"1px solid "+(entries.length>0?alpha(GR, 27):BR),borderRadius:6,fontSize:12,fontWeight:700,cursor:entries.length>0?"pointer":"default",opacity:entries.length>0?1:0.5}}>{"⬇ Export "+entries.length+" Lineup"+(entries.length!==1?"s":"")}</button>
             </div>
           </div>
           <div style={{overflowY:"auto",flex:1,padding:"8px 0"}}>
@@ -551,13 +570,13 @@ function EntryManager(props){
                 <tbody>
                   {entries.map(function(lu,idx){
                     return(
-                      <tr key={idx} style={{background:idx%2===0?"transparent":"#ffffff04"}}>
+                      <tr key={idx} style={{background:idx%2===0?"transparent":alpha(TX, 2)}}>
                         <td style={S.tblD}><span style={{color:MU,fontSize:11}}>{idx+1}</span></td>
-                        <td style={S.tblD}><span style={{color:"#e8e8f0",fontSize:11}}>{lu.players.map(function(p){return p.name;}).join(", ")}</span></td>
+                        <td style={S.tblD}><span style={{color:TX,fontSize:11}}>{lu.players.map(function(p){return p.name;}).join(", ")}</span></td>
                         <td style={S.tblD}><span style={{color:OH,fontWeight:700}}>{lu.projTotal.toFixed(1)}</span></td>
                         <td style={S.tblD}><span style={{color:MU}}>${lu.salary.toLocaleString()}</span></td>
                         <td style={S.tblD}><span style={{color:MU}}>{lu.sumOwn.toFixed(1)}{"%"}</span></td>
-                        <td style={S.tblD}><button onClick={function(){removeEntry(idx);}} style={{background:RE+"22",color:RE,border:"1px solid "+RE+"44",borderRadius:4,padding:"2px 7px",fontSize:11,cursor:"pointer",fontWeight:700}}>{"×"}</button></td>
+                        <td style={S.tblD}><button onClick={function(){removeEntry(idx);}} style={{background:alpha(RE, 13),color:RE,border:"1px solid "+alpha(RE, 27),borderRadius:4,padding:"2px 7px",fontSize:11,cursor:"pointer",fontWeight:700}}>{"×"}</button></td>
                       </tr>
                     );
                   })}
@@ -580,7 +599,7 @@ function SpinningSigma(props){
   },[]);
   return(
     <div style={{textAlign:"center",padding:"40px 0 20px"}}>
-      <div style={{fontSize:80,fontWeight:900,color:OH,display:"inline-block",transform:"rotate("+rot+"deg)",lineHeight:1,fontFamily:"serif"}}>{"Σ"}</div>
+      <div style={{fontSize:80,fontWeight:900,color:OH,display:"inline-block",transform:"rotate("+rot+"deg)",lineHeight:1,fontFamily:"serif",textShadow:"0 0 24px "+alpha(OH,60)+", 0 0 6px "+alpha(ACC,40)}}>{"Σ"}</div>
       <div style={{fontWeight:700,fontSize:16,color:OH,marginTop:16}}>{props.phase==="scoring"?"Scoring lineups against field…":"Running simulations…"}</div>
       <div style={{color:MU,fontSize:13,marginTop:4}}>{props.phase==="scoring"?"Almost done!":props.progress+"% complete"}</div>
       <div style={{height:8,background:BR,borderRadius:4,overflow:"hidden",marginTop:14,maxWidth:300,margin:"14px auto 0"}}>
@@ -611,18 +630,18 @@ function BulkLike(props){
   }
   return(
     <div ref={ref} style={{position:"relative"}}>
-      <button onClick={function(){setOpen(function(o){return !o;});}} style={{padding:"6px 13px",background:OH+"22",color:OH,border:"1px solid "+OH+"44",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>{"Like Top…"}<span style={{fontSize:10}}>{"▾"}</span></button>
+      <button onClick={function(){setOpen(function(o){return !o;});}} style={{padding:"6px 13px",background:alpha(OH, 13),color:OH,border:"1px solid "+alpha(OH, 27),borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>{"Like Top…"}<span style={{fontSize:10}}>{"▾"}</span></button>
       {open?(
         <div style={{position:"absolute",top:"110%",left:0,background:CARD,border:"1px solid "+BR,borderRadius:8,padding:8,zIndex:100,minWidth:160,boxShadow:"0 8px 24px #00000088"}}>
-          {[20,50,150,500,props.lineups.length].map(function(n,ix){return(<div key={ix} onClick={function(){likeTop(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:"#e8e8f0",fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=OH+"22";}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{ix===4?"All "+n+" (current filters)":"Top "+n}</div>);})}
+          {[20,50,150,500,props.lineups.length].map(function(n,ix){return(<div key={ix} onClick={function(){likeTop(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:TX,fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=alpha(OH, 13);}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{ix===4?"All "+n+" (current filters)":"Top "+n}</div>);})}
           {hasPf?(<div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:4}}>
             <div style={{padding:"4px 8px",fontSize:11,color:MU}}>{"Best portfolio (most contests won together)"}</div>
-            {[20,50,150].map(function(n){var c=props.cover&&props.cover[String(n)];return(<div key={"pf"+n} onClick={function(){likePortfolio(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:"#e8e8f0",fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=OH+"22";}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{"Portfolio "+n}{c!=null?<span style={{color:MU,fontWeight:400,fontSize:11}}>{"  · wins "+c.toFixed(2)+"% of sims"}</span>:null}</div>);})}
+            {[20,50,150].map(function(n){var c=props.cover&&props.cover[String(n)];return(<div key={"pf"+n} onClick={function(){likePortfolio(n);}} style={{padding:"8px 12px",cursor:"pointer",borderRadius:6,fontSize:13,color:TX,fontWeight:600}} onMouseEnter={function(e){e.currentTarget.style.background=alpha(OH, 13);}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{"Portfolio "+n}{c!=null?<span style={{color:MU,fontWeight:400,fontSize:11}}>{"  · wins "+c.toFixed(2)+"% of sims"}</span>:null}</div>);})}
           </div>):null}
           <div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:4}}>
             <div style={{padding:"4px 8px",fontSize:11,color:MU}}>{"Custom"}</div>
             <div style={{display:"flex",gap:4,padding:"0 8px 4px"}}>
-              <input type="text" inputMode="numeric" placeholder="e.g. 25" value={val} onChange={function(e){if(/^\d*$/.test(e.target.value))setVal(e.target.value);}} style={{flex:1,background:"#111118",border:"1px solid "+BR,borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,width:0}}/>
+              <input type="text" inputMode="numeric" placeholder="e.g. 25" value={val} onChange={function(e){if(/^\d*$/.test(e.target.value))setVal(e.target.value);}} style={{flex:1,background:SURF2,border:"1px solid "+BR,borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,width:0}}/>
               <button onClick={function(){var n=parseInt(val);if(n>0){likeTop(n);setVal("");}}} style={{background:OH,color:"#fff",border:"none",borderRadius:4,padding:"5px 9px",fontSize:12,fontWeight:700,cursor:"pointer"}}>{"Go"}</button>
             </div>
           </div>
@@ -653,13 +672,13 @@ function PlayerROIBoost(props){
       var baseExp=exposureMap[p.name];
       var expEl=null;
       if(baseExp!==undefined){var nudge=v>0?5:v<0?-5:0;var adjExp=Math.min(100,Math.max(0,baseExp+nudge));var ec=v>0?GR:v<0?RE:"#38bdf8";expEl=<div style={{fontSize:10,color:ec,fontWeight:600}}>{adjExp.toFixed(2)}{"% exp"}{v>0?" ▲":v<0?" ▼":""}</div>;}
-      var bc=v>0?GR:v<0?RE:BR,tc=v>0?GR:v<0?RE:"#e8e8f0";
+      var bc=v>0?GR:v<0?RE:BR,tc=v>0?GR:v<0?RE:TX;
       playerRows.push(
         <div key={p.name} style={{display:"flex",alignItems:"center",gap:6,padding:"5px 12px"}}>
-          <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,color:"#e8e8f0",whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.name}</div>{expEl}</div>
-          <button onClick={function(){adj(p.name,-5);}} style={{width:22,height:22,background:RE+"22",color:RE,border:"1px solid "+RE+"44",borderRadius:4,fontSize:14,fontWeight:700,cursor:"pointer",lineHeight:1,flexShrink:0}}>{"−"}</button>
-          <input type="text" value={v===0?"":String(v)} placeholder="0" onChange={function(e){handleVal(p.name,e.target.value);}} style={{width:48,background:"#111118",border:"1px solid "+bc,borderRadius:4,color:tc,padding:"3px 5px",fontSize:12,textAlign:"center"}}/>
-          <button onClick={function(){adj(p.name,5);}} style={{width:22,height:22,background:GR+"22",color:GR,border:"1px solid "+GR+"44",borderRadius:4,fontSize:14,fontWeight:700,cursor:"pointer",lineHeight:1,flexShrink:0}}>{"+"}</button>
+          <div style={{flex:1,minWidth:0}}><div style={{fontSize:12,color:TX,whiteSpace:"nowrap",overflow:"hidden",textOverflow:"ellipsis"}}>{p.name}</div>{expEl}</div>
+          <button onClick={function(){adj(p.name,-5);}} style={{width:22,height:22,background:alpha(RE, 13),color:RE,border:"1px solid "+alpha(RE, 27),borderRadius:4,fontSize:14,fontWeight:700,cursor:"pointer",lineHeight:1,flexShrink:0}}>{"−"}</button>
+          <input type="text" value={v===0?"":String(v)} placeholder="0" onChange={function(e){handleVal(p.name,e.target.value);}} style={{width:48,background:SURF2,border:"1px solid "+bc,borderRadius:4,color:tc,padding:"3px 5px",fontSize:12,textAlign:"center"}}/>
+          <button onClick={function(){adj(p.name,5);}} style={{width:22,height:22,background:alpha(GR, 13),color:GR,border:"1px solid "+alpha(GR, 27),borderRadius:4,fontSize:14,fontWeight:700,cursor:"pointer",lineHeight:1,flexShrink:0}}>{"+"}</button>
         </div>
       );
     })(filtered[pri]);
@@ -668,14 +687,14 @@ function PlayerROIBoost(props){
     <div ref={ref} style={{position:"relative"}}>
       <button onClick={openDD} style={{padding:"6px 13px",background:activeCount>0?"#a855f722":"#a855f711",color:"#c084fc",border:"1px solid "+(activeCount>0?"#a855f766":"#a855f733"),borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:5}}>{"Player ROI Boost"}{activeCount>0?<span style={{background:"#a855f7",color:"#fff",borderRadius:10,padding:"1px 6px",fontSize:10,marginLeft:4}}>{activeCount}</span>:null}<span style={{fontSize:10,marginLeft:4}}>{"▾"}</span></button>
       {open?(
-        <div style={{position:"absolute",top:"110%",right:0,background:CARD,border:"1px solid "+BR,borderRadius:8,zIndex:200,width:360,boxShadow:"0 8px 32px #00000099",display:"flex",flexDirection:"column",maxHeight:440}}>
+        <div className="dropdown" style={{position:"absolute",top:"110%",right:0,background:CARD,border:"1px solid "+BR,borderRadius:8,zIndex:200,width:360,boxShadow:"0 8px 32px #00000099",display:"flex",flexDirection:"column",maxHeight:440}}>
           <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+BR,flexShrink:0}}>
             <div style={{fontSize:11,fontWeight:700,color:"#c084fc",textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{"Player ROI Boost"}</div>
-            <input ref={searchRef} type="text" placeholder="Search player…" value={search} onChange={function(e){setSearch(e.target.value);}} style={{width:"100%",background:"#111118",border:"1px solid "+BR,borderRadius:5,color:"#e8e8f0",padding:"5px 9px",fontSize:12,boxSizing:"border-box"}}/>
+            <input ref={searchRef} type="text" placeholder="Search player…" value={search} onChange={function(e){setSearch(e.target.value);}} style={{width:"100%",background:SURF2,border:"1px solid "+BR,borderRadius:5,color:TX,padding:"5px 9px",fontSize:12,boxSizing:"border-box"}}/>
           </div>
           <div style={{overflowY:"auto",flex:1,padding:"6px 0"}}>{playerRows}</div>
           <div style={{borderTop:"1px solid "+BR,padding:"8px 12px",display:"flex",justifyContent:"flex-end",gap:8,flexShrink:0}}>
-            <button onClick={function(){var r={};for(var i=0;i<players.length;i++)r[players[i].name]=0;setDraft(r);}} style={{padding:"5px 12px",background:RE+"22",color:RE,border:"1px solid "+RE+"44",borderRadius:5,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"Clear"}</button>
+            <button onClick={function(){var r={};for(var i=0;i<players.length;i++)r[players[i].name]=0;setDraft(r);}} style={{padding:"5px 12px",background:alpha(RE, 13),color:RE,border:"1px solid "+alpha(RE, 27),borderRadius:5,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"Clear"}</button>
             <button onClick={handleOk} style={{padding:"5px 14px",background:"#a855f7",color:"#fff",border:"none",borderRadius:5,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"OK"}</button>
           </div>
         </div>
@@ -694,10 +713,10 @@ function PlayerTagInput(props){
   return(
     <div style={{marginBottom:12}}>
       <div style={{fontSize:11,color:MU,marginBottom:5,fontWeight:600}}>{label}</div>
-      <div style={{background:"#111118",border:"1px solid "+BR,borderRadius:6,padding:"4px 6px",display:"flex",flexWrap:"wrap",gap:4,minHeight:34,alignItems:"center",position:"relative"}}>
-        {values.map(function(v){return(<span key={v} style={{background:color+"22",color:color,borderRadius:4,padding:"2px 6px",fontSize:11,fontWeight:700,display:"flex",alignItems:"center",gap:4}}>{v}<span onClick={function(){onChange(values.filter(function(x){return x!==v;}));}} style={{cursor:"pointer",opacity:0.7,fontSize:13,lineHeight:1}}>{"×"}</span></span>);})}
-        <input value={input} onChange={onInp} onKeyDown={onKey} placeholder={values.length===0?"Player name…":""} style={{background:"transparent",border:"none",outline:"none",color:"#e8e8f0",fontSize:12,flex:1,minWidth:80,padding:"2px"}}/>
-        {sugg.length>0?<div style={{position:"absolute",top:"100%",left:0,right:0,background:CARD,border:"1px solid "+BR,borderRadius:6,zIndex:300,boxShadow:"0 4px 16px #00000088",marginTop:2}}>{sugg.map(function(p){return(<div key={p.name} onMouseDown={function(e){e.preventDefault();commit(p.name);}} style={{padding:"7px 10px",fontSize:12,cursor:"pointer",color:"#e8e8f0"}} onMouseEnter={function(e){e.currentTarget.style.background=color+"22";}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{p.name}<span style={{color:MU,fontSize:10,marginLeft:6}}>{p.pos+" · "+p.team}</span></div>);})}</div>:null}
+      <div style={{background:SURF2,border:"1px solid "+BR,borderRadius:6,padding:"4px 6px",display:"flex",flexWrap:"wrap",gap:4,minHeight:34,alignItems:"center",position:"relative"}}>
+        {values.map(function(v){return(<span key={v} style={{background:alpha(color, 13),color:color,borderRadius:4,padding:"2px 6px",fontSize:11,fontWeight:700,display:"flex",alignItems:"center",gap:4}}>{v}<span onClick={function(){onChange(values.filter(function(x){return x!==v;}));}} style={{cursor:"pointer",opacity:0.7,fontSize:13,lineHeight:1}}>{"×"}</span></span>);})}
+        <input value={input} onChange={onInp} onKeyDown={onKey} placeholder={values.length===0?"Player name…":""} style={{background:"transparent",border:"none",outline:"none",color:TX,fontSize:12,flex:1,minWidth:80,padding:"2px"}}/>
+        {sugg.length>0?<div style={{position:"absolute",top:"100%",left:0,right:0,background:CARD,border:"1px solid "+BR,borderRadius:6,zIndex:300,boxShadow:"0 4px 16px #00000088",marginTop:2}}>{sugg.map(function(p){return(<div key={p.name} onMouseDown={function(e){e.preventDefault();commit(p.name);}} style={{padding:"7px 10px",fontSize:12,cursor:"pointer",color:TX}} onMouseEnter={function(e){e.currentTarget.style.background=alpha(color, 13);}} onMouseLeave={function(e){e.currentTarget.style.background="transparent";}}>{p.name}<span style={{color:MU,fontSize:10,marginLeft:6}}>{p.pos+" · "+p.team}</span></div>);})}</div>:null}
       </div>
     </div>
   );
@@ -707,9 +726,9 @@ function FilterRow(props){
   return(
     <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
       <span style={{fontSize:12,color:MU,minWidth:88}}>{props.label}</span>
-      <input type="text" placeholder="Min" value={props.minVal} onChange={function(e){props.onMinChange(e.target.value);}} style={{width:64,background:"#111118",border:"1px solid "+BR,borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+      <input type="text" placeholder="Min" value={props.minVal} onChange={function(e){props.onMinChange(e.target.value);}} style={{width:64,background:SURF2,border:"1px solid "+BR,borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
       <span style={{fontSize:11,color:MU}}>{"—"}</span>
-      <input type="text" placeholder="Max" value={props.maxVal} onChange={function(e){props.onMaxChange(e.target.value);}} style={{width:64,background:"#111118",border:"1px solid "+BR,borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+      <input type="text" placeholder="Max" value={props.maxVal} onChange={function(e){props.onMaxChange(e.target.value);}} style={{width:64,background:SURF2,border:"1px solid "+BR,borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
     </div>
   );
 }
@@ -730,10 +749,10 @@ function FiltersDropdown(props){
         {"Filters"}{activeCount>0?<span style={{background:"#38bdf8",color:"#0f172a",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:800,marginLeft:4}}>{activeCount}</span>:null}<span style={{fontSize:10,marginLeft:2}}>{"▾"}</span>
       </button>
       {open?(
-        <div style={{position:"absolute",top:"110%",left:0,background:CARD,border:"1px solid "+BR,borderRadius:8,zIndex:200,width:320,boxShadow:"0 8px 32px #00000099",display:"flex",flexDirection:"column"}}>
+        <div className="dropdown" style={{position:"absolute",top:"110%",left:0,background:CARD,border:"1px solid "+BR,borderRadius:8,zIndex:200,width:320,boxShadow:"0 8px 32px #00000099",display:"flex",flexDirection:"column"}}>
           <div style={{padding:"10px 14px 8px",borderBottom:"1px solid "+BR,display:"flex",alignItems:"center",justifyContent:"space-between",flexShrink:0}}>
             <span style={{fontSize:11,fontWeight:700,color:"#38bdf8",textTransform:"uppercase",letterSpacing:1}}>{"Lineup Filters"}</span>
-            {props.hasActiveFilters?<button onClick={props.clearFilters} style={{fontSize:10,color:RE,background:RE+"11",border:"1px solid "+RE+"33",borderRadius:4,padding:"2px 8px",cursor:"pointer",fontWeight:700}}>{"Clear All"}</button>:null}
+            {props.hasActiveFilters?<button onClick={props.clearFilters} style={{fontSize:10,color:RE,background:alpha(RE, 7),border:"1px solid "+alpha(RE, 20),borderRadius:4,padding:"2px 8px",cursor:"pointer",fontWeight:700}}>{"Clear All"}</button>:null}
           </div>
           <div style={{padding:"12px 14px",overflowY:"auto",maxHeight:520}}>
             <div style={{fontSize:10,color:MU,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{"Stats"}</div>
@@ -741,19 +760,19 @@ function FiltersDropdown(props){
             <FilterRow label="Total Proj" minVal={props.fProjMin} maxVal={props.fProjMax} onMinChange={props.setFProjMin} onMaxChange={props.setFProjMax}/>
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
               <span style={{fontSize:12,color:MU,minWidth:88}}>{"Uniques"}<span style={{fontSize:10,color:MU,opacity:0.7}}>{" (2–"+maxUniq+")"}</span></span>
-              <input type="text" inputMode="numeric" placeholder="Min" value={props.fUniqMin} onChange={function(e){handleUniqChange(props.setFUniqMin,e.target.value);}} style={{width:64,background:"#111118",border:"1px solid "+(props.fUniqMin!==""?"#38bdf8":BR),borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+              <input type="text" inputMode="numeric" placeholder="Min" value={props.fUniqMin} onChange={function(e){handleUniqChange(props.setFUniqMin,e.target.value);}} style={{width:64,background:SURF2,border:"1px solid "+(props.fUniqMin!==""?"#38bdf8":BR),borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
               <span style={{fontSize:11,color:MU}}>{"—"}</span>
-              <input type="text" inputMode="numeric" placeholder="Max" value={props.fUniqMax} onChange={function(e){handleUniqChange(props.setFUniqMax,e.target.value);}} style={{width:64,background:"#111118",border:"1px solid "+(props.fUniqMax!==""?"#38bdf8":BR),borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+              <input type="text" inputMode="numeric" placeholder="Max" value={props.fUniqMax} onChange={function(e){handleUniqChange(props.setFUniqMax,e.target.value);}} style={{width:64,background:SURF2,border:"1px solid "+(props.fUniqMax!==""?"#38bdf8":BR),borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:10}}>
               <span style={{fontSize:12,color:MU,minWidth:88}}>{"Team"}</span>
-              <select value={props.fTeam} onChange={function(e){props.setFTeam(e.target.value);}} style={{flex:1,background:"#111118",border:"1px solid "+(props.fTeam!==""?"#38bdf8":BR),borderRadius:4,color:props.fTeam!==""?"#e8e8f0":MU,padding:"5px 7px",fontSize:12,minWidth:0}}>
+              <select value={props.fTeam} onChange={function(e){props.setFTeam(e.target.value);}} style={{flex:1,background:SURF2,border:"1px solid "+(props.fTeam!==""?"#38bdf8":BR),borderRadius:4,color:props.fTeam!==""?TX:MU,padding:"5px 7px",fontSize:12,minWidth:0}}>
                 <option value={""}>{"Any"}</option>
                 {(function(){var teams=[];for(var i=0;i<props.allPlayers.length;i++){var t=props.allPlayers[i].team;if(t&&teams.indexOf(t)===-1)teams.push(t);}teams.sort();return teams.map(function(t){return <option key={t} value={t}>{t}</option>;});})()}
               </select>
-              <input type="text" inputMode="numeric" placeholder="Min" value={props.fTeamMin} onChange={function(e){if(e.target.value===""||/^\d+$/.test(e.target.value))props.setFTeamMin(e.target.value);}} style={{width:52,background:"#111118",border:"1px solid "+(props.fTeamMin!==""?"#38bdf8":BR),borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+              <input type="text" inputMode="numeric" placeholder="Min" value={props.fTeamMin} onChange={function(e){if(e.target.value===""||/^\d+$/.test(e.target.value))props.setFTeamMin(e.target.value);}} style={{width:52,background:SURF2,border:"1px solid "+(props.fTeamMin!==""?"#38bdf8":BR),borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
               <span style={{fontSize:11,color:MU}}>{"—"}</span>
-              <input type="text" inputMode="numeric" placeholder="Max" value={props.fTeamMax} onChange={function(e){if(e.target.value===""||/^\d+$/.test(e.target.value))props.setFTeamMax(e.target.value);}} style={{width:52,background:"#111118",border:"1px solid "+(props.fTeamMax!==""?"#38bdf8":BR),borderRadius:4,color:"#e8e8f0",padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
+              <input type="text" inputMode="numeric" placeholder="Max" value={props.fTeamMax} onChange={function(e){if(e.target.value===""||/^\d+$/.test(e.target.value))props.setFTeamMax(e.target.value);}} style={{width:52,background:SURF2,border:"1px solid "+(props.fTeamMax!==""?"#38bdf8":BR),borderRadius:4,color:TX,padding:"5px 7px",fontSize:12,textAlign:"center"}}/>
             </div>
             <div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:12}}>
               <div style={{fontSize:10,color:MU,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{"Players"}</div>
@@ -763,7 +782,7 @@ function FiltersDropdown(props){
             <div style={{borderTop:"1px solid "+BR,marginTop:4,paddingTop:12}}>
               <div style={{fontSize:10,color:MU,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>{"Lineup Type"}</div>
               <div style={{display:"flex",gap:6,flexWrap:"wrap"}}>
-                {typeOpts.map(function(opt){var v=opt[0],lbl=opt[1],col=opt[2];return <button key={v} onClick={function(){props.setLineupType(v);}} style={{padding:"5px 11px",borderRadius:6,border:"1px solid "+(props.lineupType===v?col:BR),background:props.lineupType===v?col+"22":"transparent",color:props.lineupType===v?col:MU,fontSize:12,fontWeight:700,cursor:"pointer"}}>{lbl}</button>;})}
+                {typeOpts.map(function(opt){var v=opt[0],lbl=opt[1],col=opt[2];return <button key={v} onClick={function(){props.setLineupType(v);}} style={{padding:"5px 11px",borderRadius:6,border:"1px solid "+(props.lineupType===v?col:BR),background:props.lineupType===v?alpha(col, 13):"transparent",color:props.lineupType===v?col:MU,fontSize:12,fontWeight:700,cursor:"pointer"}}>{lbl}</button>;})}
               </div>
             </div>
             {props.hasActiveFilters?<div style={{fontSize:11,color:MU,marginTop:10}}>{"Showing "}<span style={{color:"#38bdf8",fontWeight:700}}>{props.filteredCount}</span>{" of "}<span style={{color:"#38bdf8",fontWeight:700}}>{props.totalCount}</span>{" lineups"}</div>:null}
@@ -795,7 +814,7 @@ function ExposuresTab(props){
       <div style={{marginBottom:14}}>
         <div style={S.sl}>{"Exposures"}</div>
         <div style={{fontSize:12,color:MU,marginTop:-8,marginBottom:12}}>{"Based on "}{likedCount}{" liked lineup"}{likedCount!==1?"s":""}</div>
-        <input type="text" placeholder="Search player…" value={search} onChange={function(e){setSearch(e.target.value);}} style={{width:"100%",background:"#111118",border:"1px solid "+BR,borderRadius:6,color:"#e8e8f0",padding:"7px 10px",fontSize:13,boxSizing:"border-box"}}/>
+        <input type="text" placeholder="Search player…" value={search} onChange={function(e){setSearch(e.target.value);}} style={{width:"100%",background:SURF2,border:"1px solid "+BR,borderRadius:6,color:TX,padding:"7px 10px",fontSize:13,boxSizing:"border-box"}}/>
       </div>
       {exposures.length===0?<div style={{textAlign:"center",padding:"32px 0",color:MU,fontSize:13}}>{"Like lineups to see player exposures."}</div>:
       filtered.length===0?<div style={{textAlign:"center",padding:"24px 0",color:MU,fontSize:13}}>{"No players match."}</div>:
@@ -803,14 +822,14 @@ function ExposuresTab(props){
         {filtered.map(function(expItem,rowIdx){
           var bc=expItem.pct>=66?RE:expItem.pct>=33?OH:GR;
           var cv=caps[expItem.name]!==undefined?caps[expItem.name]:"";
-          return(<tr key={expItem.name} style={{background:rowIdx%2===0?"transparent":"#ffffff04"}}>
+          return(<tr key={expItem.name} style={{background:rowIdx%2===0?"transparent":alpha(TX, 2)}}>
             <td style={S.tblD}><b>{expItem.name}</b></td>
             <td style={S.tblD}><span style={{fontWeight:700,color:bc,fontSize:14}}>{expItem.pct.toFixed(2)}{"%"}</span></td>
-            <td style={S.tblD}>{props.suggested&&props.suggested[expItem.name]!=null?<span style={{fontWeight:700,color:Math.abs(props.suggested[expItem.name]-expItem.pct)<8?GR:"#f5b942"}}>{props.suggested[expItem.name].toFixed(0)+"%"}</span>:"—"}</td>
-            <td style={Object.assign({},S.tblD,{width:"30%"})}><div style={{background:BR,borderRadius:3,height:8,overflow:"hidden",minWidth:60}}><div style={{width:expItem.pct+"%",height:"100%",background:bc,borderRadius:3}}/></div></td>
+            <td style={S.tblD}>{props.suggested&&props.suggested[expItem.name]!=null?<span style={{fontWeight:700,color:Math.abs(props.suggested[expItem.name]-expItem.pct)<8?GR:YE}}>{props.suggested[expItem.name].toFixed(0)+"%"}</span>:"—"}</td>
+            <td style={Object.assign({},S.tblD,{width:"30%"})}>{(function(){var sg=props.suggested&&props.suggested[expItem.name];return <div style={{position:"relative",background:BR,borderRadius:3,height:8,minWidth:60}}><div className="bar-fill" style={{width:Math.min(100,expItem.pct)+"%",height:"100%",background:bc,borderRadius:3}}/>{sg!=null?<div title={"suggested "+sg.toFixed(0)+"%"} style={{position:"absolute",top:-3,bottom:-3,left:Math.min(100,sg)+"%",width:2,background:TX}}/>:null}</div>;})()}</td>
             <td style={S.tblD}><div style={{display:"flex",alignItems:"center",gap:4}}>
-              <input type="text" placeholder="Cap %" value={cv} onChange={function(e){var v=e.target.value;if(v===""||/^\d*\.?\d*$/.test(v)){setCaps(function(prev){var n=Object.assign({},prev);n[expItem.name]=v;return n;});}}} style={{width:58,background:"#111118",border:"1px solid "+BR,borderRadius:4,color:"#e8e8f0",padding:"3px 6px",fontSize:11,textAlign:"center"}}/>
-              <button onClick={function(){applyCap(expItem.name,cv);}} style={{padding:"3px 8px",background:OH+"22",color:OH,border:"1px solid "+OH+"44",borderRadius:4,fontSize:11,fontWeight:700,cursor:"pointer"}}>{"Set"}</button>
+              <input type="text" placeholder="Cap %" value={cv} onChange={function(e){var v=e.target.value;if(v===""||/^\d*\.?\d*$/.test(v)){setCaps(function(prev){var n=Object.assign({},prev);n[expItem.name]=v;return n;});}}} style={{width:58,background:SURF2,border:"1px solid "+BR,borderRadius:4,color:TX,padding:"3px 6px",fontSize:11,textAlign:"center"}}/>
+              <button onClick={function(){applyCap(expItem.name,cv);}} style={{padding:"3px 8px",background:alpha(OH, 13),color:OH,border:"1px solid "+alpha(OH, 27),borderRadius:4,fontSize:11,fontWeight:700,cursor:"pointer"}}>{"Set"}</button>
             </div></td>
           </tr>);
         })}
@@ -834,7 +853,7 @@ function renderLineupDetail(lu,sport){
         <td key="tm" style={S.tblD}><span style={{color:MU}}>{p.team}</span></td>,
         <td key="sa" style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{(p.slot==="CPT"&&p.cptSalary?p.cptSalary:p.salary).toLocaleString()}</span></td>,
         <td key="pr" style={S.tblD}>{p.proj>0?(p.proj*(p.slot==="CPT"?1.5:1)).toFixed(2):"—"}</td>,
-        <td key="ow" style={S.tblD}><span style={{color:p.own<10?GR:p.own>25?RE:"#e8e8f0"}}>{p.own.toFixed(2)}{"%"}</span></td>,
+        <td key="ow" style={S.tblD}><span style={{color:p.own<10?GR:p.own>25?RE:TX}}>{p.own.toFixed(2)}{"%"}</span></td>,
         <td key="bm" style={S.tblD}><span style={{color:GR}}>{p.boom>0?p.boom.toFixed(2)+"%":"—"}</span></td>,
         <td key="bs" style={S.tblD}><span style={{color:RE}}>{p.bust>0?p.bust.toFixed(2)+"%":"—"}</span></td>,
         <td key="cl" style={S.tblD}>{p.ceiling>0?p.ceiling.toFixed(2):"—"}</td>,
@@ -862,17 +881,17 @@ function LineupCard(props){
   var typeColor=lu.sumOwn<80?GR:lu.sumOwn<160?OH:RE;
   var typeLabel=lu.sumOwn<80?"🔥 Contrarian":lu.sumOwn<160?"⚖ Balanced":"📈 Popular";
   return(
-    <div style={{background:CARD,border:"1px solid "+(expanded?OH:liked?GR+"66":BR),borderRadius:10,padding:16,marginBottom:10,transition:"border-color 0.15s"}}>
+    <div style={{background:CARD,border:"1px solid "+(expanded?OH:liked?alpha(GR, 40):BR),borderRadius:10,padding:16,marginBottom:10,transition:"border-color 0.15s"}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8}}>
         <div style={{display:"flex",gap:10,alignItems:"center",cursor:"pointer",flex:1}} onClick={function(){props.onToggleExpand(lu.id);}}>
           <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start",gap:2}}>
-            <span style={{background:OH+"22",color:OH,borderRadius:4,padding:"2px 8px",fontSize:12,fontWeight:700}}>{"#"+lu.rank}</span>
+            <span style={{background:alpha(OH, 13),color:OH,borderRadius:4,padding:"2px 8px",fontSize:12,fontWeight:700}}>{"#"+lu.rank}</span>
             {roiDelta!==0?<span style={{fontSize:10,fontWeight:700,color:roiDelta>0?GR:RE}}>{roiDelta>0?"▲":"▼"}{" "}{(roiDelta>0?"+":"")+roiDelta.toFixed(1)}{"% ROI"}</span>:null}
           </div>
           {lu.live?<span style={{fontWeight:800,color:GR}}>{"🏆 "+lu.pWin.toFixed(4)+"% win"}</span>:null}
           <span style={{fontWeight:700}}>{lu.projTotal.toFixed(2)}{" pts"}</span>
           {lu.live?<span style={{fontSize:11,color:MU}}>{"sim "+lu.simMean.toFixed(1)+" ± "+lu.simSd.toFixed(1)}</span>:null}
-          {lu.pf?<span title="Position in the best portfolio: picked in this order to maximise the chance at least one lineup beats the whole field" style={{background:GR+"22",color:GR,borderRadius:4,padding:"2px 6px",fontSize:11,fontWeight:700}}>{"Portfolio #"+lu.pf}</span>:null}
+          {lu.pf?<span title="Position in the best portfolio: picked in this order to maximise the chance at least one lineup beats the whole field" style={{background:alpha(GR, 13),color:GR,borderRadius:4,padding:"2px 6px",fontSize:11,fontWeight:700}}>{"Portfolio #"+lu.pf}</span>:null}
           {lu.lowOwned!=null?<span title="Players under 10% projected ownership" style={{fontSize:11,color:MU}}>{lu.lowOwned+" low-owned"}</span>:null}
           {lu.dupes>0?<span title="Copies of this exact lineup in the simulated field; its wins are split with them" style={{fontSize:11,color:RE}}>{"dupes "+lu.dupes}</span>:null}
         </div>
@@ -883,7 +902,7 @@ function LineupCard(props){
             {lu.live?null:<span style={{color:roiColor,fontWeight:700}}>{"📈 "}{roiStr}</span>}
             <span style={{color:typeColor}}>{typeLabel}</span>
           </div>
-          <button onClick={function(ev){ev.stopPropagation();props.onToggleLike(lu.id);}} style={{background:liked?GR+"22":"transparent",border:"1px solid "+(liked?GR:BR),borderRadius:6,padding:"4px 10px",cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",gap:4}}>
+          <button onClick={function(ev){ev.stopPropagation();props.onToggleLike(lu.id);}} style={{background:liked?alpha(GR, 13):"transparent",border:"1px solid "+(liked?GR:BR),borderRadius:6,padding:"4px 10px",cursor:"pointer",lineHeight:1,display:"flex",alignItems:"center",gap:4}}>
             <span style={{filter:liked?"none":"grayscale(1)",opacity:liked?1:0.4,fontSize:15}}>{"👍"}</span>
             {liked?<span style={{fontSize:10,color:GR,fontWeight:700}}>{"Liked"}</span>:null}
           </button>
@@ -966,6 +985,21 @@ export default function App(){
   var luNewsS=useState([]);var luNews=luNewsS[0];var setLuNews=luNewsS[1];
   var startersS=useState(null);var startersDoc=startersS[0];var setStartersDoc=startersS[1];
   var patternsS=useState(null);var patternsDoc=patternsS[0];var setPatternsDoc=patternsS[1];
+  var auditS=useState(null);var auditDoc=auditS[0];var setAuditDoc=auditS[1];
+  var histS=useState(null);var historyDoc=histS[0];var setHistoryDoc=histS[1];
+  var archS=useState(null);var archivedSlate=archS[0];var setArchivedSlate=archS[1];
+  var archErrS=useState("");var archErr=archErrS[0];var setArchErr=archErrS[1];
+  var poolExpS=useState(null);var poolExp=poolExpS[0];var setPoolExp=poolExpS[1];
+  var archRef=useRef(null),auditAtRef=useRef(null),histAtRef=useRef(null);
+  // which pool the Lineups tab shows: the shared Mac pool or this visitor's own browser run
+  var srcS=useState("shared");var lineupSource=srcS[0];var setLineupSource=srcS[1];
+  var bdocS=useState(null);var browserDoc=bdocS[0];var setBrowserDoc=bdocS[1];
+  var shAvS=useState(false);var sharedAvail=shAvS[0];var setSharedAvail=shAvS[1];
+  var ownS=useState(function(){return loadOwner();});var ownerCfg=ownS[0];var setOwnerCfg=ownS[1];
+  var hashS=useState(function(){try{return window.location.hash==="#owner";}catch(e){return false;}});var hashOwner=hashS[0];var setHashOwner=hashS[1];
+  var srcRef=useRef("shared"),sharedRef=useRef(null),browserRef=useRef(null);
+  var browserRun=useBrowserRun();
+  useEffect(function(){function h(){try{setHashOwner(window.location.hash==="#owner");}catch(e){}}window.addEventListener("hashchange",h);return function(){window.removeEventListener("hashchange",h);};},[]);
   var toastS=useState([]);var toasts=toastS[0];var setToasts=toastS[1];
   var pageS=useState(0);var page=pageS[0];var setPage=pageS[1];
   var notifS=useState(typeof Notification!=="undefined"?Notification.permission:"unsupported");var notifPerm=notifS[0];var setNotifPerm=notifS[1];
@@ -992,29 +1026,54 @@ export default function App(){
     setTeamStartMap(slateTeamStartMap(sl));
     return fetchText(sl.file).then(function(t){
       var parsed=applyLiveCsv(t,isUpdate);
-      if(!sl.lineups_file){setLineups([]);setPoolInfo(null);return;}
+      // a displayed browser run is never replaced by a refreshed shared pool (the switch can go back)
+      var keepBrowser=function(){return srcRef.current==="browser"&&browserRef.current&&browserRef.current.slateId===sl.id;};
+      if(!sl.lineups_file){sharedRef.current=null;setSharedAvail(false);if(!keepBrowser()){setLineups([]);setPoolInfo(null);}return;}
       return fetchJson(sl.lineups_file).then(function(doc){
+        sharedRef.current={doc:doc,slateId:sl.id};setSharedAvail(true);
+        if(isUpdate)setStaleInfo(function(si){return si&&doc.generated_at&&doc.generated_at>=si.at?null:si;});
+        if(keepBrowser())return;
         var lus=buildLiveLineups(doc,parsed);
         setLineups(lus);setPage(0);
-        if(isUpdate)setStaleInfo(function(si){return si&&doc.generated_at&&doc.generated_at>=si.at?null:si;});
-        setPoolInfo({generated_at:doc.generated_at,phase:doc.phase,sims:doc.sims,field:doc.field_size,count:lus.length,
-          gen:doc.generate_seconds,contest:doc.contest_seconds,rules:doc.rules,corr:doc.correlation,inputs:doc.inputs,slate_id:doc.slate_id,
-          cover:doc.portfolio_cover||null,coverSims:doc.portfolio_sims||0});
+        setPoolInfo(poolInfoOf(doc,lus.length));
         if(!isUpdate)setLikedIds(new Set());
-      });
+      }).catch(function(e){if(!sl.archived)throw e;sharedRef.current=null;setSharedAvail(false);if(!keepBrowser()){setLineups([]);setPoolInfo(null);}});   // archived: no lineups file is fine
     });
   }
-  // "Run simulations": ask the Mac (over your private control channel) to build
-  // 10,000 lineups x 1,000,000 contests for this slate with the current projections
-  function runSimulations(){
-    var ctl=meta&&meta.control;
-    if(!ctl||!ctl.topic){setRunState({state:"error",message:"Your Mac's updater hasn't shared its control channel yet. Update it (git pull) and restart it."});return;}
-    var req=Math.random().toString(36).slice(2,10);
-    var r={req:req,slate_id:slateId,sentAt:Date.now(),state:"sent",message:"Sending to your Mac…"};
+  // Owner only: "Run on my Mac" signs the request with the key from this browser's owner
+  // setup (pipeline/owner_setup.py) and posts it to the owner's secret topic. The Mac
+  // ignores anything unsigned, stale, replayed or too frequent.
+  function runOnMac(){
+    var cfg=ownerCfg;
+    if(!cfg){setRunState({state:"error",message:"Owner mode is off in this browser."});return;}
+    if(archRef.current&&archRef.current.id===slateId){setRunState({state:"error",message:"This is an archived slate: simulations can't be requested for it."});return;}
+    var r={req:"",slate_id:slateId,sentAt:Date.now(),state:"sent",message:"Signing and sending to your Mac…"};
     runRef.current=r;setRunState(r);
-    fetch(ctl.server+"/"+ctl.topic,{method:"POST",body:JSON.stringify({action:"run",slate_id:slateId,req:req})})
-      .then(function(res){if(!res.ok)throw new Error("ntfy "+res.status);setRunState(Object.assign({},r,{state:"sent",message:"Request sent. Waiting for your Mac to start…"}));})
-      .catch(function(e){runRef.current=null;setRunState({state:"error",message:"Couldn't send the request: "+e.message});});
+    buildRunBody(cfg,slateId).then(function(b){r.req=b.req;return fetch(runUrl(cfg),{method:"POST",body:b.body});})
+      .then(function(res){if(!res.ok)throw new Error("ntfy "+res.status);setRunState(Object.assign({},r,{state:"sent",message:"Signed request sent. Waiting for your Mac to start…"}));})
+      .catch(function(e){runRef.current=null;setRunState({state:"error",message:"Couldn't send the request: "+(e&&e.message||e)});});
+  }
+  // a finished browser run: keep it in memory for this slate and show it
+  function showBrowserRun(doc){
+    if(!doc)return;
+    var sid=doc.slate_id!=null?doc.slate_id:slateRef.current;
+    if(sid!==slateRef.current)return;                     // slate changed while it ran
+    browserRef.current={slateId:sid,doc:doc};setBrowserDoc(browserRef.current);
+    srcRef.current="browser";setLineupSource("browser");
+    var lus=buildLiveLineups(doc,pRef.current);
+    setLineups(lus);setPage(0);setPoolInfo(poolInfoOf(doc,lus.length));setLikedIds(new Set());
+  }
+  function switchSource(src){
+    if(src===srcRef.current)return;
+    if(src==="browser"){if(browserRef.current&&browserRef.current.slateId===slateRef.current)showBrowserRun(browserRef.current.doc);return;}
+    srcRef.current="shared";setLineupSource("shared");setLikedIds(new Set());setPage(0);
+    var sh=sharedRef.current;
+    if(sh&&sh.slateId===slateRef.current){var lus=buildLiveLineups(sh.doc,pRef.current);setLineups(lus);setPoolInfo(poolInfoOf(sh.doc,lus.length));}
+    else{setLineups([]);setPoolInfo(null);}
+  }
+  function clearRuns(){
+    browserRun.cancel();browserRef.current=null;setBrowserDoc(null);srcRef.current="shared";setLineupSource("shared");
+    sharedRef.current=null;setSharedAvail(false);
   }
   function pushToasts(items){
     if(!items.length)return;
@@ -1051,21 +1110,24 @@ export default function App(){
           if(r.lastStage!==st.state+"/"+st.phase){r.lastStage=st.state+"/"+st.phase;metaRef.current=null;}
           setRunState(Object.assign({},r,st));
           if(st.state==="done"||st.state==="error"){setTimeout(function(){refreshLive(false);},300);runRef.current=null;}}
-        else if(Date.now()-r.sentAt>120000){setRunState(Object.assign({},r,{state:"error",message:"Your Mac didn't pick up the request within 2 minutes. Make sure it's on, awake and the updater is running."}));runRef.current=null;}
+        else if(Date.now()-r.sentAt>120000){setRunState(Object.assign({},r,{state:"error",message:"Your Mac didn't pick up the request within 2 minutes. Make sure it's on, awake and the updater is running — if you rotated the key, paste the new setup code."}));runRef.current=null;}
       }).catch(function(){});}
       if(!changed&&!initial)return;
       fetchJson("patterns.json").then(setPatternsDoc).catch(function(){});
-      if(!m.slates||!m.slates.length){setSlates([]);return;}   // no slate open right now
-      return Promise.all([fetchJson("slates.json"),fetchJson("injury_log.json").catch(function(){return[];}),
+      var noSlate=!m.slates||!m.slates.length;          // no slate open right now: still load news and starters
+      return Promise.all([noSlate?Promise.resolve([]):fetchJson("slates.json"),fetchJson("injury_log.json").catch(function(){return[];}),
                           fetchJson("lineup_log.json").catch(function(){return[];}),
                           fetchJson("starting_lineups.json").catch(function(){return null;})]).then(function(res){
         var sl=res[0]||[];setSlates(sl);setInjLog(res[1]||[]);setLuNews(res[2]||[]);setStartersDoc(res[3]);
         pushToasts(newsSince(res[1]||[],res[2]||[]));
         if(sourceRef.current==="manual")return;           // user uploaded their own CSV
-        if(slateRef.current==null){try{var saved=JSON.parse(localStorage.getItem("sigma_slate")||"null");if(saved&&saved.date===m.date)slateRef.current=saved.id;}catch(e){}}
+        if(slateRef.current==null){var us=urlSlate();if(us!=null)slateRef.current=us;else{try{var saved=JSON.parse(localStorage.getItem("sigma_slate")||"null");if(saved&&saved.date===m.date)slateRef.current=saved.id;}catch(e){}}}
         var cur=null;for(var i=0;i<sl.length;i++){if(sl[i].id===slateRef.current)cur=sl[i];}
-        if(!cur){setActiveTab("slates");return;}            // pick the slate first
-        return loadSlate(cur,!initial&&cur.id===slateRef.current&&!runningRef.current);
+        if(cur){if(archRef.current){archRef.current=null;setArchivedSlate(null);}
+          return loadSlate(cur,!initial&&cur.id===slateRef.current&&!runningRef.current);}
+        if(archRef.current&&archRef.current.id===slateRef.current)return;   // replaying an archived slate: its files don't change
+        if(slateRef.current!=null&&slateRef.current===urlSlate())return loadArchived(slateRef.current);
+        if(sl.length)setActiveTab("slates");             // pick the slate first
       });
       });
     }).catch(function(e){setAutoErr(initial?"Live projections not available yet ("+e.message+"). Upload a CSV instead.":"Couldn't refresh: "+e.message);});
@@ -1079,8 +1141,35 @@ export default function App(){
   },[]);
   function pickSlate(id){var sl=null;for(var i=0;i<slates.length;i++){if(String(slates[i].id)===String(id))sl=slates[i];}if(!sl)return;
     try{localStorage.setItem("sigma_slate",JSON.stringify({id:sl.id,date:meta&&meta.date}));}catch(e){}
+    archRef.current=null;setArchivedSlate(null);setArchErr("");clearRuns();
     sourceRef.current="auto";setActiveTab("pool");setLineups([]);setPoolInfo(null);setLikedIds(new Set());setSpotlight(null);
     loadSlate(sl,false).catch(function(e){setAutoErr(e.message);});}
+  // Replay a slate that is no longer listed in slates.json (?slate=<id> or "Replay last slate").
+  // Its files stay on the data branch; simulations can't be requested for it.
+  function loadArchived(id){
+    var nid=Number(id);if(!isFinite(nid))return Promise.resolve();
+    setArchErr("");
+    return fetchText("slates/"+nid+".csv").then(function(t){
+      var rows=parseProjections(t,sport);if(!rows.length)throw new Error("empty");
+      var sl=synthSlate(nid,rows);archRef.current=sl;setArchivedSlate(sl);clearRuns();
+      sourceRef.current="auto";setLineups([]);setPoolInfo(null);setLikedIds(new Set());setSpotlight(null);
+      return loadSlate(sl,false);
+    }).catch(function(){
+      if(!archRef.current||archRef.current.id!==nid){slateRef.current=null;setArchErr("Slate "+nid+" isn't available.");}
+    });
+  }
+  function replaySlate(id){slateRef.current=Number(id);setActiveTab("pool");loadArchived(id);}
+  // audit.json and contest_history.json load on first open of their tab, and are
+  // re-read when the Mac publishes (meta.updated_at changes) while the tab is open
+  var metaStamp=meta&&meta.updated_at;
+  useEffect(function(){
+    if(activeTab==="accuracy"&&(!auditDoc||auditAtRef.current!==metaStamp)){auditAtRef.current=metaStamp;
+      fetchJson("audit.json").then(setAuditDoc).catch(function(){setAuditDoc(function(d){return d&&!d.error?d:{error:true};});});}
+    if((activeTab==="ownership"&&(!historyDoc||histAtRef.current!==metaStamp))||(activeTab==="pool"&&!historyDoc)){histAtRef.current=metaStamp;
+      // a missing file (404) and a file that isn't valid JSON get different messages
+      fetchText("contest_history.json").then(function(t){var d;try{d=JSON.parse(t);}catch(e){d=null;}if(!d||typeof d!=="object"||Array.isArray(d))d={error:true,kind:"format"};setHistoryDoc(function(prev){return d.error&&prev&&!prev.error?prev:d;});})
+        .catch(function(){setHistoryDoc(function(d){return d&&!d.error?d:{error:true,kind:"missing"};});});}
+  },[activeTab,metaStamp]);
   function useLiveAgain(){sourceRef.current="auto";setProjSource("auto");refreshLive(true);}
 
   function doRestart(){
@@ -1094,7 +1183,7 @@ export default function App(){
     setLineupType("all");setFTeam("");setFTeamMin("");setFTeamMax("");
     setPlayerBoosts({});setAppliedBoosts({});
     setEmEntries([]);setEmCapacity(null);setEmPid(null);setEmCsvOk(false);
-    setStaleInfo(null);sourceRef.current="auto";setProjSource("auto");refreshLive(true);
+    setStaleInfo(null);setArchErr("");sourceRef.current="auto";setProjSource("auto");refreshLive(true);
   }
   
 
@@ -1104,7 +1193,7 @@ export default function App(){
     var file=e.target.files[0];if(!file)return;
     var ext=file.name.split(".").pop().toLowerCase();
     if(ext==="csv"||ext==="txt"){var r=new FileReader();r.onload=function(ev){var res=parsePayoutAndSlate(ev.target.result);if(!res.payoutTable.length&&!res.games.length){setPayoutErr("Could not parse.");return;}setPayoutTable(res.payoutTable.length?res.payoutTable:null);setPayoutDC(res.payoutTable.length?new Set(res.payoutTable.map(function(x){return x.prize;})).size:0);setTeamStartMap(res.teamStartMap);setSlateGames(res.games);setPayoutOk(true);setPayoutErr("");};r.onerror=function(){setPayoutErr("Error reading file.");};r.readAsText(file);}
-    else if(["png","jpg","jpeg","webp","gif","pdf"].indexOf(ext)!==-1){var r2=new FileReader();r2.onload=function(ev){setPayoutErr("Reading with AI…");var base64=ev.target.result.split(",")[1];var mtMap={pdf:"application/pdf",png:"image/png",webp:"image/webp",gif:"image/gif"};var mt=mtMap[ext]||"image/jpeg";fetch("https://api.anthropic.com/v1/messages",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:[{type:ext==="pdf"?"document":"image",source:{type:"base64",media_type:mt,data:base64}},{type:"text",text:"Extract payout table. Return ONLY JSON array [{\"place\":1,\"prize\":5000}]. Expand ranges. No markdown."}]}]})}).then(function(r3){return r3.json();}).then(function(data){var raw=null;for(var i=0;i<(data.content||[]).length;i++){if(data.content[i].type==="text"){raw=data.content[i];break;}}var txt=raw?raw.text:"";var parsed=JSON.parse(txt.replace(/```json|```/g,"").trim());if(!Array.isArray(parsed)||!parsed.length)throw new Error("empty");parsed.sort(function(a,b){return a.place-b.place;});setPayoutTable(parsed);setPayoutDC(new Set(parsed.map(function(x){return x.prize;})).size);setPayoutOk(true);setPayoutErr("");}).catch(function(){setPayoutErr("Could not parse payout file.");});};r2.readAsDataURL(file);}
+    else if(["png","jpg","jpeg","webp","gif","pdf"].indexOf(ext)!==-1){setPayoutErr("Image/PDF payouts aren't supported — upload the payout as CSV or TXT.");}
     else setPayoutErr("Unsupported file.");
     e.target.value="";
   }
@@ -1188,6 +1277,8 @@ export default function App(){
   var likedLineups=useMemo(function(){return lineupsWithBoosts.filter(function(l){return likedIds.has(l.id);});},[lineupsWithBoosts,likedIds]);
   var likedMissing=useMemo(function(){var have={};lineupsWithBoosts.forEach(function(l){have[l.id]=1;});var n=0;likedIds.forEach(function(id){if(!have[id])n++;});return n;},[lineupsWithBoosts,likedIds]);
   var exposures=useMemo(function(){return computeExposures(likedLineups);},[likedLineups]);
+  var poolBoxes=useMemo(function(){var m={},mx=0;players.forEach(function(p){var b=quantileBox(p.q);if(b){m[p.name]=b;if(b.p90>mx)mx=b.p90;}});return{m:m,max:mx||1};},[players]);
+  var poolLevMax=useMemo(function(){var mx=1;players.forEach(function(p){if(Math.abs(p.lev||0)>mx)mx=Math.abs(p.lev);});return mx;},[players]);
   var exposureMap=useMemo(function(){var m={};exposures.forEach(function(e){m[e.name]=e.pct;});return m;},[exposures]);
 
   var hasActiveFilters=[fOwnMin,fOwnMax,fProjMin,fProjMax,fUniqMin,fUniqMax,fTeamMin,fTeamMax].some(function(f){return f!==""})||mustContain.length>0||mustExclude.length>0||lineupType!=="all";
@@ -1236,7 +1327,9 @@ export default function App(){
   var sportLabel="NBA";
   var posList=["ALL","PG","SG","SF","PF","C"];
   var pcMap=NBA_PC;
-  var cols=[["name","Player"],["salary","Salary"],["minutes","Min"],["proj","Proj"],["own","Own%"],["optExp","Sugg Exp%"],["boom","Boom%"],["bust","Bust%"],["ceiling","Ceiling"],["floor","Floor"],["value","Value"],["lev","Leverage"]];
+  var cols=[["name","Player"],["salary","Salary"],["minutes","Min"],["proj","Proj"],["range","Range",false,"p10–p90 whisker, p25–p75 box, median tick"],["own","Own%"]];
+  if(historyDoc&&!historyDoc.error&&(historyDoc.contests||[]).length>=3&&validateContestHistory(historyDoc).ok)cols.push(["histOwn","Hist. own",false,"Model ownership scaled by how that ownership range actually came in at DraftKings"]);
+  cols=cols.concat([["optExp","Sugg Exp%"],["boom","Boom%"],["bust","Bust%"],["ceiling","Ceiling"],["floor","Floor"],["value","Value"],["lev","Leverage"]]);
   var settings=[["Field size",fieldSize,setFieldSize,false],["Payout to 1st (%)",firstPct,setFirstPct,true],["Entry fee ($)",entryFee,setEntryFee,true],["Max entries/person",maxEntries,setMaxEntries,false]];
 
 
@@ -1247,40 +1340,82 @@ export default function App(){
   var uploadRows=[
     ["1. DK entries file (for Edit Entries: download it on DraftKings → Contests → Edit Entries)",playerIdOk,pidInputRef,onPlayerIdFile,playerIdOk?"✅ "+playerIdData.entries.length+" entries loaded: export fills them":"Without it, export makes new lineups for Lineups → Upload Lineups",playerIdErr,".csv,.txt"],
     ["2. Projections CSV (optional override)",projSource==="manual",projInputRef,onProjFile,projSource==="manual"?"✅ "+players.length+" players from your CSV":"Click to upload your own projections CSV",projErr,".csv,.txt"],
+    ["3. Payout table (optional, for your own CSV build)",payoutOk,payoutInputRef,onPayoutFile,payoutOk?"✅ "+(payoutTable?payoutTable.length+" paid places":"")+(slateGames.length?" · "+slateGames.length+" games":""):"Click to upload a payout CSV/TXT",payoutErr,".csv,.txt,.png,.jpg,.jpeg,.webp,.gif,.pdf"],
   ];
 
+  var curSlate=null;for(var csi=0;csi<slates.length;csi++){if(slates[csi].id===slateId)curSlate=slates[csi];}
+  if(!curSlate&&archivedSlate&&archivedSlate.id===slateId)curSlate=archivedSlate;
+  var isArchived=!!(curSlate&&curSlate.archived);
+  var offline=!!meta&&!slates.length&&!curSlate&&projSource!=="manual"&&!players.length;
+  var poolOutdated=!!(poolInfo&&curSlate&&poolInfo.inputs&&curSlate.inputs&&poolInfo.inputs!==curSlate.inputs);
+  var running2=runState&&(runState.state==="sent"||runState.state==="running");
+  var isBrowserView=lineupSource==="browser"&&!!browserDoc&&browserDoc.slateId===slateId;
+  var hasBrowserRun=!!browserDoc&&browserDoc.slateId===slateId;
+  var runCorr=(meta&&meta.correlation)||(sharedRef.current&&sharedRef.current.doc.correlation)||{team:0.02,opp:0.05};
+  var runRules=(sharedRef.current&&sharedRef.current.slateId===slateId&&sharedRef.current.doc.rules)||(meta&&meta.rules)||null;
+  var runButton=(
+    <div>
+      {curSlate&&players.length?<ToolBoundary><BrowserRunPanel run={browserRun} players={players} slate={curSlate} corr={runCorr} rules={runRules}
+        onDone={showBrowserRun} lastRun={hasBrowserRun?browserDoc.doc:null}/></ToolBoundary>
+        :<div style={{fontSize:12,color:MU}}>{"Pick a slate to run simulations in your browser."}</div>}
+      {ownerCfg?<div style={{marginTop:12,borderTop:"1px solid "+BR,paddingTop:10}}>
+        <button onClick={runOnMac} disabled={running2||!curSlate||curSlate.contest_locked||isArchived}
+          style={{display:"block",width:"100%",padding:"12px 0",background:running2?SURF2:"linear-gradient(135deg,"+OH+",#cc5500)",color:"#fff",border:"none",borderRadius:8,fontWeight:800,fontSize:14,cursor:running2||isArchived?"default":"pointer",opacity:(!curSlate||curSlate.contest_locked||isArchived)?0.5:1,boxShadow:running2||isArchived?"none":"0 0 18px "+alpha(OH,35)}}>
+          {running2?"⏳ Simulating on your Mac…":"▶ Run on my Mac (updates shared pool)"}
+        </button>
+        <div style={{fontSize:11,color:MU,marginTop:6}}>{isArchived?"Archived slate: Mac runs can't be requested.":curSlate&&curSlate.contest_locked?"This slate has locked: use Late Swap.":"Owner only: 10,000 exact lineups × 1,000,000 contests for "+(curSlate?curSlate.name:"this slate")+", shared with every visitor."}</div>
+        {runState?<div style={{fontSize:12,marginTop:8,color:runState.state==="error"?RE:runState.state==="done"?GR:YE}}>{runState.message||runState.state}</div>:null}
+      </div>:null}
+    </div>
+  );
+  var approxChip=<span className="chip" style={{background:alpha(YE,14),color:YE}} title="Built in this browser: greedy lineups and fewer simulations than the shared pool">{"APPROX"}</span>;
+  var sourceSwitch=<RunSourceSwitch source={isBrowserView?"browser":"shared"} onChange={switchSource} hasShared={sharedAvail} hasBrowser={hasBrowserRun}/>;
+  // per-player outcome boxes (shared scale), leverage scale, history-adjusted ownership
+  var histCheck=historyDoc&&!historyDoc.error?validateContestHistory(historyDoc):null;
+  var histBuckets=histCheck&&histCheck.ok&&(historyDoc.contests||[]).length>=3&&historyDoc.calibration?historyDoc.calibration.buckets:null;
+  var histCol=cols.some(function(c){return c[0]==="histOwn";});
+  var flashMap={};if(staleInfo&&staleInfo.moved)staleInfo.moved.forEach(function(m){flashMap[m.name]=m.to>m.from?"flash-up":m.to<m.from?"flash-down":"";});
   var poolContent;
   if(players.length===0){
-    poolContent=<div style={{textAlign:"center",padding:"48px 0"}}><div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{fontWeight:700,marginBottom:6}}>{"No data loaded"}</div><div style={{color:MU,fontSize:13}}>{autoErr?"Upload your Projections CSV to get started.":(meta&&meta.slates&&!meta.slates.length)?"No DraftKings slate is open right now. Projections appear automatically once the next slate is posted (usually by morning).":"Loading live projections…"}</div></div>;
+    poolContent=<div style={{textAlign:"center",padding:"48px 0"}}><div className="logo" style={{fontSize:48,marginBottom:10}}>{"Σ"}</div><div style={{fontWeight:700,marginBottom:6}}>{"No data loaded"}</div><div style={{color:MU,fontSize:13}}>{autoErr?"Upload your Projections CSV to get started.":(meta&&meta.slates&&!meta.slates.length)?"No DraftKings slate is open right now. Projections appear automatically once the next slate is posted (usually by morning).":"Loading live projections…"}</div></div>;
   } else {
     var posButtons=posList.map(function(p){return <button key={p} style={tabSt(filterPos===p)} onClick={function(){setFilterPos(p);}}>{p}</button>;});
-    var colHeaders=cols.map(function(cv){return <th key={cv[0]} style={S.tblH} onClick={function(){if(sortCol===cv[0])setSortDir(function(d){return -d;});else{setSortCol(cv[0]);setSortDir(-1);}}}>{cv[1]}{sortCol===cv[0]?(sortDir===-1?" ↓":" ↑"):""}</th>;});
+    var colHeaders=cols.map(function(cv){var sortable=cv[2]!==false;return <th key={cv[0]} style={Object.assign({},S.tblH,sortable?{}:{cursor:"default"})} title={cv[3]||undefined} onClick={sortable?function(){if(sortCol===cv[0])setSortDir(function(d){return -d;});else{setSortCol(cv[0]);setSortDir(-1);}}:undefined}>{cv[1]}{sortCol===cv[0]?(sortDir===-1?" ↓":" ↑"):""}</th>;});
+    var nCols=cols.length;
     var playerRows=visPl.map(function(p,i){
+      var box=poolBoxes.m[p.name]||null;
+      var hist=histBuckets?realityCheck(p.own,histBuckets):null;
+      var open=poolExp===p.name;
       return(
-        <tr key={i} style={{background:i%2===0?"transparent":"#ffffff04"}}>
-          <td style={S.tblD}><b>{p.name}</b>{starterBadge(p)}{p.restricted?<span title="Minutes restriction noted on the injury report" style={{marginLeft:4,fontSize:9,color:"#f5b942"}}>{"⏱"}</span>:null}{(p.injury&&p.injury.toLowerCase()!=="none"&&p.injury!=="")?<span title={p.injury} style={Object.assign({},pill(STATUS_COL[p.injury]||RE),{marginLeft:5,fontSize:9,padding:"1px 5px"})}>{STATUS_ABBR[p.injury]||"⚠"}</span>:null}<span style={{marginLeft:6,fontSize:10,color:MU}}>{p.positions&&p.positions.length>1?p.positions.join("/"):""}</span></td>
-          <td style={S.tblD}><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span>{p.cptSalary?<div style={{fontSize:10,color:"#a78bfa"}}>{"CPT $"+p.cptSalary.toLocaleString()}</div>:null}</td>
-          <td style={S.tblD}>{p.minutes>0?p.minutes.toFixed(1):"—"}</td>
-          <td style={S.tblD}>{p.proj>0?p.proj.toFixed(2):<span style={{color:RE}}>{"—"}</span>}</td>
-          <td style={S.tblD}><span style={{color:p.own<10?GR:p.own>25?RE:"#e8e8f0"}}>{p.own.toFixed(1)}{"%"}</span></td>
-          <td style={S.tblD} title="Share of historical winning lineups with this pre-game profile">{p.optExp!=null?<b>{p.optExp.toFixed(0)+"%"}</b>:"—"}</td>
-          <td style={S.tblD}><span style={{color:GR}}>{p.boom>0?p.boom.toFixed(2)+"%":"—"}</span></td>
-          <td style={S.tblD}><span style={{color:RE}}>{p.bust>0?p.bust.toFixed(2)+"%":"—"}</span></td>
-          <td style={S.tblD}>{p.ceiling>0?p.ceiling.toFixed(2):"—"}</td>
-          <td style={S.tblD}>{p.floor>0?p.floor.toFixed(2):"—"}</td>
-          <td style={S.tblD}>{p.value>0?p.value.toFixed(2):"—"}</td>
-          <td style={S.tblD}><span style={{color:p.lev>0?GR:MU,fontWeight:600}}>{p.lev>0?p.lev.toFixed(2):"—"}</span></td>
+        <Fragment key={p.name+"|"+i}>
+        <tr className="row-click" onClick={function(){setPoolExp(function(x){return x===p.name?null:p.name;});}} aria-expanded={open} style={{background:open?alpha(ACC,8):i%2===0?"transparent":alpha(TX, 2)}}>
+          <td style={S.tblD}><b>{p.name}</b>{starterBadge(p)}{p.restricted?<span title="Minutes restriction noted on the injury report" style={{marginLeft:4,fontSize:9,color:YE}}>{"⏱"}</span>:null}{(p.injury&&p.injury.toLowerCase()!=="none"&&p.injury!=="")?<span title={p.injury} style={Object.assign({},pill(STATUS_COL[p.injury]||RE),{marginLeft:5,fontSize:9,padding:"1px 5px"})}>{STATUS_ABBR[p.injury]||"⚠"}</span>:null}<span style={{marginLeft:6,fontSize:10,color:MU}}>{p.positions&&p.positions.length>1?p.positions.join("/"):""}</span></td>
+          <td style={S.tblD} className="num"><span style={{color:OH,fontWeight:700}}>{"$"}{p.salary.toLocaleString()}</span>{p.cptSalary?<div style={{fontSize:10,color:"#a78bfa"}}>{"CPT $"+p.cptSalary.toLocaleString()}</div>:null}</td>
+          <td style={S.tblD} className="num">{p.minutes>0?p.minutes.toFixed(1):"—"}</td>
+          <td style={S.tblD} className={"num "+(flashMap[p.name]||"")}>{p.proj>0?<b>{p.proj.toFixed(2)}</b>:<span style={{color:RE}}>{"—"}</span>}</td>
+          <td style={S.tblD}><QuantileBox box={box} min={0} max={poolBoxes.max}/></td>
+          <td style={S.tblD} className="num"><span style={{color:p.own<10?GR:p.own>25?RE:TX}}>{p.own.toFixed(1)}{"%"}</span></td>
+          {histCol?<td style={S.tblD} className="num" title={hist?"bucket "+hist.bucket+" · n="+hist.n+" player results":"too few contest results for this ownership range"}>{hist?<span style={{color:hist.adj>p.own?GR:RE}}>{hist.adj.toFixed(1)+"%"}</span>:<span style={{color:MU}}>{"—"}</span>}</td>:null}
+          <td style={S.tblD} className="num" title="Share of historical winning lineups with this pre-game profile">{p.optExp!=null?<b>{p.optExp.toFixed(0)+"%"}</b>:"—"}</td>
+          <td style={S.tblD} className="num"><span style={{color:GR}}>{p.boom>0?p.boom.toFixed(2)+"%":"—"}</span></td>
+          <td style={S.tblD} className="num"><span style={{color:RE}}>{p.bust>0?p.bust.toFixed(2)+"%":"—"}</span></td>
+          <td style={S.tblD} className="num">{p.ceiling>0?p.ceiling.toFixed(2):"—"}</td>
+          <td style={S.tblD} className="num">{p.floor>0?p.floor.toFixed(2):"—"}</td>
+          <td style={S.tblD} className="num">{p.value>0?p.value.toFixed(2):"—"}</td>
+          <td style={S.tblD}>{p.optPct>0||p.lev!==0?<DivergingBar value={p.lev} max={poolLevMax}/>:<span style={{color:MU}}>{"—"}</span>}</td>
         </tr>
+        {open?<tr><td colSpan={nCols} style={{padding:0,borderBottom:"1px solid "+BR,background:SURF2}}><ToolBoundary><PlayerOutcome p={p}/></ToolBoundary></td></tr>:null}
+        </Fragment>
       );
     });
-    poolContent=<div><div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap"}}>{posButtons}</div><div style={{overflowX:"auto"}}><table style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{colHeaders}</tr></thead><tbody>{playerRows}</tbody></table></div></div>;
+    poolContent=<div><div style={{display:"flex",gap:6,marginBottom:12,flexWrap:"wrap",alignItems:"center"}}>{posButtons}<span className="muted" style={{fontSize:11,marginLeft:"auto"}}>{"Click a player for the full outcome curve"+(histBuckets?" · Hist. own uses "+historyDoc.contests.length+" real contests":"")}</span></div><div className="scroll-x sticky-head" style={{maxHeight:"75vh",overflowY:"auto"}}><table className="data-table" style={{width:"100%",borderCollapse:"collapse",fontSize:12}}><thead><tr>{colHeaders}</tr></thead><tbody>{playerRows}</tbody></table></div></div>;
   }
 
   var lineupsContent;
   if(running){
     lineupsContent=<SpinningSigma progress={progress} phase={phase}/>;
   } else if(!lineups.length){
-    lineupsContent=<div style={Object.assign({},S.card,{textAlign:"center",padding:48})}>{projSource==="auto"?<div style={{maxWidth:360,margin:"0 auto 16px"}}>{runButton}</div>:null}<div style={{fontSize:48,fontFamily:"serif",color:OH,marginBottom:10}}>{"Σ"}</div><div style={{color:MU}}>{projSource==="auto"?"No lineups yet for this slate. Press Run simulations to build 10,000 lineups and simulate 1,000,000 contests with the current projections.":"Upload your projections CSV and run the optimizer to generate lineups."}</div></div>;
+    lineupsContent=<div>{sourceSwitch}<div style={Object.assign({},S.card,{textAlign:"center",padding:48})}>{projSource==="auto"?<div style={{maxWidth:360,margin:"0 auto 16px"}}>{runButton}</div>:null}<div className="logo" style={{fontSize:48,marginBottom:10}}>{"Σ"}</div><div style={{color:MU}}>{isArchived?"No simulated lineups were saved for this archived slate.":projSource==="auto"?(lineupSource==="shared"&&hasBrowserRun?"No shared pool for this slate yet. Switch to your browser run above.":"No shared lineups for this slate yet. Press Run in my browser to build an approximate pool here, privately, in under a minute."):"Upload your projections CSV and run the optimizer to generate lineups."}</div></div></div>;
   } else {
     var likedLabel=likedCount>0?<span style={{color:OH,fontWeight:700}}>{likedCount}{" liked"}</span>:<span>{"👍 Like lineups to export them"}</span>;
     var PER=50,pages=Math.max(1,Math.ceil(filteredLineups.length/PER)),pg=Math.min(page,pages-1);
@@ -1299,6 +1434,9 @@ export default function App(){
     var noMatch=filteredLineups.length===0?<div style={Object.assign({},S.card,{textAlign:"center",padding:32})}><div style={{color:MU,fontSize:13}}>{"No lineups match the current filters."}</div></div>:null;
     lineupsContent=(
       <div>
+        {sourceSwitch}
+        {isBrowserView?<div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap",fontSize:12,color:MU,marginBottom:10}}>{approxChip}<span>{"Your browser run · "+browserDoc.doc.lineups.length.toLocaleString()+" lineups · "+(browserDoc.doc.sims||0).toLocaleString()+" sims · seed "+browserDoc.doc.seed+" · "+fmtClock(browserDoc.doc.generated_at)+". Approximate: greedy lineups, not exactly solved. Not shared; lost on reload."}</span></div>:null}
+        <ToolBoundary><PoolInsights lineups={lineups} likedIds={likedIds} poolInfo={poolInfo}/></ToolBoundary>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12,flexWrap:"wrap",gap:8}}>
           <div style={{fontSize:12,color:MU}}>{likedLabel}</div>
           <div style={{display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
@@ -1306,8 +1444,8 @@ export default function App(){
             <EntryManager sport={sport} playerIdData={playerIdData} teamStartMap={teamStartMap} onAddLineups={function(addFn){addFn(likedLineups);}} entries={emEntries} setEntries={setEmEntries} capacity={emCapacity} setCapacity={setEmCapacity} emPid={emPid} setEmPid={setEmPid} csvOk={emCsvOk} setCsvOk={setEmCsvOk}/>
             <FiltersDropdown fOwnMin={fOwnMin} setFOwnMin={setFOwnMin} fOwnMax={fOwnMax} setFOwnMax={setFOwnMax} fProjMin={fProjMin} setFProjMin={setFProjMin} fProjMax={fProjMax} setFProjMax={setFProjMax} fUniqMin={fUniqMin} setFUniqMin={setFUniqMin} fUniqMax={fUniqMax} setFUniqMax={setFUniqMax} fTeam={fTeam} setFTeam={setFTeam} fTeamMin={fTeamMin} setFTeamMin={setFTeamMin} fTeamMax={fTeamMax} setFTeamMax={setFTeamMax} mustContain={mustContain} setMustContain={setMustContain} mustExclude={mustExclude} setMustExclude={setMustExclude} lineupType={lineupType} setLineupType={setLineupType} hasActiveFilters={hasActiveFilters} clearFilters={clearFilters} filteredCount={filteredLineups.length} totalCount={lineups.length} allPlayers={players} sport={sport}/>
             <PlayerROIBoost players={players} boosts={playerBoosts} setBoosts={setPlayerBoosts} onApply={setAppliedBoosts} exposureMap={exposureMap}/>
-            <button onClick={doExport} style={{padding:"6px 13px",background:likedCount>0?GR+"22":BR,color:likedCount>0?GR:MU,border:"1px solid "+(likedCount>0?GR+"44":BR),borderRadius:6,fontSize:12,fontWeight:700,cursor:likedCount>0?"pointer":"default",opacity:likedCount>0?1:0.5}}>{"⬇ Export"}{likedCount>0?" "+likedCount+" Lineup"+(likedCount!==1?"s":""):null}</button>
-            <button onClick={function(){setLikedIds(new Set());}} style={{padding:"6px 13px",background:RE+"11",color:RE,border:"1px solid "+RE+"33",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",opacity:likedCount>0?1:0.3}}>{"Clear"}</button>
+            <button onClick={doExport} style={{padding:"6px 13px",background:likedCount>0?alpha(GR, 13):BR,color:likedCount>0?GR:MU,border:"1px solid "+(likedCount>0?alpha(GR, 27):BR),borderRadius:6,fontSize:12,fontWeight:700,cursor:likedCount>0?"pointer":"default",opacity:likedCount>0?1:0.5}}>{"⬇ Export"}{likedCount>0?" "+likedCount+" Lineup"+(likedCount!==1?"s":""):null}</button>
+            <button onClick={function(){setLikedIds(new Set());}} style={{padding:"6px 13px",background:alpha(RE, 7),color:RE,border:"1px solid "+alpha(RE, 20),borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer",opacity:likedCount>0?1:0.3}}>{"Clear"}</button>
           </div>
         </div>
         {likedCount>0?<div style={Object.assign({},S.card,{marginBottom:10,padding:"10px 14px"})}>
@@ -1318,13 +1456,13 @@ export default function App(){
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(210px,1fr))",gap:"4px 14px"}}>
             {exposures.slice(0,12).map(function(e){var pl=players.find(function(x){return x.name===e.name;});var sug=pl&&pl.optExp!=null?pl.optExp:null;return(
               <div key={e.name} style={{fontSize:12}}>
-                <div style={{display:"flex",justifyContent:"space-between"}}><span>{e.name}</span><b style={{color:OH}}>{e.pct.toFixed(0)+"%"}</b></div>
-                <div style={{background:BR,borderRadius:3,height:5,overflow:"hidden"}}><div style={{width:Math.min(100,e.pct)+"%",height:"100%",background:OH}}/></div>
+                <div style={{display:"flex",justifyContent:"space-between"}}><span>{e.name}</span><b className="num" style={{color:ACC}}>{e.pct.toFixed(0)+"%"}</b></div>
+                <div style={{background:BR,borderRadius:3,height:5,overflow:"hidden"}}><div className="bar-fill" style={{width:Math.min(100,e.pct)+"%",height:"100%",background:ACC}}/></div>
                 {sug!=null?<div style={{fontSize:10,color:MU}}>{"suggested "+sug.toFixed(0)+"%"}</div>:null}
               </div>);})}
           </div>
         </div>:null}
-        {likedMissing>0?<div style={Object.assign({},S.card,{borderColor:"#f5b942",padding:"8px 12px",marginBottom:10,fontSize:12})}>{"⚠ "+likedMissing+" liked lineup"+(likedMissing!==1?"s are":" is")+" no longer in the pool (news changed the slate) and won't be exported."}<button onClick={function(){setLikedIds(function(prev){var have={};lineupsWithBoosts.forEach(function(l){have[l.id]=1;});var n=new Set();prev.forEach(function(id){if(have[id])n.add(id);});return n;});}} style={Object.assign({},tabSt(false),{marginLeft:8,padding:"3px 8px"})}>{"Remove them"}</button></div>:null}
+        {likedMissing>0?<div style={Object.assign({},S.card,{borderColor:YE,padding:"8px 12px",marginBottom:10,fontSize:12})}>{"⚠ "+likedMissing+" liked lineup"+(likedMissing!==1?"s are":" is")+" no longer in the pool (news changed the slate) and won't be exported."}<button onClick={function(){setLikedIds(function(prev){var have={};lineupsWithBoosts.forEach(function(l){have[l.id]=1;});var n=new Set();prev.forEach(function(id){if(have[id])n.add(id);});return n;});}} style={Object.assign({},tabSt(false),{marginLeft:8,padding:"3px 8px"})}>{"Remove them"}</button></div>:null}
         <QuickFilters search={qSearch} setSearch={setQSearch} teams={Array.from(new Set(players.map(function(p){return (p.team||"").toUpperCase();}))).sort()} selTeams={qTeams} setSelTeams={setQTeams}/>
         {noMatch}
         {pager}
@@ -1341,7 +1479,7 @@ export default function App(){
         <div style={S.sl}>{"Results"}</div>
         <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
           {[["Lineups",filteredLineups.length+"/"+lineups.length],["Avg Proj",avgProj.toFixed(2)],[filteredLineups.length&&filteredLineups[0].live?"Win % (all shown)":"Best Top 1%",bestTop1],["Best Win%",bestWin]].map(function(kv){return(
-            <div key={kv[0]} style={{background:"#111118",borderRadius:8,padding:"10px 12px",textAlign:"center"}}>
+            <div key={kv[0]} style={{background:SURF2,borderRadius:8,padding:"10px 12px",textAlign:"center"}}>
               <div style={{fontSize:16,fontWeight:800,color:OH}}>{kv[1]}</div>
               <div style={{fontSize:10,color:MU,marginTop:2}}>{kv[0]}</div>
             </div>
@@ -1351,26 +1489,25 @@ export default function App(){
     );
   }
 
-  var curSlate=null;for(var csi=0;csi<slates.length;csi++){if(slates[csi].id===slateId)curSlate=slates[csi];}
   var liveCard=(
-    <div style={S.card}>
+    <div className="glass" style={S.side}>
       <div style={Object.assign({},S.sl,{display:"flex",justifyContent:"space-between",alignItems:"center"})}>
         <span>{"Live Projections"}</span>
         <span style={pill(projSource==="auto"?GR:projSource==="manual"?OH:MU)}>{projSource==="auto"?"● AUTO":projSource==="manual"?"MANUAL CSV":"OFFLINE"}</span>
       </div>
       {autoErr?<div style={{fontSize:11,color:RE,marginBottom:8}}>{autoErr}</div>:null}
       {updaterErr&&updaterErr.error?<div style={{fontSize:12,color:"#fff",background:RE,borderRadius:6,padding:"6px 8px",marginBottom:8}}>{"⚠ Your Mac's updater hit an error at "+fmtClock(updaterErr.at)+": "+updaterErr.error+". It keeps retrying every minute; send this to Claude to fix."}</div>:null}
-      {meta&&meta.updated_at&&(Date.now()-Date.parse(meta.updated_at))>20*60000?<div style={{fontSize:12,color:"#fff",background:RE,borderRadius:6,padding:"6px 8px",marginBottom:8}}>{"⚠ No update from your Mac since "+fmtClock(meta.updated_at)+" ("+minsAgo(meta.updated_at)+"). Make sure it's on and awake; the updater restarts by itself."}</div>:null}
+      <StaleBanner meta={meta} archived={false} fmtClock={fmtClock} minsAgo={minsAgo}/>
       {meta?<div style={{fontSize:12,lineHeight:1.7}}>
-        <div><span style={{color:MU}}>{"Updated: "}</span><b>{fmtClock(meta.updated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(meta.updated_at)+")"}</span></div>
+        <div><LiveDot state={freshness(meta.updated_at,Date.now())}/>{" "}<span style={{color:MU}}>{"Updated: "}</span><b className="num">{fmtClock(meta.updated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(meta.updated_at)+")"}</span></div>
         <div><span style={{color:MU}}>{"Next lock: "}</span><b>{meta.next_lock_utc?fmtClock(meta.next_lock_utc):"all games locked"}</b></div>
         {meta.frozen_players?<div style={{color:MU}}>{"🔒 "+meta.frozen_players+" players frozen (game started)"}</div>:null}
         {meta.message?<div style={{color:MU}}>{meta.message}</div>:null}
       </div>:null}
       {curSlate?<div style={{marginTop:10}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><b>{curSlate.name}</b><span style={pill(curSlate.kind==="showdown"?"#a78bfa":"#4a9eff")}>{curSlate.kind==="showdown"?"SHOWDOWN":"CLASSIC"}</span></div>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:6}}><b>{curSlate.name}</b><span style={{display:"flex",gap:4}}>{isArchived?<span style={pill(ACC2)}>{"ARCHIVED"}</span>:null}<span style={pill(curSlate.kind==="showdown"?"#a78bfa":"#4a9eff")}>{curSlate.kind==="showdown"?"SHOWDOWN":"CLASSIC"}</span></span></div>
         <div style={{marginTop:8,display:"flex",flexWrap:"wrap",gap:4}}>{curSlate.games.map(function(g){return <span key={g.name} title={g.start_et} style={pill(g.locked?MU:"#4a9eff")}>{(g.locked?"🔒 ":"")+g.away+"@"+g.home+" "+(g.start_et||"")}</span>;})}</div>
-        <button onClick={function(){setActiveTab("slates");}} style={Object.assign({},tabSt(false),{marginTop:8,width:"100%"})}>{"Change slate"}</button>
+        <button onClick={function(){setActiveTab("slates");}} style={Object.assign({},tabSt(false),{marginTop:8,width:"100%"})}>{isArchived?"Back to today's slates":"Change slate"}</button>
       </div>:slates.length?<button onClick={function(){setActiveTab("slates");}} style={Object.assign({},tabSt(true),{marginTop:10,width:"100%"})}>{"Choose your slate"}</button>:null}
       <div style={{display:"flex",gap:6,marginTop:10}}>
         <button onClick={function(){refreshLive(false);}} style={Object.assign({},tabSt(false),{flex:1})}>{"↻ Check now"}</button>
@@ -1385,7 +1522,7 @@ export default function App(){
       <div style={S.sl}>{"Injury News"}</div>
       <div style={{maxHeight:260,overflowY:"auto",fontSize:12}}>
         {injLog.slice(0,25).map(function(c,i){var col=STATUS_COL[prettyStatus(c.to)]||GR;return(
-          <div key={i} style={{padding:"6px 0",borderBottom:"1px solid "+BR+"60"}}>
+          <div key={i} style={{padding:"6px 0",borderBottom:"1px solid "+alpha(BR, 38)}}>
             <div><b>{c.name}</b><span style={{color:MU}}>{" "+c.team}</span><span style={{float:"right",color:MU,fontSize:10}}>{fmtClock(c.at)}</span></div>
             <div><span style={{color:MU}}>{prettyStatus(c.from)}</span>{" → "}<span style={{color:col,fontWeight:700}}>{prettyStatus(c.to)}</span>{c.reason?<span style={{color:MU,fontSize:10}}>{" · "+c.reason}</span>:null}</div>
           </div>);})}
@@ -1393,37 +1530,25 @@ export default function App(){
     </div>
   ):null;
   var staleBanner=staleInfo?(
-    <div style={Object.assign({},S.card,{borderColor:"#f5b942",background:"#f5b94211",marginBottom:14,padding:"10px 14px",fontSize:12})}>
-      <b style={{color:"#f5b942"}}>{"Projections updated "+fmtClock(staleInfo.at)+" — "+staleInfo.moved.length+" player"+(staleInfo.moved.length!==1?"s":"")+" changed."}</b>
+    <div style={Object.assign({},S.card,{borderColor:YE,background:alpha(YE, 7),marginBottom:14,padding:"10px 14px",fontSize:12})}>
+      <b style={{color:YE}}>{"Projections updated "+fmtClock(staleInfo.at)+" — "+staleInfo.moved.length+" player"+(staleInfo.moved.length!==1?"s":"")+" changed."}</b>
       {projSource==="auto"?<span>{" The 10,000-lineup pool is re-simulated automatically and refreshes here within about a minute; your likes carry over."}</span>:lineups.length?<span>{" Lineups below use the old numbers; re-run the optimizer."}</span>:null}
       <div style={{color:MU,marginTop:4}}>{staleInfo.moved.slice(0,8).map(function(m){return m.name+" "+m.from.toFixed(1)+"→"+m.to.toFixed(1)+(m.inj?" ("+m.inj+")":"");}).join(" · ")}</div>
       <button onClick={function(){setStaleInfo(null);}} style={Object.assign({},tabSt(false),{marginTop:6,padding:"4px 10px"})}>{"Dismiss"}</button>
     </div>
   ):null;
 
-  var poolOutdated=!!(poolInfo&&curSlate&&poolInfo.inputs&&curSlate.inputs&&poolInfo.inputs!==curSlate.inputs);
-  var running2=runState&&(runState.state==="sent"||runState.state==="running");
-  var runButton=(
-    <div>
-      <button onClick={runSimulations} disabled={running2||!curSlate||curSlate.contest_locked}
-        style={{display:"block",width:"100%",padding:"12px 0",background:running2?BR:"linear-gradient(135deg,"+GR+",#00a060)",color:"#fff",border:"none",borderRadius:8,fontWeight:800,fontSize:15,cursor:running2?"default":"pointer",opacity:(!curSlate||curSlate.contest_locked)?0.5:1}}>
-        {running2?"⏳ Simulating…":"▶ Run simulations"}
-      </button>
-      <div style={{fontSize:11,color:MU,marginTop:6}}>{curSlate&&curSlate.contest_locked?"This slate has locked: use Late Swap.":"10,000 lineups × 1,000,000 contests for "+(curSlate?curSlate.name:"this slate")+", using the projections right now."}</div>
-      {runState?<div style={{fontSize:12,marginTop:8,color:runState.state==="error"?RE:runState.state==="done"?GR:"#f5b942"}}>{runState.message||runState.state}</div>:null}
-    </div>
-  );
   var poolCard=projSource==="auto"?(
-    <div style={S.card}>
+    <div className="glass" style={S.side}>
       <div style={S.sl}>{"Simulation"}</div>
       {runButton}
       {poolInfo?<div style={{fontSize:12,lineHeight:1.8,marginTop:10,borderTop:"1px solid "+BR,paddingTop:8}}>
         <div><b>{poolInfo.count.toLocaleString()}</b>{" lineups · "}<b>{(poolInfo.sims||0).toLocaleString()}</b>{" simulated contests"}</div>
         <div style={{color:MU}}>{"vs "+(poolInfo.field||0).toLocaleString()+" ownership-based opponent lineups · ranked by win %"}</div>
         <div><span style={{color:MU}}>{"Built: "}</span><b>{fmtClock(poolInfo.generated_at)}</b><span style={{color:MU}}>{" ("+minsAgo(poolInfo.generated_at)+")"}</span></div>
-        <div><span style={pill(poolInfo.phase==="exact"?GR:"#f5b942")}>{poolInfo.phase==="exact"?"EXACT-OPTIMAL LINEUPS":"FAST BUILD · exact version coming"}</span></div>
-        {poolOutdated?<div style={{color:"#f5b942",fontSize:12}}>{"⚠ Projections have changed since this run. Press Run simulations for an updated pool."}</div>:null}
-      </div>:<div style={{fontSize:12,color:MU,marginTop:8}}>{"No lineups yet for this slate. Press Run simulations."}</div>}
+        <div><span style={pill(poolInfo.source==="browser"?YE:poolInfo.phase==="exact"?GR:YE)}>{poolInfo.source==="browser"?"YOUR BROWSER RUN · APPROX":poolInfo.phase==="exact"?"EXACT-OPTIMAL LINEUPS":"FAST BUILD · exact version coming"}</span></div>
+        {poolOutdated?<div style={{color:YE,fontSize:12}}>{"⚠ Projections have changed since this run."+(ownerCfg?" Run on your Mac for an updated shared pool.":" A fresh browser run uses the current projections.")}</div>:null}
+      </div>:<div style={{fontSize:12,color:MU,marginTop:8}}>{"No shared lineups yet for this slate."}</div>}
     </div>
   ):null;
 
@@ -1443,14 +1568,14 @@ export default function App(){
     if(!startersDoc){startersContent=<div style={S.card}><div style={{color:MU}}>{"Starting lineups appear here once a slate is open."}</div></div>;}
     else{
       var games={};startersDoc.teams.forEach(function(t){var k=[t.team,t.opp].sort().join("@");(games[k]=games[k]||[]).push(t);});
-      var stCol={confirmed:GR,expected:"#f5b942",projected:MU};
+      var stCol={confirmed:GR,expected:YE,projected:MU};
       var stLab={confirmed:"CONFIRMED",expected:"EXPECTED (NBA.com)",projected:"PROJECTED (Sigma)"};
       startersContent=(
         <div>
           <div style={Object.assign({},S.card,{marginBottom:12,fontSize:12,color:MU})}>
             {"Source: NBA.com Today's Lineups (team-confirmed / expected). Before a team posts, Sigma projects the five from recent starts and today's injuries. "}
-            {"You get a push the moment a lineup is posted, confirmed or changed. "}<b style={{color:GR}}>{"▶ C"}</b>{" confirmed · "}<b style={{color:"#f5b942"}}>{"▶ E"}</b>{" expected · "}<b>{"▶ P"}</b>{" projected · ⚡ unexpected starter"}
-            {startersDoc.feed_ok_at?<div>{"NBA.com feed last read "+minsAgo(startersDoc.feed_ok_at)}</div>:<div style={{color:"#f5b942"}}>{"NBA.com lineup feed not reachable yet: showing Sigma projections."}</div>}
+            {"You get a push the moment a lineup is posted, confirmed or changed. "}<b style={{color:GR}}>{"▶ C"}</b>{" confirmed · "}<b style={{color:YE}}>{"▶ E"}</b>{" expected · "}<b>{"▶ P"}</b>{" projected · ⚡ unexpected starter"}
+            {startersDoc.feed_ok_at?<div>{"NBA.com feed last read "+minsAgo(startersDoc.feed_ok_at)}</div>:<div style={{color:YE}}>{"NBA.com lineup feed not reachable yet: showing Sigma projections."}</div>}
           </div>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(320px,1fr))",gap:12}}>
             {Object.keys(games).map(function(k){var ts=games[k].sort(function(a,b){return a.home-b.home;});return(
@@ -1461,18 +1586,18 @@ export default function App(){
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}><b style={{fontSize:14}}>{t.team}</b><span style={pill(stCol[t.status]||MU)}>{stLab[t.status]||t.status}</span></div>
                     {t.starters.map(function(p){return(
                       <div key={p.name} style={{fontSize:12,display:"flex",justifyContent:"space-between",padding:"2px 0"}}>
-                        <span><span style={{color:MU,display:"inline-block",width:44}}>{p.position}</span>{p.name}{p.unexpected==="starting"?<span style={{color:"#f5b942",fontWeight:800}}>{" ⚡ unexpected"}</span>:null}</span>
+                        <span><span style={{color:MU,display:"inline-block",width:44}}>{p.position}</span>{p.name}{p.unexpected==="starting"?<span style={{color:YE,fontWeight:800}}>{" ⚡ unexpected"}</span>:null}</span>
                         <span style={{color:OH}}>{p.proj.toFixed(1)}</span>
                       </div>);})}
                     {t.benched&&t.benched.length?<div style={{fontSize:11,color:RE}}>{"Not starting: "+t.benched.join(", ")}</div>:null}
                     {t.out.length?<div style={{fontSize:11,color:RE}}>{"Out: "+t.out.join(", ")}</div>:null}
-                    {t.questionable.length?<div style={{fontSize:11,color:"#f5b942"}}>{"Questionable: "+t.questionable.join(", ")}</div>:null}
+                    {t.questionable.length?<div style={{fontSize:11,color:YE}}>{"Questionable: "+t.questionable.join(", ")}</div>:null}
                   </div>);})}
               </div>);})}
           </div>
           {luNews.length?<div style={Object.assign({},S.card,{marginTop:12})}>
             <div style={S.sl}>{"Lineup news"}</div>
-            {luNews.slice(0,30).map(function(e,i){return <div key={i} style={{fontSize:12,padding:"4px 0",borderBottom:"1px solid "+BR+"60"}}><b>{e.team_dk||e.team}</b>{" "+(e.kind==="changed"?"CHANGED · in: "+e["in"].join(", ")+" · out: "+e.out.join(", "):e.kind+": "+e.starters.join(", "))}<span style={{float:"right",color:MU}}>{fmtClock(e.at)}</span></div>;})}
+            {luNews.slice(0,30).map(function(e,i){return <div key={i} style={{fontSize:12,padding:"4px 0",borderBottom:"1px solid "+alpha(BR, 38)}}><b>{e.team_dk||e.team}</b>{" "+(e.kind==="changed"?"CHANGED · in: "+e["in"].join(", ")+" · out: "+e.out.join(", "):e.kind+": "+e.starters.join(", "))}<span style={{float:"right",color:MU}}>{fmtClock(e.at)}</span></div>;})}
           </div>:null}
         </div>
       );
@@ -1487,38 +1612,54 @@ export default function App(){
   var lateSwapContent=<div style={{display:activeTab==="lateswap"?"block":"none"}}><ToolBoundary key={"ls"+slateId}><LateSwapTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
   var singleContent=<div style={{display:activeTab==="single"?"block":"none"}}><ToolBoundary key={"sl"+slateId}><SingleLineupTool key={slateId} players={players} slate={curSlate} corr={simCorr} runSim={runSim} defaults={toolDefaults}/></ToolBoundary></div>;
 
+  var topWin=null;for(var twi=0;twi<lineups.length;twi++){var lw=lineups[twi];if(lw.live&&typeof lw.pWin==="number"&&(topWin===null||lw.pWin>topWin))topWin=lw.pWin;}
+  function go(t){setActiveTab(t);if(t==="markets")fetchJson("markets.json").then(setMarketsDoc).catch(function(){setMarketsDoc({error:true});});}
+  function tabBtn(key,label,isNew){return <button key={key} role="tab" className={"tab"+(isNew?" tab-new":"")} aria-selected={activeTab===key} onClick={function(){go(key);}}>{label}</button>;}
+  var confirmedTeams=startersDoc&&startersDoc.teams?startersDoc.teams.filter(function(t){return t.status==="confirmed";}).length:0;
   var tabButtons=[];
-  tabButtons.push(<button key="slates" style={Object.assign({},tabSt(activeTab==="slates"),{background:activeTab==="slates"?OH:"#2a1a0e",color:activeTab==="slates"?"#fff":OH})} onClick={function(){setActiveTab("slates");}}>{curSlate?"🏀 "+curSlate.name+(curSlate.kind==="showdown"?" (Showdown)":"")+" ▾":"🏀 Choose slate"}</button>);
-  tabButtons.push(<button key="pool" style={tabSt(activeTab==="pool")} onClick={function(){setActiveTab("pool");}}>{"Projections"}{players.length>0?" ("+players.length+")":""}</button>);
-  tabButtons.push(<button key="lineups" style={tabSt(activeTab==="lineups")} onClick={function(){setActiveTab("lineups");}}>{"Lineups"}{lineups.length>0?" ("+filteredLineups.length+"/"+lineups.length+")":""}</button>);
-  tabButtons.push(<button key="starters" style={tabSt(activeTab==="starters")} onClick={function(){setActiveTab("starters");}}>{"Starting Lineups"}{startersDoc?" ("+startersDoc.teams.filter(function(t){return t.status==="confirmed";}).length+"/"+startersDoc.teams.length+" ✅)":""}</button>);
-  tabButtons.push(<button key="lateswap" style={tabSt(activeTab==="lateswap")} onClick={function(){setActiveTab("lateswap");}}>{"Late Swap"}</button>);
-  tabButtons.push(<button key="single" style={tabSt(activeTab==="single")} onClick={function(){setActiveTab("single");}}>{"Lineup Simulator"}</button>);
-  tabButtons.push(<button key="markets" style={tabSt(activeTab==="markets")} onClick={function(){setActiveTab("markets");fetchJson("markets.json").then(setMarketsDoc).catch(function(){setMarketsDoc({error:true});});}}>{"Betting Markets"}</button>);
-  tabButtons.push(<button key="patterns" style={tabSt(activeTab==="patterns")} onClick={function(){setActiveTab("patterns");}}>{"Winning Patterns"}</button>);
-  if(lineups.length>0||likedCount>0)tabButtons.push(<button key="exp" style={tabSt(activeTab==="exposures")} onClick={function(){setActiveTab("exposures");}}>{"Exposures ("}{likedCount}{")"}</button>);
+  tabButtons.push(<button key="slates" role="tab" className="tab" aria-selected={activeTab==="slates"} style={{color:activeTab==="slates"?undefined:OH,borderColor:alpha(OH,40)}} onClick={function(){go("slates");}}>{curSlate?curSlate.name+(curSlate.kind==="showdown"?" (Showdown)":"")+" ▾":"Choose slate ▾"}</button>);
+  tabButtons.push(tabBtn("pool","Projections"+(players.length>0?" ("+players.length+")":"")));
+  tabButtons.push(tabBtn("leverage","Leverage",true));
+  tabButtons.push(tabBtn("lineups","Lineups"+(lineups.length>0?" ("+filteredLineups.length+"/"+lineups.length+")":"")));
+  if(lineups.length>0||likedCount>0)tabButtons.push(tabBtn("exposures","Exposures ("+likedCount+")"));
+  tabButtons.push(tabBtn("starters","Starting Lineups"+(startersDoc&&startersDoc.teams?" ("+confirmedTeams+"/"+startersDoc.teams.length+" confirmed)":"")));
+  tabButtons.push(tabBtn("lateswap","Late Swap"));
+  tabButtons.push(tabBtn("single","Lineup Simulator"));
+  tabButtons.push(tabBtn("ownership","Ownership Lab",true));
+  tabButtons.push(tabBtn("accuracy","Accuracy",true));
+  tabButtons.push(tabBtn("markets","Betting Markets"));
+  tabButtons.push(tabBtn("patterns","Winning Patterns"));
+
+  var lastSlate=lastSavedSlate();
+  var offlineView=<SlateOffline meta={meta} lastSlateId={lastSlate} onReplay={replaySlate} onGo={go} err={archErr}/>;
+  var slateEmpty=offline&&SLATE_TABS.indexOf(activeTab)!==-1&&activeTab!=="pool"?(
+    <EmptyState title="No slate loaded" text="This tool works on a DraftKings slate, and none is open right now. Replay a past slate, or use the history tools."
+      actions={(lastSlate?[{label:"Replay last slate",primary:true,onClick:function(){replaySlate(lastSlate);}}]:[]).concat([{label:"Ownership Lab",onClick:function(){go("ownership");}},{label:"Model accuracy",onClick:function(){go("accuracy");}}])}/>
+  ):null;
 
   return(
-    <div style={{background:BG,minHeight:"100vh",color:"#e8e8f0",fontFamily:"'Segoe UI',system-ui,sans-serif"}}>
+    <div className="app">
       <a ref={downloadRef} style={{display:"none",position:"fixed",top:-9999,left:-9999}} aria-hidden="true">{"dl"}</a>
-      <div style={{padding:"16px 26px",display:"flex",alignItems:"center",gap:10,background:CARD,flexWrap:"wrap"}}>
+      <header className="app-header glass">
         <div style={{display:"flex",alignItems:"baseline",gap:8}}>
-          <span style={{fontSize:36,fontWeight:900,color:OH,fontFamily:"Georgia,serif",lineHeight:1}}>{"Σ"}</span>
-          <span style={{fontSize:28,fontWeight:800,letterSpacing:-0.5}}><span style={{color:OH}}>{"Sigma"}</span>{" "}<span style={{color:OH}}>{"DFS"}</span></span>
-          <span style={{fontSize:20,marginLeft:4}}>{sportEmoji}</span>
-          <span style={{fontSize:14,color:MU,fontWeight:600,marginLeft:2}}>{sportLabel}</span>
+          <span className="logo" style={{fontSize:36}} aria-hidden="true">{"Σ"}</span>
+          <span className="wordmark" style={{fontSize:26}}><span style={{color:OH}}>{"Sigma"}</span>{" "}<span style={{color:TX}}>{"DFS"}</span></span>
+          <span className="chip" style={{background:alpha(ACC,12),color:ACC,alignSelf:"center",marginLeft:4}}>{sportLabel}</span>
+          {ownerCfg?<span style={{alignSelf:"center"}}><OwnerChip/></span>:null}
         </div>
         <div style={{marginLeft:"auto",display:"flex",gap:8,alignItems:"center",flexWrap:"wrap"}}>
-          {projOk?<span style={{fontSize:12,color:GR}}>{"✅ "}{players.length}{" players loaded"}</span>:null}
-          {likedCount>0?<button onClick={doExport} style={{padding:"6px 13px",background:GR+"22",color:GR,border:"1px solid "+GR+"44",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"⬇ Export "}{likedCount}{" Lineup"}{likedCount!==1?"s":""}</button>:null}
-          <button onClick={doRestart} style={{padding:"6px 13px",background:RE+"22",color:RE,border:"1px solid "+RE+"44",borderRadius:6,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"🔄 New Slate"}</button>
+          {projOk?<span style={{fontSize:12,color:GR}} className="num">{players.length}{" players loaded"}</span>:null}
+          {likedCount>0?<button onClick={doExport} style={{padding:"6px 13px",background:alpha(GR, 13),color:GR,border:"1px solid "+alpha(GR, 27),borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"⬇ Export "}{likedCount}{" Lineup"}{likedCount!==1?"s":""}</button>:null}
+          <ThemeToggle/>
+          <button onClick={doRestart} style={{padding:"6px 13px",background:alpha(RE, 13),color:RE,border:"1px solid "+alpha(RE, 27),borderRadius:8,fontSize:12,fontWeight:700,cursor:"pointer"}}>{"New Slate"}</button>
         </div>
-      </div>
-      <div style={{padding:"18px 22px",maxWidth:1500,margin:"0 auto",display:"grid",gridTemplateColumns:narrow?"1fr":"300px 1fr",gap:16,alignItems:"start"}}>
-        <div style={{display:"flex",flexDirection:"column",gap:14,order:narrow?2:0}}>
+      </header>
+      <ToolBoundary><HudStrip meta={meta} slate={curSlate} playerCount={players.length} topWin={topWin} poolInfo={poolInfo} approx={isBrowserView} owner={!!ownerCfg}/></ToolBoundary>
+      <div className="layout">
+        <aside className="sidebar">
           {liveCard}
           {injuryCard}
-          <div style={S.card}>
+          <div className="glass" style={S.side}>
             <div style={S.sl}>{"Upload Files"}</div>
             {uploadRows.map(function(row){
               var label=row[0],ok=row[1],iref=row[2],onChange=row[3],text=row[4],err=row[5],accept=row[6];
@@ -1526,7 +1667,7 @@ export default function App(){
                 <div key={label} style={{marginBottom:10}}>
                   <div style={S.lbl}>{label}</div>
                   <input ref={iref} type="file" accept={accept} style={{display:"none"}} onChange={onChange}/>
-                  <div onClick={function(){if(iref.current)iref.current.click();}} style={{border:"2px dashed "+(ok?GR:BR),borderRadius:8,padding:"12px",textAlign:"center",cursor:"pointer",background:ok?GR+"08":"transparent"}}>
+                  <div role="button" tabIndex={0} onKeyDown={function(e){if((e.key==="Enter"||e.key===" ")&&iref.current){e.preventDefault();iref.current.click();}}} onClick={function(){if(iref.current)iref.current.click();}} style={{border:"1px dashed "+(ok?GR:LINE2),borderRadius:8,padding:"12px",textAlign:"center",cursor:"pointer",background:ok?alpha(GR, 6):alpha(ACC,4)}}>
                     <div style={{fontSize:13,fontWeight:ok?700:400,color:ok?GR:MU}}>{text}</div>
                   </div>
                   {err?<div style={{fontSize:11,color:RE,marginTop:4}}>{err}</div>:null}
@@ -1535,6 +1676,7 @@ export default function App(){
             })}
           </div>
           {poolCard}
+          {hashOwner||ownerCfg?<ToolBoundary><OwnerPanel owner={ownerCfg} onChange={setOwnerCfg} macAuth={meta&&meta.control&&meta.control.auth}/></ToolBoundary>:null}
           {projSource==="manual"?<div style={S.card}>
             <div style={S.sl}>{"Local build (your CSV)"}</div>
             <div style={{fontSize:11,color:MU,marginBottom:10}}>{"The 10,000-lineup / 1,000,000-sim engine runs on the live projections. With your own CSV the optimizer builds up to 10,000 lineups here on your device."}</div>
@@ -1556,21 +1698,27 @@ export default function App(){
             </div>
           </div>:null}
           {resultsCard}
-        </div>
-        <div>
-          <div style={{display:"flex",gap:6,marginBottom:14,alignItems:"center",flexWrap:"wrap"}}>{tabButtons}</div>
+        </aside>
+        <main className="main">
+          <nav className="tabbar" role="tablist" aria-label="Tools">{tabButtons}</nav>
           {toastsView}
           {staleBanner}
-          {activeTab==="pool"?<div style={S.card}>{poolContent}</div>:null}
-          {activeTab==="lineups"?lineupsContent:null}
-          {slatesContent}
+          {archErr&&!offline?<div style={Object.assign({},S.card,{borderColor:RE,color:RE,padding:"8px 12px",marginBottom:10,fontSize:12})}>{archErr}</div>:null}
+          {offline&&activeTab==="pool"?offlineView:null}
+          {slateEmpty}
+          {activeTab==="pool"&&!offline?<div style={S.card}>{poolContent}</div>:null}
+          {activeTab==="leverage"&&!offline?<ToolBoundary><LeverageRadar players={players}/></ToolBoundary>:null}
+          {activeTab==="lineups"&&!offline?lineupsContent:null}
+          {activeTab==="slates"?(slates.length?slatesContent:offlineView):null}
           {activeTab==="markets"?<ToolBoundary><MarketsView doc={marketsDoc} slate={curSlate} fmtClock={fmtClock} onRefresh={function(){fetchJson("markets.json").then(setMarketsDoc).catch(function(){});}}/></ToolBoundary>:null}
-          {lateSwapContent}
-          {singleContent}
+          {offline?null:lateSwapContent}
+          {offline?null:singleContent}
+          {activeTab==="ownership"?<ToolBoundary><OwnershipLab doc={historyDoc} players={players}/></ToolBoundary>:null}
+          {activeTab==="accuracy"?<ToolBoundary><ModelAccuracy audit={auditDoc} meta={meta}/></ToolBoundary>:null}
           {activeTab==="starters"?startersContent:null}
           {activeTab==="patterns"?patternsContent:null}
-          {activeTab==="exposures"?<ExposuresTab suggested={players.reduce(function(m,p){if(p.optExp!=null)m[p.name]=p.optExp;return m;},{})} exposures={exposures} likedCount={likedCount} likedIds={likedIds} setLikedIds={setLikedIds} filteredLineups={filteredLineups}/>:null}
-        </div>
+          {activeTab==="exposures"&&!offline?<ExposuresTab suggested={players.reduce(function(m,p){if(p.optExp!=null)m[p.name]=p.optExp;return m;},{})} exposures={exposures} likedCount={likedCount} likedIds={likedIds} setLikedIds={setLikedIds} filteredLineups={filteredLineups}/>:null}
+        </main>
       </div>
     </div>
   );
