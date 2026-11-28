@@ -1,0 +1,71 @@
+﻿Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,Starting
+PG/SF,Cooper Flagg (45113045) (LOCKED),Cooper Flagg,45113045,CPT,17400,Final,DAL,48.3,,Starter
+PG/SG,Devin Booker (45113046) (LOCKED),Devin Booker,45113046,CPT,15900,Final,PHX,39,,Starter
+PG/SG,Kyrie Irving (45113047) (LOCKED),Kyrie Irving,45113047,CPT,14700,Final,DAL,37.1,,
+PF,Miles Bridges (45113048) (LOCKED),Miles Bridges,45113048,CPT,13200,Final,PHX,31.8,,Starter
+SF/PF,Dillon Brooks (45113049) (LOCKED),Dillon Brooks,45113049,CPT,11700,Final,PHX,25.2,,Starter
+PG/SF,Cooper Flagg (45113010) (LOCKED),Cooper Flagg,45113010,UTIL,11600,Final,DAL,48.3,,Starter
+SG/SF,Jalen Green (45113050) (LOCKED),Jalen Green,45113050,CPT,10800,Final,PHX,23.8,,Starter
+PG/SG,Devin Booker (45113011) (LOCKED),Devin Booker,45113011,UTIL,10600,Final,PHX,39,,Starter
+PF/C,PJ Washington (45113051) (LOCKED),PJ Washington,45113051,CPT,10500,Final,DAL,27.5,,Starter
+PG/SG,Kyrie Irving (45113012) (LOCKED),Kyrie Irving,45113012,UTIL,9800,Final,DAL,37.1,,
+PG,Collin Gillespie (45113052) (LOCKED),Collin Gillespie,45113052,CPT,9600,Final,PHX,23,,
+C,Daniel Gafford (45113053) (LOCKED),Daniel Gafford,45113053,CPT,9000,Final,DAL,23.1,,Starter
+PF,Miles Bridges (45113013) (LOCKED),Miles Bridges,45113013,UTIL,8800,Final,PHX,31.8,,Starter
+C,Oso Ighodaro (45113054) (LOCKED),Oso Ighodaro,45113054,CPT,8400,Final,PHX,19.5,,Starter
+SF/PF,Naji Marshall (45113055) (LOCKED),Naji Marshall,45113055,CPT,8100,Final,DAL,23,,
+SF/PF,Dillon Brooks (45113014) (LOCKED),Dillon Brooks,45113014,UTIL,7800,Final,PHX,25.2,,Starter
+SG/SF,Caleb Martin (45113056) (LOCKED),Caleb Martin,45113056,CPT,7800,Final,DAL,18.2,,Starter
+SG/SF,Jordan Goodwin (45113057) (LOCKED),Jordan Goodwin,45113057,CPT,7500,Final,PHX,21.5,,
+SG/SF,Jalen Green (45113015) (LOCKED),Jalen Green,45113015,UTIL,7200,Final,PHX,23.8,,Starter
+C,Mark Williams (45113075) (LOCKED),Mark Williams,45113075,CPT,7200,Final,PHX,0,,
+PF/C,PJ Washington (45113016) (LOCKED),PJ Washington,45113016,UTIL,7000,Final,DAL,27.5,,Starter
+SF,Zaccharie Risacher (45113058) (LOCKED),Zaccharie Risacher,45113058,CPT,6900,Final,DAL,21.4,,Starter
+PG,Sergio de Larrea (45113076) (LOCKED),Sergio de Larrea,45113076,CPT,6600,Final,DAL,9.5,,
+PG,Collin Gillespie (45113017) (LOCKED),Collin Gillespie,45113017,UTIL,6400,Final,PHX,23,,
+C,Khaman Maluach (45113059) (LOCKED),Khaman Maluach,45113059,CPT,6300,Final,PHX,18,,
+C,Daniel Gafford (45113018) (LOCKED),Daniel Gafford,45113018,UTIL,6000,Final,DAL,23.1,,Starter
+PG,Walter Clayton Jr. (45113060) (LOCKED),Walter Clayton Jr.,45113060,CPT,6000,Final,DAL,17.4,,
+C,Dereck Lively II (45113077) (LOCKED),Dereck Lively II,45113077,CPT,5700,Final,DAL,0,,
+C,Oso Ighodaro (45113019) (LOCKED),Oso Ighodaro,45113019,UTIL,5600,Final,PHX,19.5,,Starter
+SF/PF,Naji Marshall (45113020) (LOCKED),Naji Marshall,45113020,UTIL,5400,Final,DAL,23,,
+PF/C,Morez Johnson (45113061) (LOCKED),Morez Johnson,45113061,CPT,5400,Final,DAL,15.9,,
+SG/SF,Caleb Martin (45113021) (LOCKED),Caleb Martin,45113021,UTIL,5200,Final,DAL,18.2,,Starter
+PF/C,Santi Aldama (45113062) (LOCKED),Santi Aldama,45113062,CPT,5100,Final,DAL,10.9,,
+SG/SF,Jordan Goodwin (45113022) (LOCKED),Jordan Goodwin,45113022,UTIL,5000,Final,PHX,21.5,,
+C,Mark Williams (45113040) (LOCKED),Mark Williams,45113040,UTIL,4800,Final,PHX,0,,
+SF,Zaccharie Risacher (45113023) (LOCKED),Zaccharie Risacher,45113023,UTIL,4600,Final,DAL,21.4,,Starter
+SG/SF,Luke Kennard (45113063) (LOCKED),Luke Kennard,45113063,CPT,4500,Final,PHX,13.9,,
+PG,Sergio de Larrea (45113041) (LOCKED),Sergio de Larrea,45113041,UTIL,4400,Final,DAL,9.5,,
+C,Khaman Maluach (45113024) (LOCKED),Khaman Maluach,45113024,UTIL,4200,Final,PHX,18,,
+PG,Walter Clayton Jr. (45113025) (LOCKED),Walter Clayton Jr.,45113025,UTIL,4000,Final,DAL,17.4,,
+C,Dereck Lively II (45113042) (LOCKED),Dereck Lively II,45113042,UTIL,3800,Final,DAL,0,,
+PF/C,Morez Johnson (45113026) (LOCKED),Morez Johnson,45113026,UTIL,3600,Final,DAL,15.9,,
+PF/C,Santi Aldama (45113027) (LOCKED),Santi Aldama,45113027,UTIL,3400,Final,DAL,10.9,,
+SG,Max Christie (45113064) (LOCKED),Max Christie,45113064,CPT,3300,Final,DAL,12.7,,
+SG/SF,Luke Kennard (45113028) (LOCKED),Luke Kennard,45113028,UTIL,3000,Final,PHX,13.9,,
+PF,Ryan Dunn (45113065) (LOCKED),Ryan Dunn,45113065,CPT,3000,Final,PHX,13,,
+SG,Max Christie (45113029) (LOCKED),Max Christie,45113029,UTIL,2200,Final,DAL,12.7,,
+PF,Ryan Dunn (45113030) (LOCKED),Ryan Dunn,45113030,UTIL,2000,Final,PHX,13,,
+C,Drew Timme (45113066) (LOCKED),Drew Timme,45113066,CPT,1500,Final,PHX,0,,
+PG/SG,Pat Spencer (45113067) (LOCKED),Pat Spencer,45113067,CPT,1500,Final,PHX,5.4,,
+PG/SG,Jamaree Bouyea (45113068) (LOCKED),Jamaree Bouyea,45113068,CPT,1500,Final,PHX,5.7,,
+C,Duop Reath (45113069) (LOCKED),Duop Reath,45113069,CPT,1500,Final,PHX,4.8,,
+PG/SG,Marcus Sasser (45113070) (LOCKED),Marcus Sasser,45113070,CPT,1500,Final,DAL,9.5,,
+SG,Jett Howard (45113071) (LOCKED),Jett Howard,45113071,CPT,1500,Final,DAL,2.9,,
+SF/PF,Rasheer Fleming (45113072) (LOCKED),Rasheer Fleming,45113072,CPT,1500,Final,PHX,4.5,,
+PF/C,Koa Peat (45113073) (LOCKED),Koa Peat,45113073,CPT,1500,Final,PHX,3.8,,
+C,Moussa Cisse (45113074) (LOCKED),Moussa Cisse,45113074,CPT,1500,Final,DAL,2.3,,
+SG,Tarik Biberovic (45113078) (LOCKED),Tarik Biberovic,45113078,CPT,1500,Final,DAL,0,,
+PF,Tobi Lawal (45113079) (LOCKED),Tobi Lawal,45113079,CPT,1500,Final,DAL,3.7,,
+C,Drew Timme (45113031) (LOCKED),Drew Timme,45113031,UTIL,1000,Final,PHX,0,,
+PG/SG,Pat Spencer (45113032) (LOCKED),Pat Spencer,45113032,UTIL,1000,Final,PHX,5.4,,
+PG/SG,Jamaree Bouyea (45113033) (LOCKED),Jamaree Bouyea,45113033,UTIL,1000,Final,PHX,5.7,,
+C,Duop Reath (45113034) (LOCKED),Duop Reath,45113034,UTIL,1000,Final,PHX,4.8,,
+PG/SG,Marcus Sasser (45113035) (LOCKED),Marcus Sasser,45113035,UTIL,1000,Final,DAL,9.5,,
+SG,Jett Howard (45113036) (LOCKED),Jett Howard,45113036,UTIL,1000,Final,DAL,2.9,,
+SF/PF,Rasheer Fleming (45113037) (LOCKED),Rasheer Fleming,45113037,UTIL,1000,Final,PHX,4.5,,
+PF/C,Koa Peat (45113038) (LOCKED),Koa Peat,45113038,UTIL,1000,Final,PHX,3.8,,
+C,Moussa Cisse (45113039) (LOCKED),Moussa Cisse,45113039,UTIL,1000,Final,DAL,2.3,,
+SG,Tarik Biberovic (45113043) (LOCKED),Tarik Biberovic,45113043,UTIL,1000,Final,DAL,0,,
+PF,Tobi Lawal (45113044) (LOCKED),Tobi Lawal,45113044,UTIL,1000,Final,DAL,3.7,,

@@ -1,0 +1,85 @@
+{
+ "slate_id": 157232,
+ "updated_at": "2026-11-25T04:30:48.577797+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Isaiah Joe",
+   "team": "DET",
+   "salary": 3200,
+   "proj": 23.2,
+   "own": 80.0,
+   "headline": "Isaiah Joe is starting (0 starts in his last 10)",
+   "detail": "Projected 26 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Daniss Jenkins",
+   "team": "DET",
+   "salary": 7400,
+   "proj": 32.4,
+   "own": 37.5,
+   "headline": "Daniss Jenkins without Cade Cunningham, Duncan Robinson",
+   "detail": "Averaged 33.8 DK pts in 4 games without them (vs 16.8 with). Hit 6x tonight's salary (44+ pts) in 0 of 4.",
+   "evidence": {
+    "games_without": 4,
+    "avg_without": 33.8,
+    "z": 7.79,
+    "avg_with": 16.8,
+    "hits_6x": 0,
+    "last_without": "2026-11-18"
+   },
+   "strength": 7.79,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 5800,
+   "proj": 26.1,
+   "own": 25.5,
+   "headline": "Kevin Huerter without Cade Cunningham, Duncan Robinson",
+   "detail": "Averaged 32.4 DK pts in 4 games without them (vs 16.4 with). Hit 6x tonight's salary (35+ pts) in 2 of 4.",
+   "evidence": {
+    "games_without": 4,
+    "avg_without": 32.4,
+    "z": 5.13,
+    "avg_with": 16.4,
+    "hits_6x": 2,
+    "last_without": "2026-11-18"
+   },
+   "strength": 5.128,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Javonte Green",
+   "team": "DET",
+   "salary": 3800,
+   "proj": 10.9,
+   "own": 4.5,
+   "headline": "Javonte Green without Cade Cunningham, Duncan Robinson",
+   "detail": "Averaged 29.8 DK pts in 4 games without them (vs 13.0 with). Hit 6x tonight's salary (23+ pts) in 3 of 4.",
+   "evidence": {
+    "games_without": 4,
+    "avg_without": 29.8,
+    "z": 2.96,
+    "avg_with": 13.0,
+    "hits_6x": 3,
+    "last_without": "2026-11-18"
+   },
+   "strength": 2.958,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

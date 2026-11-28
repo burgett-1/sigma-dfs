@@ -1,0 +1,173 @@
+{
+ "slate_id": 157246,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Micah Peavy",
+   "team": "OKC",
+   "salary": 3400,
+   "proj": 16.8,
+   "own": 29.1,
+   "headline": "Micah Peavy is starting (2 starts in his last 10)",
+   "detail": "Projected 30 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Bennett Stirtz",
+   "team": "OKC",
+   "salary": 4400,
+   "proj": 20.8,
+   "own": 41.2,
+   "headline": "Bennett Stirtz without Aday Mara",
+   "detail": "Averaged 30.8 DK pts in 2 games without them (vs 13.4 with). Hit 6x tonight's salary (26+ pts) in 2 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 30.8,
+    "z": 3.84,
+    "avg_with": 13.4,
+    "hits_6x": 2,
+    "last_without": "2026-11-23"
+   },
+   "strength": 3.836,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Brooks Barnhizer",
+   "team": "OKC",
+   "salary": 1200,
+   "proj": 1.9,
+   "own": 0.6,
+   "headline": "Brooks Barnhizer fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.6
+   },
+   "strength": 1.9,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Nique Clifford",
+   "team": "OKC",
+   "salary": 2400,
+   "proj": 6.9,
+   "own": 2.7,
+   "headline": "Nique Clifford fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 3%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 2.7
+   },
+   "strength": 1.646,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Joan Beringer",
+   "team": "MIN",
+   "salary": 4000,
+   "proj": 13.4,
+   "own": 5.6,
+   "headline": "Joan Beringer fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 11\u201315 in projected value appeared in 19% of the winning lineups. His projected ownership: 6%.",
+   "evidence": {
+    "suggested_exposure": 18.56,
+    "own": 5.6
+   },
+   "strength": 1.624,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Kenrich Williams",
+   "team": "OKC",
+   "salary": 6200,
+   "proj": 15.2,
+   "own": 2.9,
+   "headline": "Kenrich Williams fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 3%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 2.9
+   },
+   "strength": 1.616,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Jared McCain",
+   "team": "OKC",
+   "salary": 7200,
+   "proj": 16.8,
+   "own": 3.0,
+   "headline": "Jared McCain fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 3%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 3.0
+   },
+   "strength": 1.611,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Terrence Shannon Jr.",
+   "team": "MIN",
+   "salary": 5400,
+   "proj": 18.2,
+   "own": 7.5,
+   "headline": "Terrence Shannon Jr. fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 11\u201315 in projected value appeared in 19% of the winning lineups. His projected ownership: 8%.",
+   "evidence": {
+    "suggested_exposure": 18.56,
+    "own": 7.5
+   },
+   "strength": 1.381,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Cody Williams",
+   "team": "MIN",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.1,
+   "headline": "Cody Williams fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.1
+   },
+   "strength": 1.335,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Isaiah Evans",
+   "team": "MIN",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Isaiah Evans fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.2
+   },
+   "strength": 1.332,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

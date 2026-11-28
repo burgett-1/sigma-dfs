@@ -1,0 +1,5192 @@
+[
+ {
+  "team": "SAS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Stephon Castle",
+   "Devin Vassell",
+   "De'Aaron Fox",
+   "Julian Champagnie",
+   "Victor Wembanyama"
+  ],
+  "in": [
+   "Julian Champagnie"
+  ],
+  "out": [
+   "Dylan Harper"
+  ],
+  "team_dk": "SAS",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Austin Reaves",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Jake LaRavia",
+   "Walker Kessler"
+  ],
+  "in": [
+   "Jake LaRavia"
+  ],
+  "out": [
+   "Ziaire Williams"
+  ],
+  "team_dk": "LAL",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jusuf Nurki\u0107"
+  ],
+  "in": [
+   "Jusuf Nurki\u0107"
+  ],
+  "out": [
+   "Jaxson Hayes"
+  ],
+  "team_dk": "UTA",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Derrick Jones Jr.",
+   "Brandon Ingram",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Herbert Jones",
+   "Trey Murphy III",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Deni Avdija",
+   "Toumani Camara",
+   "Jrue Holiday",
+   "Sidy Cissoko",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-28T03:05:55.506296+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-28T01:54:37.838734+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Caleb Martin",
+   "Zaccharie Risacher",
+   "Cooper Flagg",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Zaccharie Risacher"
+  ],
+  "out": [
+   "Walter Clayton Jr."
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-28T01:54:37.838734+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Terrence Shannon Jr",
+   "Jaden McDaniels",
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-28T01:06:17.699187+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Kris Murray",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-28T01:06:17.699187+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Walter Clayton Jr.",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Walter Clayton Jr."
+  ],
+  "out": [
+   "Kyrie Irving"
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-28T01:01:04.458711+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Hugo Gonz\u00e1lez",
+   "Paul George",
+   "Derrick White",
+   "Jayson Tatum",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Hugo Gonz\u00e1lez"
+  ],
+  "out": [
+   "Jordan Walsh"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-28T00:40:32.847323+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Kingston Flemings",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-28T00:40:32.847323+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Isaiah Joe",
+   "Kevin Huerter",
+   "Daniss Jenkins",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Ryan Rollins",
+   "Jaime Jaquez Jr.",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "VJ Edgecombe",
+   "Dominick Barlow",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [
+   "Dominick Barlow"
+  ],
+  "out": [
+   "Kentavious Caldwell-Pope"
+  ],
+  "team_dk": "PHI",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Scottie Barnes",
+   "Immanuel Quickley",
+   "Allen Graves",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Jakob Poeltl"
+  ],
+  "out": [
+   "Collin Murray-Boyles"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Danny Wolf",
+   "Michael Porter Jr.",
+   "Mikel Brown Jr.",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [
+   "Mikel Brown Jr."
+  ],
+  "out": [
+   "Egor D\u00ebmin"
+  ],
+  "team_dk": "BKN",
+  "at": "2026-11-28T00:19:42.434504+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Brunson",
+   "Mikal Bridges",
+   "Landry Shamet",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-27T23:36:26.609159+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-27T23:36:26.609159+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Terrence Shannon Jr",
+   "Jonathan Kuminga",
+   "Ayo Dosunmu",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [
+   "Terrence Shannon Jr"
+  ],
+  "out": [
+   "LaMelo Ball"
+  ],
+  "team_dk": "MIN",
+  "at": "2026-11-27T18:51:11.227396+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Jrue Holiday",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [
+   "Jrue Holiday"
+  ],
+  "out": [
+   "Damian Lillard"
+  ],
+  "team_dk": "POR",
+  "at": "2026-11-27T18:41:20.716981+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Brandon Ingram",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [
+   "Derrick Jones Jr."
+  ],
+  "out": [
+   "Max Strus"
+  ],
+  "team_dk": "LAC",
+  "at": "2026-11-27T16:34:11.734344+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Dylan Harper",
+   "Stephon Castle",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [
+   "Dylan Harper"
+  ],
+  "out": [
+   "Julian Champagnie"
+  ],
+  "team_dk": "SAS",
+  "at": "2026-11-27T16:15:54.167959+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Herbert Jones",
+   "Trey Murphy III",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [
+   "Trey Murphy III"
+  ],
+  "out": [
+   "Saddiq Bey"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-27T16:15:54.167959+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Kris Murray",
+   "Zach Edey"
+  ],
+  "in": [
+   "Kris Murray"
+  ],
+  "out": [
+   "Jahmai Mashack"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-27T15:40:59.349232+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Kentavious Caldwell-Pope",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [
+   "Kentavious Caldwell-Pope"
+  ],
+  "out": [
+   "Dean Wade"
+  ],
+  "team_dk": "PHI",
+  "at": "2026-11-27T15:24:27.776650+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Mikal Bridges",
+   "Landry Shamet",
+   "Jalen Brunson",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Isaiah Joe",
+   "Kevin Huerter",
+   "Daniss Jenkins",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Jaime Jaquez Jr.",
+   "Ryan Rollins",
+   "Kyle Kuzma",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Dean Wade",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Allen Graves",
+   "Immanuel Quickley",
+   "Scottie Barnes",
+   "Collin Murray-Boyles"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "TOR",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Michael Porter Jr.",
+   "Danny Wolf",
+   "Egor D\u00ebmin",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BOS",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Kingston Flemings",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Jahmai Mashack",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Austin Reaves",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Ziaire Williams",
+   "Walker Kessler"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAL",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Ingram",
+   "Max Strus",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-27T13:01:56.706628+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Brunson",
+   "Mikal Bridges",
+   "Landry Shamet",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-26T00:07:05.605615+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Bennett Stirtz",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Micah Peavy",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Bennett Stirtz"
+  ],
+  "out": [
+   "Jared McCain"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-26T00:07:05.605615+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-26T00:07:05.605615+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Donovan Mitchell",
+   "Sam Merrill",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-26T00:03:12.061904+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-25T23:43:01.210701+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Buddy Hield",
+   "Matas Buzelis",
+   "Josh Giddey",
+   "Isaac Okoro",
+   "Nic Claxton"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-25T23:43:01.210701+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Buddy Hield",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Nic Claxton"
+  ],
+  "in": [
+   "Nic Claxton"
+  ],
+  "out": [
+   "Jalen Smith"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-25T23:29:30.318946+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Malik Monk",
+   "De'Andre Hunter",
+   "Darius Acuff Jr.",
+   "Keegan Murray",
+   "Domantas Sabonis"
+  ],
+  "in": [
+   "Malik Monk"
+  ],
+  "out": [
+   "Zach LaVine"
+  ],
+  "team_dk": "SAC",
+  "at": "2026-11-25T23:29:30.318946+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "VJ Edgecombe",
+   "Jaylen Brown",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Jabari Walker"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-25T21:41:51.337222+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-25T21:41:51.337222+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Jaylen Brown",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Jabari Walker"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Buddy Hield",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Landry Shamet",
+   "Mikal Bridges",
+   "Jalen Brunson",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Donovan Mitchell",
+   "Sam Merrill",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Micah Peavy",
+   "Isaiah Hartenstein"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "OKC",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Kris Murray",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Ingram",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Jaime Jaquez Jr.",
+   "Ryan Rollins",
+   "Kyle Kuzma",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Michael Porter Jr.",
+   "Danny Wolf",
+   "Mikel Brown Jr.",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Zach LaVine",
+   "De'Andre Hunter",
+   "Darius Acuff Jr.",
+   "Keegan Murray",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-25T14:38:26.292557+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-25T02:37:22.910180+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Cooper Flagg",
+   "Caleb Martin",
+   "Kyrie Irving",
+   "Zaccharie Risacher",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Zaccharie Risacher"
+  ],
+  "out": [
+   "P.J. Washington"
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-25T02:37:22.910180+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "AJ Dybantsa",
+   "Kyshawn George",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-25T00:25:41.737638+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Sam Hauser",
+   "Jayson Tatum",
+   "Derrick White",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Sam Hauser"
+  ],
+  "out": [
+   "Jordan Walsh"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-25T00:25:41.737638+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Desmond Bane",
+   "Anthony Black",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-24T23:51:24.352442+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Isaiah Joe",
+   "Kevin Huerter",
+   "Daniss Jenkins",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [
+   "Isaiah Joe"
+  ],
+  "out": [
+   "Cade Cunningham"
+  ],
+  "team_dk": "DET",
+  "at": "2026-11-24T23:51:24.352442+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Anthony Black",
+   "Desmond Bane",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kyshawn George",
+   "AJ Dybantsa",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BOS",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-24T18:54:41.773786+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-24T03:54:00.112892+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Jake LaRavia",
+   "Walker Kessler"
+  ],
+  "in": [
+   "Jake LaRavia"
+  ],
+  "out": [
+   "Ziaire Williams"
+  ],
+  "team_dk": "LAL",
+  "at": "2026-11-24T03:54:00.112892+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Mo Bamba"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-24T03:54:00.112892+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Zach LaVine",
+   "Keegan Murray",
+   "Darius Acuff Jr.",
+   "De'Andre Hunter",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-24T03:54:00.112892+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Devin Vassell",
+   "Julian Champagnie",
+   "Stephon Castle",
+   "Harrison Barnes",
+   "Luke Kornet"
+  ],
+  "in": [
+   "Harrison Barnes",
+   "Luke Kornet"
+  ],
+  "out": [
+   "De'Aaron Fox",
+   "Victor Wembanyama"
+  ],
+  "team_dk": "SAS",
+  "at": "2026-11-24T03:54:00.112892+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Buddy Hield",
+   "Matas Buzelis",
+   "Josh Giddey",
+   "Isaac Okoro",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-24T00:49:13.099910+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Donovan Mitchell",
+   "Sam Merrill",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [
+   "Sam Merrill"
+  ],
+  "out": [
+   "Jaylon Tyson"
+  ],
+  "team_dk": "CLE",
+  "at": "2026-11-24T00:49:13.099910+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Herbert Jones",
+   "Trey Murphy III",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [
+   "Trey Murphy III"
+  ],
+  "out": [
+   "Saddiq Bey"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-24T00:49:13.099910+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-24T00:49:13.099910+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jaden McDaniels",
+   "LaMelo Ball",
+   "Jonathan Kuminga",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-24T00:26:49.783804+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Brandon Ingram",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [
+   "Derrick Jones Jr."
+  ],
+  "out": [
+   "Max Strus"
+  ],
+  "team_dk": "LAC",
+  "at": "2026-11-24T00:26:49.783804+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Scottie Barnes",
+   "Immanuel Quickley",
+   "Allen Graves",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Jakob Poeltl"
+  ],
+  "out": [
+   "Collin Murray-Boyles"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-24T00:08:29.329202+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Tyler Herro",
+   "Jaime Jaquez Jr.",
+   "Ryan Rollins",
+   "Kyle Kuzma",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-24T00:08:29.329202+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Andrew Nembhard",
+   "Kelly Oubre Jr.",
+   "Braden Smith",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [
+   "Braden Smith"
+  ],
+  "out": [
+   "Quenton Jackson"
+  ],
+  "team_dk": "IND",
+  "at": "2026-11-24T00:06:24.185099+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Micah Peavy",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Micah Peavy"
+  ],
+  "out": [
+   "Kenrich Williams"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-24T00:06:24.185099+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Michael Porter Jr.",
+   "Danny Wolf",
+   "Mikel Brown Jr.",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-24T00:06:24.185099+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Kris Murray",
+   "Zach Edey"
+  ],
+  "in": [
+   "Kris Murray"
+  ],
+  "out": [
+   "Jahmai Mashack"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-23T23:47:04.056915+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-23T23:36:56.742894+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "VJ Edgecombe",
+   "Jaylen Brown",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Dominick Barlow"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-23T23:33:48.790413+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Deni Avdija",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Sidy Cissoko",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-23T23:33:48.790413+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Jaylen Brown",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Dominick Barlow"
+  ],
+  "in": [
+   "Dominick Barlow"
+  ],
+  "out": [
+   "Joel Embiid"
+  ],
+  "team_dk": "PHI",
+  "at": "2026-11-23T23:22:06.610237+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Michael Porter Jr.",
+   "Danny Wolf",
+   "Mikel Brown Jr.",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [
+   "Mikel Brown Jr."
+  ],
+  "out": [
+   "Egor D\u00ebmin"
+  ],
+  "team_dk": "BKN",
+  "at": "2026-11-23T23:22:06.610237+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Mo Bamba"
+  ],
+  "in": [
+   "Mo Bamba"
+  ],
+  "out": [
+   "Jaxson Hayes"
+  ],
+  "team_dk": "UTA",
+  "at": "2026-11-23T23:22:06.610237+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Kenrich Williams",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Kenrich Williams"
+  ],
+  "out": [
+   "Aday Mara"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-23T18:41:49.930735+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Quenton Jackson",
+   "Kelly Oubre Jr.",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [
+   "Quenton Jackson"
+  ],
+  "out": [
+   "Aaron Nesmith"
+  ],
+  "team_dk": "IND",
+  "at": "2026-11-23T18:25:51.114352+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Allen Graves",
+   "Immanuel Quickley",
+   "Scottie Barnes",
+   "Collin Murray-Boyles"
+  ],
+  "in": [
+   "Allen Graves"
+  ],
+  "out": [
+   "Jamison Battle"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-23T17:20:47.275541+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Jaime Jaquez Jr.",
+   "Ryan Rollins",
+   "Kyle Kuzma",
+   "Myles Turner"
+  ],
+  "in": [
+   "Jaime Jaquez Jr.",
+   "Ryan Rollins"
+  ],
+  "out": [
+   "Brayden Burries",
+   "Jericho Sims"
+  ],
+  "team_dk": "MIL",
+  "at": "2026-11-23T17:20:47.275541+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Max Strus",
+   "Brandon Ingram",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [
+   "Max Strus"
+  ],
+  "out": [
+   "Derrick Jones Jr."
+  ],
+  "team_dk": "LAC",
+  "at": "2026-11-23T17:20:47.275541+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Jahmai Mashack",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Jaylen Brown",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "OKC",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Jamison Battle",
+   "Immanuel Quickley",
+   "Scottie Barnes",
+   "Collin Murray-Boyles"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "TOR",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Brayden Burries",
+   "Jericho Sims",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Michael Porter Jr.",
+   "Danny Wolf",
+   "Egor D\u00ebmin",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Buddy Hield",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Donovan Mitchell",
+   "Jaylon Tyson",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Ingram",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Ziaire Williams",
+   "Walker Kessler"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAL",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Zach LaVine",
+   "De'Andre Hunter",
+   "Darius Acuff Jr.",
+   "Keegan Murray",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-23T13:08:05.652527+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Hugo Gonz\u00e1lez",
+   "Jayson Tatum",
+   "Derrick White",
+   "Sam Hauser",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Hugo Gonz\u00e1lez"
+  ],
+  "out": [
+   "Jordan Walsh"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-23T01:15:04.018356+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-23T01:11:55.881541+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Landry Shamet",
+   "Mikal Bridges",
+   "Jalen Brunson",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-23T00:55:19.162577+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-23T00:38:12.830882+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "AJ Dybantsa",
+   "Kyshawn George",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-22T23:42:48.045828+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Desmond Bane",
+   "Anthony Black",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-22T23:42:48.045828+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Buddy Hield",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-22T23:34:22.649605+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-22T23:34:22.649605+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-22T23:34:22.649605+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Cooper Flagg",
+   "Caleb Martin",
+   "Kyrie Irving",
+   "Zaccharie Risacher",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-22T23:34:22.649605+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Buddy Hield",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [
+   "Buddy Hield"
+  ],
+  "out": [
+   "Noa Essengue"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-22T22:51:52.321802+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Bobby Portis Jr.",
+   "Bam Adebayo"
+  ],
+  "in": [
+   "Bobby Portis Jr."
+  ],
+  "out": [
+   "Andrew Wiggins"
+  ],
+  "team_dk": "MIA",
+  "at": "2026-11-22T22:37:47.262285+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Ajay Mitchell",
+   "Micah Peavy",
+   "Jared McCain",
+   "Kenrich Williams",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Micah Peavy"
+  ],
+  "out": [
+   "Aday Mara"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-22T22:37:47.262285+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Andrew Wiggins",
+   "Bam Adebayo"
+  ],
+  "in": [
+   "Andrew Wiggins"
+  ],
+  "out": [
+   "Giannis Antetokounmpo"
+  ],
+  "team_dk": "MIA",
+  "at": "2026-11-22T22:08:26.681117+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Kenrich Williams",
+   "Ajay Mitchell",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Kenrich Williams"
+  ],
+  "out": [
+   "Shai Gilgeous-Alexander"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-22T21:35:37.048939+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Sam Hauser",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Sam Hauser"
+  ],
+  "out": [
+   "Luka Garza"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-22T21:00:10.561159+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Luka Garza",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Luka Garza"
+  ],
+  "out": [
+   "Paul George"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-22T20:51:43.355932+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Kingston Flemings",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-22T20:18:31.019628+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-22T20:18:31.019628+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "Zaccharie Risacher",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Zaccharie Risacher"
+  ],
+  "out": [
+   "P.J. Washington"
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-22T19:10:13.188462+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Landry Shamet",
+   "Mikal Bridges",
+   "Jalen Brunson",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [
+   "Landry Shamet"
+  ],
+  "out": [
+   "OG Anunoby"
+  ],
+  "team_dk": "NYK",
+  "at": "2026-11-22T18:08:10.171583+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Isaac Okoro",
+   "Matas Buzelis",
+   "Josh Giddey",
+   "Noa Essengue",
+   "Jalen Smith"
+  ],
+  "in": [
+   "Noa Essengue"
+  ],
+  "out": [
+   "Norman Powell"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-22T15:22:56.443802+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Kingston Flemings",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "OKC",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kyshawn George",
+   "AJ Dybantsa",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Anthony Black",
+   "Desmond Bane",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Mikal Bridges",
+   "Josh Hart",
+   "Jalen Brunson",
+   "OG Anunoby",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BOS",
+  "at": "2026-11-22T13:24:24.525234+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Zach LaVine",
+   "Keegan Murray",
+   "Darius Acuff Jr.",
+   "De'Andre Hunter",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-22T02:39:12.051638+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Hugo Gonz\u00e1lez",
+   "Paul George",
+   "Payton Pritchard",
+   "Sam Hauser",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Hugo Gonz\u00e1lez",
+   "Sam Hauser"
+  ],
+  "out": [
+   "Jordan Walsh",
+   "Baylor Scheierman"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-22T02:39:12.051638+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-22T00:45:11.328465+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Derik Queen",
+   "Yves Missi"
+  ],
+  "in": [
+   "Derik Queen"
+  ],
+  "out": [
+   "Zion Williamson"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-22T00:40:59.427294+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Cooper Flagg",
+   "Caleb Martin",
+   "Kyrie Irving",
+   "Zaccharie Risacher",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Zaccharie Risacher"
+  ],
+  "out": [
+   "Naji Marshall"
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-22T00:38:56.002715+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Max Strus",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-22T00:38:56.002715+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jaden McDaniels",
+   "LaMelo Ball",
+   "Jonathan Kuminga",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-22T00:38:56.002715+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Jahmai Mashack",
+   "Zach Edey"
+  ],
+  "in": [
+   "Jahmai Mashack"
+  ],
+  "out": [
+   "Taylor Hendricks"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-22T00:38:56.002715+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Brunson",
+   "Mikal Bridges",
+   "Landry Shamet",
+   "Josh Hart",
+   "Andre Drummond"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-22T00:09:32.849490+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Deni Avdija",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Sidy Cissoko",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-22T00:09:32.849490+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Landry Shamet",
+   "Josh Hart",
+   "Jalen Brunson",
+   "Mikal Bridges",
+   "Andre Drummond"
+  ],
+  "in": [
+   "Andre Drummond"
+  ],
+  "out": [
+   "Karl-Anthony Towns"
+  ],
+  "team_dk": "NYK",
+  "at": "2026-11-21T23:05:18.213260+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Baylor Scheierman",
+   "Payton Pritchard",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [
+   "Baylor Scheierman",
+   "Payton Pritchard"
+  ],
+  "out": [
+   "Jayson Tatum",
+   "Derrick White"
+  ],
+  "team_dk": "BOS",
+  "at": "2026-11-21T20:54:37.069493+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "Naji Marshall",
+   "Daniel Gafford"
+  ],
+  "in": [
+   "Naji Marshall"
+  ],
+  "out": [
+   "P.J. Washington"
+  ],
+  "team_dk": "DAL",
+  "at": "2026-11-21T19:26:18.119524+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "VJ Edgecombe",
+   "Kentavious Caldwell-Pope",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-21T17:34:28.213207+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Ryan Rollins",
+   "Jaime Jaquez Jr.",
+   "Myles Turner"
+  ],
+  "in": [
+   "Ryan Rollins",
+   "Jaime Jaquez Jr."
+  ],
+  "out": [
+   "Brayden Burries",
+   "Jericho Sims"
+  ],
+  "team_dk": "MIL",
+  "at": "2026-11-21T17:34:28.213207+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Mikal Bridges",
+   "Landry Shamet",
+   "Jalen Brunson",
+   "Josh Hart",
+   "Karl-Anthony Towns"
+  ],
+  "in": [
+   "Landry Shamet"
+  ],
+  "out": [
+   "OG Anunoby"
+  ],
+  "team_dk": "NYK",
+  "at": "2026-11-21T16:12:36.582848+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Taylor Hendricks",
+   "Zach Edey"
+  ],
+  "in": [
+   "Taylor Hendricks"
+  ],
+  "out": [
+   "Isaiah Stewart"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-21T15:15:36.758266+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [
+   "Herbert Jones"
+  ],
+  "out": [
+   "Trey Murphy III"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-21T15:15:36.758266+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Kentavious Caldwell-Pope",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHI",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Brayden Burries",
+   "Jericho Sims",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Mikal Bridges",
+   "Josh Hart",
+   "Jalen Brunson",
+   "OG Anunoby",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Caleb Martin",
+   "Cooper Flagg",
+   "Kyrie Irving",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Max Strus",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Isaiah Stewart",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Trey Murphy III",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Zach LaVine",
+   "De'Andre Hunter",
+   "Darius Acuff Jr.",
+   "Keegan Murray",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jordan Walsh",
+   "Jayson Tatum",
+   "Derrick White",
+   "Paul George",
+   "Neemias Queta"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BOS",
+  "at": "2026-11-21T13:41:14.048039+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-21T02:42:05.175282+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-21T02:42:05.175282+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Ziaire Williams",
+   "Walker Kessler"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAL",
+  "at": "2026-11-21T02:34:45.441896+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Zach LaVine",
+   "Keegan Murray",
+   "Darius Acuff Jr.",
+   "De'Andre Hunter",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-21T02:34:45.441896+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-21T02:04:41.733317+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-21T02:04:41.733317+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Aday Mara"
+  ],
+  "out": [
+   "Micah Peavy"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-21T00:50:28.985020+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Nic Claxton"
+  ],
+  "in": [
+   "Nic Claxton"
+  ],
+  "out": [
+   "Zach Collins"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-21T00:45:09.001808+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Zach Collins"
+  ],
+  "in": [
+   "Zach Collins"
+  ],
+  "out": [
+   "Nic Claxton"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-21T00:34:34.372346+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "AJ Dybantsa",
+   "Kyshawn George",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-21T00:34:34.372346+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Micah Peavy",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Micah Peavy"
+  ],
+  "out": [
+   "Aday Mara"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-21T00:34:34.372346+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [
+   "Herbert Jones"
+  ],
+  "out": [
+   "Trey Murphy III"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-21T00:34:34.372346+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Danny Wolf",
+   "Michael Porter Jr.",
+   "Nolan Traore",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [
+   "Danny Wolf"
+  ],
+  "out": [
+   "Egor D\u00ebmin"
+  ],
+  "team_dk": "BKN",
+  "at": "2026-11-21T00:13:43.640587+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Anthony Black",
+   "Desmond Bane",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-21T00:10:34.605961+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Donovan Mitchell",
+   "Tyrese Proctor",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-21T00:10:34.605961+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-21T00:10:34.605961+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-21T00:08:32.251351+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Scottie Barnes",
+   "Immanuel Quickley",
+   "Allen Graves",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Allen Graves"
+  ],
+  "out": [
+   "Jamison Battle"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-21T00:08:32.251351+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Aaron Wiggins",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-20T23:37:10.707106+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-20T23:37:10.707106+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Nic Claxton"
+  ],
+  "in": [
+   "Nic Claxton"
+  ],
+  "out": [
+   "Jalen Smith"
+  ],
+  "team_dk": "CHI",
+  "at": "2026-11-20T23:27:11.359236+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Dyson Daniels",
+   "Aaron Wiggins",
+   "Nickeil Alexander-Walker",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [
+   "Aaron Wiggins"
+  ],
+  "out": [
+   "Kingston Flemings"
+  ],
+  "team_dk": "ATL",
+  "at": "2026-11-20T22:32:46.201577+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Aday Mara"
+  ],
+  "out": [
+   "Kenrich Williams"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-20T16:16:45.313341+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Trey Murphy III",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [
+   "Saddiq Bey"
+  ],
+  "out": [
+   "Herbert Jones"
+  ],
+  "team_dk": "NOP",
+  "at": "2026-11-20T16:16:45.313341+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Nickeil Alexander-Walker",
+   "Dyson Daniels",
+   "Kingston Flemings",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ATL",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "CHA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandon Miller",
+   "Sion James",
+   "Coby White",
+   "Naz Reid",
+   "Moussa Diabat\u00e9"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHA",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Egor D\u00ebmin",
+   "Michael Porter Jr.",
+   "Nolan Traore",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Anthony Black",
+   "Desmond Bane",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Donovan Mitchell",
+   "Tyrese Proctor",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Andrew Nembhard",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Jamison Battle",
+   "Immanuel Quickley",
+   "Scottie Barnes",
+   "Jakob Poeltl"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "TOR",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kyshawn George",
+   "AJ Dybantsa",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Kenrich Williams",
+   "Isaiah Hartenstein"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "OKC",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Trey Murphy III",
+   "Herbert Jones",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Jaxson Hayes"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "UTA",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Ziaire Williams",
+   "Walker Kessler"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAL",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Zach LaVine",
+   "De'Andre Hunter",
+   "Darius Acuff Jr.",
+   "Keegan Murray",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-20T13:07:16.121782+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Cam Spencer",
+   "Cameron Boozer",
+   "Taylor Hendricks"
+  ],
+  "in": [
+   "Taylor Hendricks"
+  ],
+  "out": [
+   "Isaiah Stewart"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "De'Anthony Melton",
+   "Gui Santos",
+   "Charles Bassey"
+  ],
+  "in": [
+   "De'Anthony Melton",
+   "Charles Bassey"
+  ],
+  "out": [
+   "LJ Cryer",
+   "Al Horford"
+  ],
+  "team_dk": "GSW",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Tyler Herro",
+   "Nate Ament",
+   "Brayden Burries",
+   "Pete Nance",
+   "Kel'el Ware"
+  ],
+  "in": [
+   "Pete Nance",
+   "Kel'el Ware"
+  ],
+  "out": [
+   "Jaime Jaquez Jr.",
+   "Jericho Sims"
+  ],
+  "team_dk": "MIL",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Jayson Kent",
+   "Sidy Cissoko",
+   "Damian Lillard",
+   "Toumani Camara",
+   "Donovan Clingan"
+  ],
+  "in": [
+   "Jayson Kent"
+  ],
+  "out": [
+   "Deni Avdija"
+  ],
+  "team_dk": "POR",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jaden McDaniels",
+   "LaMelo Ball",
+   "Jonathan Kuminga",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Mikal Bridges",
+   "Josh Hart",
+   "Jalen Brunson",
+   "OG Anunoby",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Max Strus",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [
+   "Max Strus"
+  ],
+  "out": [
+   "Kris Dunn"
+  ],
+  "team_dk": "LAC",
+  "at": "2026-11-20T00:44:32.468520+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Cam Spencer",
+   "Cameron Boozer",
+   "Isaiah Stewart"
+  ],
+  "in": [
+   "Cam Spencer",
+   "Isaiah Stewart"
+  ],
+  "out": [
+   "Ty Jerome",
+   "Zach Edey"
+  ],
+  "team_dk": "MEM",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Jaime Jaquez Jr.",
+   "Brayden Burries",
+   "Nate Ament",
+   "Jericho Sims"
+  ],
+  "in": [
+   "Jaime Jaquez Jr.",
+   "Nate Ament"
+  ],
+  "out": [
+   "Kyle Kuzma",
+   "Myles Turner"
+  ],
+  "team_dk": "MIL",
+  "at": "2026-11-19T19:17:09.973077+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Ty Jerome",
+   "Cameron Boozer",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "LJ Cryer",
+   "Gui Santos",
+   "Al Horford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Brayden Burries",
+   "Jericho Sims",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "POR",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Sidy Cissoko",
+   "Toumani Camara",
+   "Damian Lillard",
+   "Deni Avdija",
+   "Donovan Clingan"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "POR",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "MIN",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Ayo Dosunmu",
+   "Jonathan Kuminga",
+   "LaMelo Ball",
+   "Jaden McDaniels",
+   "Rudy Gobert"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIN",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "NYK",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Mikal Bridges",
+   "Josh Hart",
+   "Jalen Brunson",
+   "OG Anunoby",
+   "Karl-Anthony Towns"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NYK",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "SAS",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Stephon Castle",
+   "Julian Champagnie",
+   "De'Aaron Fox",
+   "Devin Vassell",
+   "Victor Wembanyama"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAS",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "LAC",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Kris Dunn",
+   "Derrick Jones Jr.",
+   "Darius Garland",
+   "Rui Hachimura",
+   "Brook Lopez"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "LAC",
+  "at": "2026-11-19T13:03:23.767481+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Ziaire Williams",
+   "Walker Kessler"
+  ],
+  "in": [
+   "Ziaire Williams"
+  ],
+  "out": [
+   "Jake LaRavia"
+  ],
+  "team_dk": "LAL",
+  "at": "2026-11-19T02:48:28.177279+00:00"
+ },
+ {
+  "team": "UTA",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Darryn Peterson",
+   "Josh Green",
+   "Keyonte George",
+   "Ace Bailey",
+   "Mo Bamba"
+  ],
+  "in": [
+   "Mo Bamba"
+  ],
+  "out": [
+   "Jaxson Hayes"
+  ],
+  "team_dk": "UTA",
+  "at": "2026-11-19T02:48:28.177279+00:00"
+ },
+ {
+  "team": "SAC",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Zach LaVine",
+   "Keegan Murray",
+   "Darius Acuff Jr.",
+   "De'Andre Hunter",
+   "Domantas Sabonis"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "SAC",
+  "at": "2026-11-19T02:48:28.177279+00:00"
+ },
+ {
+  "team": "PHX",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jalen Green",
+   "Dillon Brooks",
+   "Devin Booker",
+   "Miles Bridges",
+   "Oso Ighodaro"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "PHX",
+  "at": "2026-11-19T02:48:28.177279+00:00"
+ },
+ {
+  "team": "BOS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Jordan Walsh",
+   "Paul George",
+   "Derrick White",
+   "Jayson Tatum",
+   "Neemias Queta"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BOS",
+  "at": "2026-11-19T02:14:32.026395+00:00"
+ },
+ {
+  "team": "DEN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Christian Braun",
+   "Cameron Johnson",
+   "Jamal Murray",
+   "Aaron Gordon",
+   "Nikola Joki\u0107"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DEN",
+  "at": "2026-11-19T02:09:30.663138+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Javonte Green",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [
+   "Javonte Green"
+  ],
+  "out": [
+   "Cade Cunningham"
+  ],
+  "team_dk": "DET",
+  "at": "2026-11-19T00:44:31.891499+00:00"
+ },
+ {
+  "team": "DAL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Cooper Flagg",
+   "Caleb Martin",
+   "Kyrie Irving",
+   "P.J. Washington",
+   "Daniel Gafford"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DAL",
+  "at": "2026-11-19T00:39:20.708686+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "LJ Cryer",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "GSW",
+  "at": "2026-11-19T00:39:20.708686+00:00"
+ },
+ {
+  "team": "NOP",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Herbert Jones",
+   "Saddiq Bey",
+   "Jeremiah Fears",
+   "Zion Williamson",
+   "Yves Missi"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "NOP",
+  "at": "2026-11-19T00:37:16.179975+00:00"
+ },
+ {
+  "team": "DET",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Daniss Jenkins",
+   "Kevin Huerter",
+   "Cade Cunningham",
+   "Ausar Thompson",
+   "John Collins"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "DET",
+  "at": "2026-11-19T00:37:16.179975+00:00"
+ },
+ {
+  "team": "OKC",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Jared McCain",
+   "Ajay Mitchell",
+   "Shai Gilgeous-Alexander",
+   "Aday Mara",
+   "Isaiah Hartenstein"
+  ],
+  "in": [
+   "Aday Mara"
+  ],
+  "out": [
+   "Kenrich Williams"
+  ],
+  "team_dk": "OKC",
+  "at": "2026-11-19T00:37:16.179975+00:00"
+ },
+ {
+  "team": "ATL",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Aaron Wiggins",
+   "Dyson Daniels",
+   "Nickeil Alexander-Walker",
+   "Jalen Johnson",
+   "Onyeka Okongwu"
+  ],
+  "in": [
+   "Aaron Wiggins"
+  ],
+  "out": [
+   "Luguentz Dort"
+  ],
+  "team_dk": "ATL",
+  "at": "2026-11-19T00:37:16.179975+00:00"
+ },
+ {
+  "team": "BKN",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Egor D\u00ebmin",
+   "Michael Porter Jr.",
+   "Nolan Traore",
+   "Julius Randle",
+   "Day'Ron Sharpe"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "BKN",
+  "at": "2026-11-19T00:09:12.009607+00:00"
+ },
+ {
+  "team": "CHI",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Norman Powell",
+   "Isaac Okoro",
+   "Josh Giddey",
+   "Matas Buzelis",
+   "Jalen Smith"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CHI",
+  "at": "2026-11-19T00:09:12.009607+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Ja'Kobe Walter",
+   "Jamison Battle",
+   "Immanuel Quickley",
+   "Collin Murray-Boyles",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Jamison Battle"
+  ],
+  "out": [
+   "Jamal Shead"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-19T00:07:08.369565+00:00"
+ },
+ {
+  "team": "WAS",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "AJ Dybantsa",
+   "Kyshawn George",
+   "Trae Young",
+   "Anthony Davis",
+   "Alex Sarr"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "WAS",
+  "at": "2026-11-19T00:07:08.369565+00:00"
+ },
+ {
+  "team": "GSW",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Brandin Podziemski",
+   "Yaxel Lendeborg",
+   "LJ Cryer",
+   "Draymond Green",
+   "Charles Bassey"
+  ],
+  "in": [
+   "Charles Bassey"
+  ],
+  "out": [
+   "Al Horford"
+  ],
+  "team_dk": "GSW",
+  "at": "2026-11-18T23:47:06.337391+00:00"
+ },
+ {
+  "team": "ORL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Desmond Bane",
+   "Anthony Black",
+   "Jalen Suggs",
+   "Franz Wagner",
+   "Wendell Carter Jr."
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "ORL",
+  "at": "2026-11-18T23:42:01.808973+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "changed",
+  "status": "confirmed",
+  "starters": [
+   "Kentavious Caldwell-Pope",
+   "VJ Edgecombe",
+   "Anfernee Simons",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [
+   "Anfernee Simons"
+  ],
+  "out": [
+   "Tyrese Maxey"
+  ],
+  "team_dk": "PHI",
+  "at": "2026-11-18T23:42:01.808973+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Cam Spencer",
+   "Cameron Boozer",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-18T23:38:51.541008+00:00"
+ },
+ {
+  "team": "MIA",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Klay Thompson",
+   "Pelle Larsson",
+   "Davion Mitchell",
+   "Giannis Antetokounmpo",
+   "Bam Adebayo"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIA",
+  "at": "2026-11-18T23:38:51.541008+00:00"
+ },
+ {
+  "team": "MIL",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Tyler Herro",
+   "Kyle Kuzma",
+   "Brayden Burries",
+   "Jericho Sims",
+   "Myles Turner"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MIL",
+  "at": "2026-11-18T23:38:51.541008+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Quenton Jackson",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "IND",
+  "at": "2026-11-18T23:36:46.172412+00:00"
+ },
+ {
+  "team": "HOU",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Amen Thompson",
+   "Kevin Durant",
+   "Fred VanVleet",
+   "Jabari Smith Jr.",
+   "Alperen Sengun"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "HOU",
+  "at": "2026-11-18T23:36:46.172412+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "confirmed",
+  "status": "confirmed",
+  "starters": [
+   "Donovan Mitchell",
+   "Tyrese Proctor",
+   "James Harden",
+   "Mario Hezonja",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-18T23:31:22.165787+00:00"
+ },
+ {
+  "team": "PHI",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "VJ Edgecombe",
+   "Kentavious Caldwell-Pope",
+   "Tyrese Maxey",
+   "LeBron James",
+   "Joel Embiid"
+  ],
+  "in": [
+   "Kentavious Caldwell-Pope"
+  ],
+  "out": [
+   "Dean Wade"
+  ],
+  "team_dk": "PHI",
+  "at": "2026-11-18T23:21:07.884036+00:00"
+ },
+ {
+  "team": "IND",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Kelly Oubre Jr.",
+   "Aaron Nesmith",
+   "Quenton Jackson",
+   "Pascal Siakam",
+   "Ivica Zubac"
+  ],
+  "in": [
+   "Quenton Jackson"
+  ],
+  "out": [
+   "Andrew Nembhard"
+  ],
+  "team_dk": "IND",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Jamal Shead",
+   "Ja'Kobe Walter",
+   "Immanuel Quickley",
+   "Collin Murray-Boyles",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Jamal Shead"
+  ],
+  "out": [
+   "RJ Barrett"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "team": "LAL",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Quentin Grimes",
+   "Matisse Thybulle",
+   "Luka Don\u010di\u0107",
+   "Jake LaRavia",
+   "Walker Kessler"
+  ],
+  "in": [
+   "Quentin Grimes"
+  ],
+  "out": [
+   "Austin Reaves"
+  ],
+  "team_dk": "LAL",
+  "at": "2026-11-18T23:12:59.651540+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "Donovan Mitchell",
+   "Tyrese Proctor",
+   "James Harden",
+   "Mario Hezonja",
+   "Jarrett Allen"
+  ],
+  "in": [
+   "Mario Hezonja"
+  ],
+  "out": [
+   "Peyton Watson"
+  ],
+  "team_dk": "CLE",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "team": "TOR",
+  "kind": "changed",
+  "status": "expected",
+  "starters": [
+   "RJ Barrett",
+   "Ja'Kobe Walter",
+   "Immanuel Quickley",
+   "Collin Murray-Boyles",
+   "Jakob Poeltl"
+  ],
+  "in": [
+   "Jakob Poeltl"
+  ],
+  "out": [
+   "Scottie Barnes"
+  ],
+  "team_dk": "TOR",
+  "at": "2026-11-18T16:37:35.580932+00:00"
+ },
+ {
+  "team": "CLE",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Donovan Mitchell",
+   "Tyrese Proctor",
+   "James Harden",
+   "Peyton Watson",
+   "Jarrett Allen"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "CLE",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ },
+ {
+  "team": "MEM",
+  "kind": "expected",
+  "status": "expected",
+  "starters": [
+   "Cedric Coward",
+   "Jaylen Wells",
+   "Cam Spencer",
+   "Cameron Boozer",
+   "Zach Edey"
+  ],
+  "in": [],
+  "out": [],
+  "team_dk": "MEM",
+  "at": "2026-11-18T13:01:53.181429+00:00"
+ }
+]

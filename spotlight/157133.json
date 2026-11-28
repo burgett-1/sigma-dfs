@@ -1,0 +1,70 @@
+{
+ "slate_id": 157133,
+ "updated_at": "2026-11-21T07:28:08.422457+00:00",
+ "kind": "classic",
+ "games": 2,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Cameron Carr",
+   "team": "LAL",
+   "salary": 3000,
+   "proj": 2.6,
+   "own": 0.2,
+   "headline": "Cameron Carr without Austin Reaves",
+   "detail": "Averaged 6.4 DK pts in 2 games without them (vs 0.4 with). Hit 6x tonight's salary (18+ pts) in 0 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 6.4,
+    "z": 8.23,
+    "avg_with": 0.4,
+    "hits_6x": 0,
+    "last_without": "2026-11-18"
+   },
+   "strength": 8.232,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Quentin Grimes",
+   "team": "LAL",
+   "salary": 6000,
+   "proj": 31.1,
+   "own": 66.7,
+   "headline": "Quentin Grimes without Austin Reaves",
+   "detail": "Averaged 45.6 DK pts in 3 games without them (vs 16.9 with). Hit 6x tonight's salary (36+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 45.6,
+    "z": 2.85,
+    "avg_with": 16.9,
+    "hits_6x": 3,
+    "last_without": "2026-11-18"
+   },
+   "strength": 2.848,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Jake LaRavia",
+   "team": "LAL",
+   "salary": 5300,
+   "proj": 12.9,
+   "own": 1.5,
+   "headline": "Jake LaRavia without Austin Reaves",
+   "detail": "Averaged 21.7 DK pts in 39 games without them (vs 16.3 with). Hit 6x tonight's salary (32+ pts) in 4 of 39.",
+   "evidence": {
+    "games_without": 39,
+    "avg_without": 21.7,
+    "z": 2.79,
+    "avg_with": 16.3,
+    "hits_6x": 4,
+    "last_without": "2026-11-18"
+   },
+   "strength": 2.787,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

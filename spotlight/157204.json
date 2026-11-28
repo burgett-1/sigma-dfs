@@ -1,0 +1,140 @@
+{
+ "slate_id": 157204,
+ "updated_at": "2026-11-23T07:04:29.276772+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Andrew Wiggins",
+   "team": "MIA",
+   "salary": 4600,
+   "proj": 24.8,
+   "own": 16.6,
+   "headline": "Andrew Wiggins without Giannis Antetokounmpo",
+   "detail": "Averaged 30.0 DK pts in 68 games without them (vs 18.2 with). Hit 6x tonight's salary (28+ pts) in 40 of 68.",
+   "evidence": {
+    "games_without": 68,
+    "avg_without": 30.0,
+    "z": 6.0,
+    "avg_with": 18.2,
+    "hits_6x": 40,
+    "last_without": "2026-04-12"
+   },
+   "strength": 6.002,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Dru Smith",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 3.2,
+   "own": 1.8,
+   "headline": "Dru Smith without Giannis Antetokounmpo",
+   "detail": "Averaged 15.9 DK pts in 70 games without them (vs 5.9 with). Hit 6x tonight's salary (6+ pts) in 65 of 70.",
+   "evidence": {
+    "games_without": 70,
+    "avg_without": 15.9,
+    "z": 4.21,
+    "avg_with": 5.9,
+    "hits_6x": 65,
+    "last_without": "2026-04-04"
+   },
+   "strength": 4.211,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Nikola Jovic",
+   "team": "MIA",
+   "salary": 1400,
+   "proj": 5.0,
+   "own": 2.2,
+   "headline": "Nikola Jovic without Giannis Antetokounmpo",
+   "detail": "Averaged 16.6 DK pts in 46 games without them (vs 9.1 with). Hit 6x tonight's salary (8+ pts) in 33 of 46.",
+   "evidence": {
+    "games_without": 46,
+    "avg_without": 16.6,
+    "z": 3.09,
+    "avg_with": 9.1,
+    "hits_6x": 33,
+    "last_without": "2026-04-04"
+   },
+   "strength": 3.094,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Bobby Portis",
+   "team": "MIA",
+   "salary": 4800,
+   "proj": 26.7,
+   "own": 15.5,
+   "headline": "Bobby Portis is starting (0 starts in his last 10)",
+   "detail": "Projected 25 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Micah Peavy",
+   "team": "OKC",
+   "salary": 1000,
+   "proj": 25.9,
+   "own": 80.0,
+   "headline": "Micah Peavy is starting (0 starts in his last 10)",
+   "detail": "Projected 33 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Simone Fontecchio",
+   "team": "MIA",
+   "salary": 2000,
+   "proj": 6.7,
+   "own": 2.1,
+   "headline": "Simone Fontecchio without Giannis Antetokounmpo",
+   "detail": "Averaged 16.3 DK pts in 70 games without them (vs 7.6 with). Hit 6x tonight's salary (12+ pts) in 46 of 70.",
+   "evidence": {
+    "games_without": 70,
+    "avg_without": 16.3,
+    "z": 2.96,
+    "avg_with": 7.6,
+    "hits_6x": 46,
+    "last_without": "2026-04-10"
+   },
+   "strength": 2.959,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Kenrich Williams",
+   "team": "OKC",
+   "salary": 5000,
+   "proj": 32.2,
+   "own": 31.9,
+   "headline": "Kenrich Williams without Shai Gilgeous-Alexander, Aday Mara, Alex Caruso",
+   "detail": "Averaged 29.1 DK pts in 6 games without them (vs 15.6 with). Hit 6x tonight's salary (30+ pts) in 3 of 6.",
+   "evidence": {
+    "games_without": 6,
+    "avg_without": 29.1,
+    "z": 2.57,
+    "avg_with": 15.6,
+    "hits_6x": 3,
+    "last_without": "2026-04-12"
+   },
+   "strength": 2.572,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

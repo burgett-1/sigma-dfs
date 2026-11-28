@@ -1,0 +1,140 @@
+{
+ "slate_id": 156750,
+ "updated_at": "2026-11-17T00:59:24.149621+00:00",
+ "kind": "classic",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Justin Edwards",
+   "team": "PHI",
+   "salary": 3300,
+   "proj": 3.8,
+   "own": 0.1,
+   "headline": "Justin Edwards without LeBron James",
+   "detail": "Averaged 11.1 DK pts in 75 games without them (vs 2.3 with). Hit 6x tonight's salary (20+ pts) in 12 of 75.",
+   "evidence": {
+    "games_without": 75,
+    "avg_without": 11.1,
+    "z": 4.69,
+    "avg_with": 2.3,
+    "hits_6x": 12,
+    "last_without": "2026-11-12"
+   },
+   "strength": 4.694,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Myron Gardner",
+   "team": "MIA",
+   "salary": 3500,
+   "proj": 18.5,
+   "own": 14.5,
+   "headline": "Myron Gardner is starting (2 starts in his last 10)",
+   "detail": "Projected 20 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Reed Sheppard",
+   "team": "HOU",
+   "salary": 4500,
+   "proj": 21.9,
+   "own": 13.7,
+   "headline": "Reed Sheppard without Amen Thompson, Marcus Smart",
+   "detail": "Averaged 36.8 DK pts in 3 games without them (vs 14.8 with). Hit 6x tonight's salary (27+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 36.8,
+    "z": 5.36,
+    "avg_with": 14.8,
+    "hits_6x": 3,
+    "last_without": "2026-04-12"
+   },
+   "strength": 5.356,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Alperen Sengun",
+   "team": "HOU",
+   "salary": 9500,
+   "proj": 50.1,
+   "own": 80.0,
+   "headline": "Alperen Sengun without Amen Thompson, Marcus Smart",
+   "detail": "Averaged 68.9 DK pts in 2 games without them (vs 48.2 with). Hit 6x tonight's salary (57+ pts) in 2 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 68.9,
+    "z": 4.16,
+    "avg_with": 48.2,
+    "hits_6x": 2,
+    "last_without": "2026-02-25"
+   },
+   "strength": 4.156,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Joel Embiid",
+   "team": "PHI",
+   "salary": 8300,
+   "proj": 42.3,
+   "own": 69.1,
+   "headline": "Joel Embiid without LeBron James",
+   "detail": "Averaged 45.4 DK pts in 47 games without them (vs 34.9 with). Hit 6x tonight's salary (50+ pts) in 15 of 47.",
+   "evidence": {
+    "games_without": 47,
+    "avg_without": 45.4,
+    "z": 2.74,
+    "avg_with": 34.9,
+    "hits_6x": 15,
+    "last_without": "2026-11-12"
+   },
+   "strength": 2.74,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Isaiah Crawford",
+   "team": "HOU",
+   "salary": 3000,
+   "proj": 3.6,
+   "own": 0.1,
+   "headline": "Isaiah Crawford without Amen Thompson, Marcus Smart",
+   "detail": "Averaged 15.5 DK pts in 2 games without them (vs 2.8 with). Hit 6x tonight's salary (18+ pts) in 1 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 15.5,
+    "z": 2.59,
+    "avg_with": 2.8,
+    "hits_6x": 1,
+    "last_without": "2026-04-12"
+   },
+   "strength": 2.59,
+   "strong": false
+  },
+  {
+   "type": "surprise_start",
+   "player": "Tari Eason",
+   "team": "HOU",
+   "salary": 5300,
+   "proj": 30.0,
+   "own": 52.8,
+   "headline": "Tari Eason is starting (1 starts in his last 10)",
+   "detail": "Projected 30 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

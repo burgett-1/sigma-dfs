@@ -1,0 +1,71 @@
+﻿Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,Starting
+PG,Cade Cunningham (45069019) (LOCKED),Cade Cunningham,45069019,CPT,18000,Final,DET,47,,
+SF/PF,Franz Wagner (45069020) (LOCKED),Franz Wagner,45069020,CPT,17400,Final,ORL,47.6,,Starter
+PF,Paolo Banchero (45069048) (LOCKED),Paolo Banchero,45069048,CPT,15600,Final,ORL,45.4,,
+SF/PF,Ausar Thompson (45069021) (LOCKED),Ausar Thompson,45069021,CPT,13500,Final,DET,34.5,,Starter
+PG/SG,Anthony Black (45069022) (LOCKED),Anthony Black,45069022,CPT,12900,Final,ORL,34,,Starter
+SG/SF,Desmond Bane (45069023) (LOCKED),Desmond Bane,45069023,CPT,12300,Final,ORL,32.2,,Starter
+PG,Cade Cunningham (45068984) (LOCKED),Cade Cunningham,45068984,UTIL,12000,Final,DET,47,,
+C,Jalen Duren (45069024) (LOCKED),Jalen Duren,45069024,CPT,11700,Final,DET,28.9,,
+SF/PF,Franz Wagner (45068985) (LOCKED),Franz Wagner,45068985,UTIL,11600,Final,ORL,47.6,,Starter
+PG/SG,Daniss Jenkins (45069025) (LOCKED),Daniss Jenkins,45069025,CPT,11100,Final,DET,28.4,,Starter
+C,Wendell Carter Jr. (45069026) (LOCKED),Wendell Carter Jr.,45069026,CPT,10500,Final,ORL,29.1,,Starter
+PF,Paolo Banchero (45069013) (LOCKED),Paolo Banchero,45069013,UTIL,10400,Final,ORL,45.4,,
+C,Paul Reed (45069027) (LOCKED),Paul Reed,45069027,CPT,9900,Final,DET,27.5,,
+PG,Jalen Suggs (45069028) (LOCKED),Jalen Suggs,45069028,CPT,9300,Final,ORL,23.6,,Starter
+SF/PF,Ausar Thompson (45068986) (LOCKED),Ausar Thompson,45068986,UTIL,9000,Final,DET,34.5,,Starter
+SG/SF,Kevin Huerter (45069029) (LOCKED),Kevin Huerter,45069029,CPT,8700,Final,DET,21.5,,Starter
+PG/SG,Anthony Black (45068987) (LOCKED),Anthony Black,45068987,UTIL,8600,Final,ORL,34,,Starter
+SG/SF,Desmond Bane (45068988) (LOCKED),Desmond Bane,45068988,UTIL,8200,Final,ORL,32.2,,Starter
+C,Jalen Duren (45068989) (LOCKED),Jalen Duren,45068989,UTIL,7800,Final,DET,28.9,,
+SG/SF,Duncan Robinson (45069049) (LOCKED),Duncan Robinson,45069049,CPT,7800,Final,DET,27.3,,
+PF/C,John Collins (45069030) (LOCKED),John Collins,45069030,CPT,7500,Final,DET,22.3,,Starter
+PG/SG,Daniss Jenkins (45068990) (LOCKED),Daniss Jenkins,45068990,UTIL,7400,Final,DET,28.4,,Starter
+C,Wendell Carter Jr. (45068991) (LOCKED),Wendell Carter Jr.,45068991,UTIL,7000,Final,ORL,29.1,,Starter
+C,Paul Reed (45068992) (LOCKED),Paul Reed,45068992,UTIL,6600,Final,DET,27.5,,
+SF/PF,Tristan da Silva (45069031) (LOCKED),Tristan da Silva,45069031,CPT,6600,Final,ORL,23.3,,
+PG,Jalen Suggs (45068993) (LOCKED),Jalen Suggs,45068993,UTIL,6200,Final,ORL,23.6,,Starter
+SG/SF,Kevin Huerter (45068994) (LOCKED),Kevin Huerter,45068994,UTIL,5800,Final,DET,21.5,,Starter
+PF,Javonte Green (45069032) (LOCKED),Javonte Green,45069032,CPT,5700,Final,DET,14.1,,
+SG/SF,Duncan Robinson (45069014) (LOCKED),Duncan Robinson,45069014,UTIL,5200,Final,DET,27.3,,
+PF/C,John Collins (45068995) (LOCKED),John Collins,45068995,UTIL,5000,Final,DET,22.3,,Starter
+SG/SF,Isaiah Joe (45069033) (LOCKED),Isaiah Joe,45069033,CPT,4800,Final,DET,18.6,,Starter
+SF/PF,Tristan da Silva (45068996) (LOCKED),Tristan da Silva,45068996,UTIL,4400,Final,ORL,23.3,,
+C,Goga Bitadze (45069034) (LOCKED),Goga Bitadze,45069034,CPT,4200,Final,ORL,12.4,,
+PF,Javonte Green (45068997) (LOCKED),Javonte Green,45068997,UTIL,3800,Final,DET,14.1,,
+C,Nikola Vucevic (45069035) (LOCKED),Nikola Vucevic,45069035,CPT,3300,Final,ORL,10.6,,
+SG/SF,Isaiah Joe (45068998) (LOCKED),Isaiah Joe,45068998,UTIL,3200,Final,DET,18.6,,Starter
+PF,Ronald Holland II (45069036) (LOCKED),Ronald Holland II,45069036,CPT,3000,Final,DET,15,,
+C,Goga Bitadze (45068999) (LOCKED),Goga Bitadze,45068999,UTIL,2800,Final,ORL,12.4,,
+C,Nikola Vucevic (45069000) (LOCKED),Nikola Vucevic,45069000,UTIL,2200,Final,ORL,10.6,,
+PG,Jevon Carter (45069037) (LOCKED),Jevon Carter,45069037,CPT,2100,Final,ORL,10.5,,
+PF,Ronald Holland II (45069001) (LOCKED),Ronald Holland II,45069001,UTIL,2000,Final,DET,15,,
+SF,Noah Penda (45069050) (LOCKED),Noah Penda,45069050,CPT,1800,Final,ORL,0,,
+PG,EJ Harkless (45069038) (LOCKED),EJ Harkless,45069038,CPT,1500,Final,DET,6.4,,
+C,Ugonna Onyenso (45069039) (LOCKED),Ugonna Onyenso,45069039,CPT,1500,Final,DET,0,,
+PG,Ebuka Okorie (45069040) (LOCKED),Ebuka Okorie,45069040,CPT,1500,Final,DET,3.8,,
+PG/SG,Jase Richardson (45069041) (LOCKED),Jase Richardson,45069041,CPT,1500,Final,ORL,12.8,,
+PG/SG,Alex Morales (45069042) (LOCKED),Alex Morales,45069042,CPT,1500,Final,ORL,5.8,,
+SF/PF,Jamal Cain (45069043) (LOCKED),Jamal Cain,45069043,CPT,1500,Final,ORL,9.6,,
+C,Tolu Smith (45069044) (LOCKED),Tolu Smith,45069044,CPT,1500,Final,DET,3.9,,
+SG,Chaz Lanier (45069045) (LOCKED),Chaz Lanier,45069045,CPT,1500,Final,DET,4.9,,
+PF/C,Colin Castleton (45069046) (LOCKED),Colin Castleton,45069046,CPT,1500,Final,ORL,4.6,,
+PF/C,Isaac Jones (45069047) (LOCKED),Isaac Jones,45069047,CPT,1500,Final,DET,2.4,,
+PF,Taurean Prince (45069051) (LOCKED),Taurean Prince,45069051,CPT,1500,Final,DET,4.8,,
+PF,Jonathan Isaac (45069052) (LOCKED),Jonathan Isaac,45069052,CPT,1500,Final,ORL,0,,
+C,Izaiyah Nelson (45069053) (LOCKED),Izaiyah Nelson,45069053,CPT,1500,Final,ORL,0,,
+PG,Jevon Carter (45069002) (LOCKED),Jevon Carter,45069002,UTIL,1400,Final,ORL,10.5,,
+SF,Noah Penda (45069015) (LOCKED),Noah Penda,45069015,UTIL,1200,Final,ORL,0,,
+PG,EJ Harkless (45069003) (LOCKED),EJ Harkless,45069003,UTIL,1000,Final,DET,6.4,,
+C,Ugonna Onyenso (45069004) (LOCKED),Ugonna Onyenso,45069004,UTIL,1000,Final,DET,0,,
+PG,Ebuka Okorie (45069005) (LOCKED),Ebuka Okorie,45069005,UTIL,1000,Final,DET,3.8,,
+PG/SG,Jase Richardson (45069006) (LOCKED),Jase Richardson,45069006,UTIL,1000,Final,ORL,12.8,,
+PG/SG,Alex Morales (45069007) (LOCKED),Alex Morales,45069007,UTIL,1000,Final,ORL,5.8,,
+SF/PF,Jamal Cain (45069008) (LOCKED),Jamal Cain,45069008,UTIL,1000,Final,ORL,9.6,,
+C,Tolu Smith (45069009) (LOCKED),Tolu Smith,45069009,UTIL,1000,Final,DET,3.9,,
+SG,Chaz Lanier (45069010) (LOCKED),Chaz Lanier,45069010,UTIL,1000,Final,DET,4.9,,
+PF/C,Colin Castleton (45069011) (LOCKED),Colin Castleton,45069011,UTIL,1000,Final,ORL,4.6,,
+PF/C,Isaac Jones (45069012) (LOCKED),Isaac Jones,45069012,UTIL,1000,Final,DET,2.4,,
+PF,Taurean Prince (45069016) (LOCKED),Taurean Prince,45069016,UTIL,1000,Final,DET,4.8,,
+PF,Jonathan Isaac (45069017) (LOCKED),Jonathan Isaac,45069017,UTIL,1000,Final,ORL,0,,
+C,Izaiyah Nelson (45069018) (LOCKED),Izaiyah Nelson,45069018,UTIL,1000,Final,ORL,0,,

@@ -1,0 +1,125 @@
+{
+ "slate_id": 157210,
+ "updated_at": "2026-11-23T07:04:29.276772+00:00",
+ "kind": "classic",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Gui Santos",
+   "team": "GSW",
+   "salary": 4600,
+   "proj": 14.2,
+   "own": 1.5,
+   "headline": "Gui Santos without Stephen Curry",
+   "detail": "Averaged 26.3 DK pts in 41 games without them (vs 11.9 with). Hit 6x tonight's salary (28+ pts) in 20 of 41.",
+   "evidence": {
+    "games_without": 41,
+    "avg_without": 26.3,
+    "z": 6.34,
+    "avg_with": 11.9,
+    "hits_6x": 20,
+    "last_without": "2026-11-19"
+   },
+   "strength": 6.339,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gary Payton II",
+   "team": "GSW",
+   "salary": 3200,
+   "proj": 12.6,
+   "own": 3.0,
+   "headline": "Gary Payton II without Stephen Curry",
+   "detail": "Averaged 19.3 DK pts in 41 games without them (vs 12.3 with). Hit 6x tonight's salary (19+ pts) in 24 of 41.",
+   "evidence": {
+    "games_without": 41,
+    "avg_without": 19.3,
+    "z": 3.27,
+    "avg_with": 12.3,
+    "hits_6x": 24,
+    "last_without": "2026-11-19"
+   },
+   "strength": 3.273,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Mikal Bridges",
+   "team": "NYK",
+   "salary": 4700,
+   "proj": 27.6,
+   "own": 58.3,
+   "headline": "Mikal Bridges without OG Anunoby",
+   "detail": "Averaged 33.5 DK pts in 17 games without them (vs 26.0 with). Hit 6x tonight's salary (28+ pts) in 13 of 17.",
+   "evidence": {
+    "games_without": 17,
+    "avg_without": 33.5,
+    "z": 3.01,
+    "avg_with": 26.0,
+    "hits_6x": 13,
+    "last_without": "2026-11-21"
+   },
+   "strength": 3.009,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Sam Hauser",
+   "team": "BOS",
+   "salary": 4300,
+   "proj": 22.8,
+   "own": 24.5,
+   "headline": "Sam Hauser is starting (2 starts in his last 10)",
+   "detail": "Projected 27 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Josh Hart",
+   "team": "NYK",
+   "salary": 5300,
+   "proj": 33.2,
+   "own": 80.0,
+   "headline": "Josh Hart without OG Anunoby",
+   "detail": "Averaged 37.8 DK pts in 17 games without them (vs 28.9 with). Hit 6x tonight's salary (32+ pts) in 11 of 17.",
+   "evidence": {
+    "games_without": 17,
+    "avg_without": 37.8,
+    "z": 2.94,
+    "avg_with": 28.9,
+    "hits_6x": 11,
+    "last_without": "2026-11-21"
+   },
+   "strength": 2.937,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Derrick White",
+   "team": "BOS",
+   "salary": 7200,
+   "proj": 34.6,
+   "own": 31.8,
+   "headline": "Derrick White without Paul George",
+   "detail": "Averaged 34.3 DK pts in 86 games without them (vs 27.4 with). Hit 6x tonight's salary (43+ pts) in 15 of 86.",
+   "evidence": {
+    "games_without": 86,
+    "avg_without": 34.3,
+    "z": 2.61,
+    "avg_with": 27.4,
+    "hits_6x": 15,
+    "last_without": "2026-11-11"
+   },
+   "strength": 2.612,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

@@ -1,0 +1,228 @@
+{
+ "slate_id": 157245,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "classic",
+ "games": 2,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Josh Hart",
+   "team": "NYK",
+   "salary": 5700,
+   "proj": 28.6,
+   "own": 29.0,
+   "headline": "Josh Hart without OG Anunoby",
+   "detail": "Averaged 38.1 DK pts in 18 games without them (vs 28.9 with). Hit 6x tonight's salary (34+ pts) in 12 of 18.",
+   "evidence": {
+    "games_without": 18,
+    "avg_without": 38.1,
+    "z": 3.19,
+    "avg_with": 28.9,
+    "hits_6x": 12,
+    "last_without": "2026-11-22"
+   },
+   "strength": 3.187,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Sam Merrill",
+   "team": "CLE",
+   "salary": 3900,
+   "proj": 16.4,
+   "own": 6.7,
+   "headline": "Sam Merrill is starting (2 starts in his last 10)",
+   "detail": "Projected 24 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Micah Peavy",
+   "team": "OKC",
+   "salary": 3900,
+   "proj": 16.8,
+   "own": 7.9,
+   "headline": "Micah Peavy is starting (2 starts in his last 10)",
+   "detail": "Projected 30 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Bennett Stirtz",
+   "team": "OKC",
+   "salary": 4300,
+   "proj": 20.8,
+   "own": 20.8,
+   "headline": "Bennett Stirtz without Aday Mara",
+   "detail": "Averaged 30.8 DK pts in 2 games without them (vs 13.4 with). Hit 6x tonight's salary (26+ pts) in 2 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 30.8,
+    "z": 3.84,
+    "avg_with": 13.4,
+    "hits_6x": 2,
+    "last_without": "2026-11-23"
+   },
+   "strength": 3.836,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Mikal Bridges",
+   "team": "NYK",
+   "salary": 4900,
+   "proj": 19.6,
+   "own": 7.2,
+   "headline": "Mikal Bridges without OG Anunoby",
+   "detail": "Averaged 32.4 DK pts in 18 games without them (vs 26.0 with). Hit 6x tonight's salary (29+ pts) in 12 of 18.",
+   "evidence": {
+    "games_without": 18,
+    "avg_without": 32.4,
+    "z": 2.51,
+    "avg_with": 26.0,
+    "hits_6x": 12,
+    "last_without": "2026-11-22"
+   },
+   "strength": 2.507,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Norchad Omier",
+   "team": "CLE",
+   "salary": 3000,
+   "proj": 2.0,
+   "own": 0.1,
+   "headline": "Norchad Omier fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.1
+   },
+   "strength": 2.041,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Thomas Bryant",
+   "team": "CLE",
+   "salary": 3700,
+   "proj": 6.1,
+   "own": 0.4,
+   "headline": "Thomas Bryant fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.4
+   },
+   "strength": 2.006,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tyrese Proctor",
+   "team": "CLE",
+   "salary": 5000,
+   "proj": 8.1,
+   "own": 0.5,
+   "headline": "Tyrese Proctor fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.5
+   },
+   "strength": 2.001,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Pacome Dadiet",
+   "team": "NYK",
+   "salary": 3200,
+   "proj": 0.2,
+   "own": 0.1,
+   "headline": "Pacome Dadiet fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.1
+   },
+   "strength": 1.969,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Brooks Barnhizer",
+   "team": "OKC",
+   "salary": 3100,
+   "proj": 1.9,
+   "own": 0.1,
+   "headline": "Brooks Barnhizer fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.1
+   },
+   "strength": 1.961,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Jaylon Tyson",
+   "team": "CLE",
+   "salary": 4400,
+   "proj": 10.9,
+   "own": 1.1,
+   "headline": "Jaylon Tyson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 1.1
+   },
+   "strength": 1.919,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Joan Beringer",
+   "team": "MIN",
+   "salary": 4100,
+   "proj": 13.4,
+   "own": 2.6,
+   "headline": "Joan Beringer fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 3%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 2.6
+   },
+   "strength": 1.74,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Mario Hezonja",
+   "team": "CLE",
+   "salary": 4400,
+   "proj": 15.5,
+   "own": 3.6,
+   "headline": "Mario Hezonja fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 4%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 3.6
+   },
+   "strength": 1.605,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

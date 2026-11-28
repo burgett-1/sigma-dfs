@@ -1,0 +1,105 @@
+{
+ "slate_id": 157224,
+ "updated_at": "2026-11-24T06:14:25.765473+00:00",
+ "kind": "classic",
+ "games": 2,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Harrison Barnes",
+   "team": "SAS",
+   "salary": 3800,
+   "proj": 11.1,
+   "own": 2.5,
+   "headline": "Harrison Barnes without Dylan Harper",
+   "detail": "Averaged 21.7 DK pts in 15 games without them (vs 13.6 with). Hit 6x tonight's salary (23+ pts) in 6 of 15.",
+   "evidence": {
+    "games_without": 15,
+    "avg_without": 21.7,
+    "z": 3.06,
+    "avg_with": 13.6,
+    "hits_6x": 6,
+    "last_without": "2026-11-21"
+   },
+   "strength": 3.057,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Luke Kornet",
+   "team": "SAS",
+   "salary": 3100,
+   "proj": 18.1,
+   "own": 42.7,
+   "headline": "Luke Kornet is starting (0 starts in his last 10)",
+   "detail": "Projected 22 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Cameron Carr",
+   "team": "LAL",
+   "salary": 3100,
+   "proj": 1.0,
+   "own": 0.2,
+   "headline": "Cameron Carr without Austin Reaves",
+   "detail": "Averaged 7.2 DK pts in 3 games without them (vs 0.4 with). Hit 6x tonight's salary (19+ pts) in 0 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 7.2,
+    "z": 7.17,
+    "avg_with": 0.4,
+    "hits_6x": 0,
+    "last_without": "2026-11-20"
+   },
+   "strength": 7.169,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Quentin Grimes",
+   "team": "LAL",
+   "salary": 6200,
+   "proj": 25.6,
+   "own": 17.3,
+   "headline": "Quentin Grimes without Austin Reaves",
+   "detail": "Averaged 41.4 DK pts in 4 games without them (vs 16.9 with). Hit 6x tonight's salary (37+ pts) in 1 of 4.",
+   "evidence": {
+    "games_without": 4,
+    "avg_without": 41.4,
+    "z": 2.84,
+    "avg_with": 16.9,
+    "hits_6x": 1,
+    "last_without": "2026-11-20"
+   },
+   "strength": 2.836,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Jake LaRavia",
+   "team": "LAL",
+   "salary": 4800,
+   "proj": 15.0,
+   "own": 3.6,
+   "headline": "Jake LaRavia without Austin Reaves",
+   "detail": "Averaged 21.4 DK pts in 40 games without them (vs 16.3 with). Hit 6x tonight's salary (29+ pts) in 10 of 40.",
+   "evidence": {
+    "games_without": 40,
+    "avg_without": 21.4,
+    "z": 2.65,
+    "avg_with": 16.3,
+    "hits_6x": 10,
+    "last_without": "2026-11-20"
+   },
+   "strength": 2.653,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

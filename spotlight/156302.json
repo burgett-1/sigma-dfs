@@ -1,0 +1,240 @@
+{
+ "slate_id": 156302,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "classic",
+ "games": 6,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Olivier-Maxence Prosper",
+   "team": "MEM",
+   "salary": 3900,
+   "proj": 8.5,
+   "own": 0.3,
+   "headline": "Olivier-Maxence Prosper without Cameron Boozer, Jerami Grant",
+   "detail": "Averaged 18.1 DK pts in 54 games without them (vs 8.7 with). Hit 6x tonight's salary (23+ pts) in 17 of 54.",
+   "evidence": {
+    "games_without": 54,
+    "avg_without": 18.1,
+    "z": 3.38,
+    "avg_with": 8.7,
+    "hits_6x": 17,
+    "last_without": "2026-11-23"
+   },
+   "strength": 3.377,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Jahmai Mashack",
+   "team": "MEM",
+   "salary": 3000,
+   "proj": 3.2,
+   "own": 0.1,
+   "headline": "Jahmai Mashack without Cameron Boozer, Jerami Grant",
+   "detail": "Averaged 16.1 DK pts in 31 games without them (vs 5.8 with). Hit 6x tonight's salary (18+ pts) in 13 of 31.",
+   "evidence": {
+    "games_without": 31,
+    "avg_without": 16.1,
+    "z": 3.25,
+    "avg_with": 5.8,
+    "hits_6x": 13,
+    "last_without": "2026-11-21"
+   },
+   "strength": 3.25,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Josh Hart",
+   "team": "NYK",
+   "salary": 5700,
+   "proj": 28.6,
+   "own": 10.0,
+   "headline": "Josh Hart without OG Anunoby",
+   "detail": "Averaged 38.1 DK pts in 18 games without them (vs 28.9 with). Hit 6x tonight's salary (34+ pts) in 12 of 18.",
+   "evidence": {
+    "games_without": 18,
+    "avg_without": 38.1,
+    "z": 3.19,
+    "avg_with": 28.9,
+    "hits_6x": 12,
+    "last_without": "2026-11-22"
+   },
+   "strength": 3.187,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Buddy Hield",
+   "team": "CHI",
+   "salary": 5000,
+   "proj": 29.7,
+   "own": 24.1,
+   "headline": "Buddy Hield is starting (2 starts in his last 10)",
+   "detail": "Projected 29 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Mikel Brown Jr.",
+   "team": "BKN",
+   "salary": 4800,
+   "proj": 23.0,
+   "own": 5.6,
+   "headline": "Mikel Brown Jr. is starting (1 starts in his last 10)",
+   "detail": "Projected 25 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Nic Claxton",
+   "team": "CHI",
+   "salary": 4800,
+   "proj": 24.7,
+   "own": 8.9,
+   "headline": "Nic Claxton is starting (1 starts in his last 10)",
+   "detail": "Projected 26 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.14285714285714285
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Kris Murray",
+   "team": "MEM",
+   "salary": 4500,
+   "proj": 12.5,
+   "own": 0.6,
+   "headline": "Kris Murray is starting (1 starts in his last 10)",
+   "detail": "Projected 24 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Sam Merrill",
+   "team": "CLE",
+   "salary": 3900,
+   "proj": 16.4,
+   "own": 2.2,
+   "headline": "Sam Merrill is starting (2 starts in his last 10)",
+   "detail": "Projected 24 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Micah Peavy",
+   "team": "OKC",
+   "salary": 3900,
+   "proj": 16.8,
+   "own": 2.6,
+   "headline": "Micah Peavy is starting (2 starts in his last 10)",
+   "detail": "Projected 30 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Bennett Stirtz",
+   "team": "OKC",
+   "salary": 4300,
+   "proj": 20.8,
+   "own": 6.9,
+   "headline": "Bennett Stirtz without Aday Mara",
+   "detail": "Averaged 30.8 DK pts in 2 games without them (vs 13.4 with). Hit 6x tonight's salary (26+ pts) in 2 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 30.8,
+    "z": 3.84,
+    "avg_with": 13.4,
+    "hits_6x": 2,
+    "last_without": "2026-11-23"
+   },
+   "strength": 3.836,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Leonard Miller",
+   "team": "CHI",
+   "salary": 3000,
+   "proj": 4.3,
+   "own": 0.1,
+   "headline": "Leonard Miller without Norman Powell, Jalen Smith",
+   "detail": "Averaged 23.8 DK pts in 19 games without them (vs 13.0 with). Hit 6x tonight's salary (18+ pts) in 13 of 19.",
+   "evidence": {
+    "games_without": 19,
+    "avg_without": 23.8,
+    "z": 2.8,
+    "avg_with": 13.0,
+    "hits_6x": 13,
+    "last_without": "2026-04-12"
+   },
+   "strength": 2.801,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Zach Collins",
+   "team": "CHI",
+   "salary": 4000,
+   "proj": 9.6,
+   "own": 0.3,
+   "headline": "Zach Collins without Norman Powell, Jalen Smith",
+   "detail": "Averaged 14.5 DK pts in 2 games without them (vs 6.2 with). Hit 6x tonight's salary (24+ pts) in 0 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 14.5,
+    "z": 2.53,
+    "avg_with": 6.2,
+    "hits_6x": 0,
+    "last_without": "2025-12-07"
+   },
+   "strength": 2.534,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Mikal Bridges",
+   "team": "NYK",
+   "salary": 4900,
+   "proj": 19.6,
+   "own": 2.4,
+   "headline": "Mikal Bridges without OG Anunoby",
+   "detail": "Averaged 32.4 DK pts in 18 games without them (vs 26.0 with). Hit 6x tonight's salary (29+ pts) in 12 of 18.",
+   "evidence": {
+    "games_without": 18,
+    "avg_without": 32.4,
+    "z": 2.51,
+    "avg_with": 26.0,
+    "hits_6x": 12,
+    "last_without": "2026-11-22"
+   },
+   "strength": 2.507,
+   "strong": false
+  }
+ ],
+ "size_bucket": "medium",
+ "history_slates": 2
+}

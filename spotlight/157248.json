@@ -1,0 +1,138 @@
+{
+ "slate_id": 157248,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "winning_profile",
+   "player": "Duop Reath",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.2,
+   "headline": "Duop Reath fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.038,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Rasheer Fleming",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.2,
+   "headline": "Rasheer Fleming fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.038,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Jae'Sean Tate",
+   "team": "HOU",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.2,
+   "headline": "Jae'Sean Tate fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.038,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Jamaree Bouyea",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Jamaree Bouyea fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.034,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Koa Peat",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Koa Peat fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.034,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Bruce Thornton",
+   "team": "HOU",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Bruce Thornton fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.034,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Isaiah Crawford",
+   "team": "HOU",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Isaiah Crawford fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.2
+   },
+   "strength": 1.325,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Clint Capela",
+   "team": "HOU",
+   "salary": 3000,
+   "proj": 1.5,
+   "own": 0.3,
+   "headline": "Clint Capela fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.3
+   },
+   "strength": 1.314,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

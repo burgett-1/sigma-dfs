@@ -1,0 +1,120 @@
+{
+ "slate_id": 156751,
+ "updated_at": "2026-11-17T00:59:24.149621+00:00",
+ "kind": "classic",
+ "games": 3,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Gui Santos",
+   "team": "GSW",
+   "salary": 4600,
+   "proj": 15.8,
+   "own": 1.4,
+   "headline": "Gui Santos without Stephen Curry",
+   "detail": "Averaged 26.8 DK pts in 38 games without them (vs 11.9 with). Hit 6x tonight's salary (28+ pts) in 20 of 38.",
+   "evidence": {
+    "games_without": 38,
+    "avg_without": 26.8,
+    "z": 6.38,
+    "avg_with": 11.9,
+    "hits_6x": 20,
+    "last_without": "2026-11-13"
+   },
+   "strength": 6.375,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gary Payton II",
+   "team": "GSW",
+   "salary": 3300,
+   "proj": 14.5,
+   "own": 3.5,
+   "headline": "Gary Payton II without Stephen Curry",
+   "detail": "Averaged 19.9 DK pts in 38 games without them (vs 12.3 with). Hit 6x tonight's salary (20+ pts) in 23 of 38.",
+   "evidence": {
+    "games_without": 38,
+    "avg_without": 19.9,
+    "z": 3.45,
+    "avg_with": 12.3,
+    "hits_6x": 23,
+    "last_without": "2026-11-13"
+   },
+   "strength": 3.45,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Saddiq Bey",
+   "team": "NOP",
+   "salary": 6400,
+   "proj": 34.5,
+   "own": 36.0,
+   "headline": "Saddiq Bey without Dejounte Murray, Trey Murphy III",
+   "detail": "Averaged 39.2 DK pts in 9 games without them (vs 28.0 with). Hit 6x tonight's salary (38+ pts) in 6 of 9.",
+   "evidence": {
+    "games_without": 9,
+    "avg_without": 39.2,
+    "z": 3.45,
+    "avg_with": 28.0,
+    "hits_6x": 6,
+    "last_without": "2026-11-14"
+   },
+   "strength": 3.447,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "L.J. Cryer",
+   "team": "GSW",
+   "salary": 3900,
+   "proj": 19.4,
+   "own": 8.6,
+   "headline": "L.J. Cryer is starting (0 starts in his last 10)",
+   "detail": "Projected 20 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Al Horford",
+   "team": "GSW",
+   "salary": 3700,
+   "proj": 24.5,
+   "own": 61.6,
+   "headline": "Al Horford is starting (1 starts in his last 10)",
+   "detail": "Projected 23 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Jeremiah Fears",
+   "team": "NOP",
+   "salary": 6500,
+   "proj": 38.1,
+   "own": 72.5,
+   "headline": "Jeremiah Fears without Dejounte Murray, Trey Murphy III",
+   "detail": "Averaged 37.5 DK pts in 14 games without them (vs 23.1 with). Hit 6x tonight's salary (39+ pts) in 5 of 14.",
+   "evidence": {
+    "games_without": 14,
+    "avg_without": 37.5,
+    "z": 2.95,
+    "avg_with": 23.1,
+    "hits_6x": 5,
+    "last_without": "2026-11-14"
+   },
+   "strength": 2.945,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

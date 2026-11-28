@@ -1,0 +1,106 @@
+﻿Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,Starting
+PG,Cade Cunningham (45113894) (LOCKED),Cade Cunningham,45113894,PG/G/UTIL,9400,Final,DET,47,,
+PG/SF,Scottie Barnes (45113921) (LOCKED),Scottie Barnes,45113921,PG/SF/F/G/UTIL,9100,Final,TOR,46.3,,Starter
+C,Joel Embiid (45113734) (LOCKED),Joel Embiid,45113734,C/UTIL,8800,Final,PHI,41,,Starter
+PG,Tyrese Maxey (45113876) (LOCKED),Tyrese Maxey,45113876,PG/G/UTIL,8700,Final,PHI,41,,Starter
+PG,Tyrese Haliburton (45113809) (LOCKED),Tyrese Haliburton,45113809,PG/G/UTIL,8400,Final,IND,46.5,,
+SG,RJ Barrett (45113806) (LOCKED),RJ Barrett,45113806,SG/G/UTIL,8200,Final,TOR,37.2,,
+PF,LeBron James (45113698) (LOCKED),LeBron James,45113698,PF/F/UTIL,8100,Final,PHI,39.8,,Starter
+SG/SF,Jaylen Brown (45113772) (LOCKED),Jaylen Brown,45113772,SG/SF/F/G/UTIL,7900,Final,PHI,37.4,,
+SF,Kawhi Leonard (45113701) (LOCKED),Kawhi Leonard,45113701,SF/F/UTIL,7700,Final,TOR,39.1,,
+PF,Pascal Siakam (45113747) (LOCKED),Pascal Siakam,45113747,PF/F/UTIL,7700,Final,IND,37.5,,Starter
+PG/SG,Tyler Herro (45113826) (LOCKED),Tyler Herro,45113826,PG/SG/G/UTIL,7700,Final,MIL,37.2,,Starter
+PF,Julius Randle (45113731) (LOCKED),Julius Randle,45113731,PF/F/UTIL,7500,Final,BKN,37.6,,Starter
+PG,Immanuel Quickley (45113823) (LOCKED),Immanuel Quickley,45113823,PG/G/UTIL,7500,Final,TOR,35.5,,Starter
+SG/SF,Michael Porter Jr. (45113789) (LOCKED),Michael Porter Jr.,45113789,SG/SF/F/G/UTIL,7200,Final,BKN,33.8,,Starter
+PF,Ausar Thompson (45113984) (LOCKED),Ausar Thompson,45113984,PF/F/UTIL,7100,Final,DET,34,,Starter
+PG/SG,Andrew Nembhard (45113819) (LOCKED),Andrew Nembhard,45113819,PG/SG/G/UTIL,6700,Final,IND,31.5,,Starter
+PG/SG,Daniss Jenkins (45113872) (LOCKED),Daniss Jenkins,45113872,PG/SG/G/UTIL,6600,Final,DET,28.2,,Starter
+PG/SG,VJ Edgecombe (45114027) (LOCKED),VJ Edgecombe,45114027,PG/SG/G/UTIL,6400,Final,PHI,32.4,,Starter
+C,Jalen Duren (45113935) (LOCKED),Jalen Duren,45113935,C/UTIL,6200,Final,DET,28.9,,
+C,Ivica Zubac (45113777) (LOCKED),Ivica Zubac,45113777,C/UTIL,6000,Final,IND,26.6,,Starter
+SG/SF,Ja'Kobe Walter (45113999) (LOCKED),Ja'Kobe Walter,45113999,SG/SF/F/G/UTIL,5900,Final,TOR,23.5,,Starter
+PF/C,Collin Murray-Boyles (45114008) (LOCKED),Collin Murray-Boyles,45114008,PF/C/F/UTIL,5900,Final,TOR,22.3,,
+SG/SF,Kevin Huerter (45113781) (LOCKED),Kevin Huerter,45113781,SG/SF/F/G/UTIL,5800,Final,DET,21.3,,Starter
+C,Day'Ron Sharpe (45113919) (LOCKED),Day'Ron Sharpe,45113919,C/UTIL,5800,Final,BKN,28.5,,Starter
+C,Paul Reed (45113796) (LOCKED),Paul Reed,45113796,C/UTIL,5700,Final,DET,27.7,,
+SG/SF,Jaime Jaquez Jr. (45113867) (LOCKED),Jaime Jaquez Jr.,45113867,SG/SF/F/G/UTIL,5700,Final,MIL,26.9,,Starter
+PG/SG,Brayden Burries (45114060) (LOCKED),Brayden Burries,45114060,PG/SG/G/UTIL,5700,Final,MIL,24.3,,
+C,Jakob Poeltl (45113745) (LOCKED),Jakob Poeltl,45113745,C/UTIL,5600,Final,TOR,24.2,,Starter
+C,Myles Turner (45113739) (LOCKED),Myles Turner,45113739,C/UTIL,5200,Final,MIL,25.6,,Starter
+SF/PF,Kyle Kuzma (45113741) (LOCKED),Kyle Kuzma,45113741,SF/PF/F/UTIL,5100,Final,MIL,24.9,,Starter
+PF/C,John Collins (45113762) (LOCKED),John Collins,45113762,PF/C/F/UTIL,5100,Final,DET,22.8,,Starter
+SF,Aaron Nesmith (45113830) (LOCKED),Aaron Nesmith,45113830,SF/F/UTIL,5000,Final,IND,19.9,,Starter
+PG/SG,Jamal Shead (45113890) (LOCKED),Jamal Shead,45113890,PG/SG/G/UTIL,5000,Final,TOR,21.6,,
+PG/SG,Ryan Rollins (45113897) (LOCKED),Ryan Rollins,45113897,PG/SG/G/UTIL,5000,Final,MIL,24.1,,Starter
+PF/C,Kel'el Ware (45113964) (LOCKED),Kel'el Ware,45113964,PF/C/F/UTIL,5000,Final,MIL,22.4,,
+SG,Kelly Oubre Jr. (45113736) (LOCKED),Kelly Oubre Jr.,45113736,SG/G/UTIL,4800,Final,IND,21.4,,Starter
+SG/SF,Duncan Robinson (45113750) (LOCKED),Duncan Robinson,45113750,SG/SF/F/G/UTIL,4800,Final,DET,27.3,,
+PG/SG,Mikel Brown Jr. (45114056) (LOCKED),Mikel Brown Jr.,45114056,PG/SG/G/UTIL,4800,Final,BKN,21.9,,Starter
+SG/SF,Isaiah Joe (45113814) (LOCKED),Isaiah Joe,45113814,SG/SF/F/G/UTIL,4700,Final,DET,20.3,,
+PG/SG,Nolan Traore (45114042) (LOCKED),Nolan Traore,45114042,PG/SG/G/UTIL,4700,Final,BKN,22.2,,
+SF/PF,Danny Wolf (45113976) (LOCKED),Danny Wolf,45113976,SF/PF/F/UTIL,4600,Final,BKN,20.2,,Starter
+SF/PF,Allen Graves (45114035) (LOCKED),Allen Graves,45114035,SF/PF/F/UTIL,4600,Final,TOR,14,,Starter
+PG/SG,Egor Demin (45114031) (LOCKED),Egor Demin,45114031,PG/SG/G/UTIL,4500,Final,BKN,20,,
+PF/C,Obi Toppin (45113798) (LOCKED),Obi Toppin,45113798,PF/C/F/UTIL,4400,Final,IND,19.5,,
+PG,T.J. McConnell (45113704) (LOCKED),T.J. McConnell,45113704,PG/G/UTIL,4300,Final,IND,17.8,,
+SG/SF,Quenton Jackson (45113881) (LOCKED),Quenton Jackson,45113881,SG/SF/F/G/UTIL,4300,Final,IND,20.4,,
+PF,Javonte Green (45113716) (LOCKED),Javonte Green,45113716,PF/F/UTIL,4200,Final,DET,14.9,,Starter
+SF/PF,Jamison Battle (45113856) (LOCKED),Jamison Battle,45113856,SF/PF/F/UTIL,4200,Final,TOR,14.3,,
+SF/PF,Jabari Walker (45113911) (LOCKED),Jabari Walker,45113911,SF/PF/F/UTIL,4200,Final,PHI,14.9,,
+PG/SG,Anfernee Simons (45113802) (LOCKED),Anfernee Simons,45113802,PG/SG/G/UTIL,4100,Final,PHI,17,,
+SF/PF,Dean Wade (45113766) (LOCKED),Dean Wade,45113766,SF/PF/F/UTIL,4000,Final,PHI,16.2,,
+C,Moritz Wagner (45113770) (LOCKED),Moritz Wagner,45113770,C/UTIL,4000,Final,BKN,17.1,,
+SG/SF,Kentavious Caldwell-Pope (45113707) (LOCKED),Kentavious Caldwell-Pope,45113707,SG/SF/F/G/UTIL,3900,Final,PHI,14.3,,
+SF/PF,Jalen Slawson (45113836) (LOCKED),Jalen Slawson,45113836,SF/PF/F/UTIL,3900,Final,IND,15,,
+SF/PF,Noah Clowney (45113949) (LOCKED),Noah Clowney,45113949,SF/PF/F/UTIL,3800,Final,BKN,16.5,,
+PF/C,Dominick Barlow (45113980) (LOCKED),Dominick Barlow,45113980,PF/C/F/UTIL,3700,Final,PHI,21.4,,Starter
+SF,Jarace Walker (45113953) (LOCKED),Jarace Walker,45113953,SF/F/UTIL,3600,Final,IND,15.9,,
+SF/PF,Nate Ament (45114049) (LOCKED),Nate Ament,45114049,SF/PF/F/UTIL,3600,Final,MIL,13.2,,
+C,Trayce Jackson-Davis (45113879) (LOCKED),Trayce Jackson-Davis,45113879,C/UTIL,3500,Final,TOR,10.1,,
+PF/C,Adem Bona (45113939) (LOCKED),Adem Bona,45113939,PF/C/F/UTIL,3500,Final,PHI,10.3,,
+PG/SG,Braden Smith (45113960) (LOCKED),Braden Smith,45113960,PG/SG/G/UTIL,3500,Final,IND,12.4,,
+PG/SF,Kasparas Jakucionis (45113994) (LOCKED),Kasparas Jakucionis,45113994,PG/SF/F/G/UTIL,3500,Final,MIL,17.5,,
+SF/PF,Ronald Holland II (45114019) (LOCKED),Ronald Holland II,45114019,SF/PF/F/UTIL,3500,Final,DET,15.2,,
+SF,Gary Trent Jr. (45113786) (LOCKED),Gary Trent Jr.,45113786,SF/F/UTIL,3400,Final,MIL,7.2,,
+PG,EJ Harkless (45113840) (LOCKED),EJ Harkless,45113840,PG/G/UTIL,3400,Final,DET,11.3,,
+SG,Alijah Martin (45113901) (LOCKED),Alijah Martin,45113901,SG/G/UTIL,3400,Final,TOR,9,,
+PG/SG,AJ Green (45113849) (LOCKED),AJ Green,45113849,PG/SG/G/UTIL,3300,Final,MIL,9,,
+PF/C,Larry Nance Jr. (45113712) (LOCKED),Larry Nance Jr.,45113712,PF/C/F/UTIL,3100,Final,IND,9.8,,
+PG/SG,Keon Ellis (45113886) (LOCKED),Keon Ellis,45113886,PG/SG/G/UTIL,3100,Final,BKN,12.1,,
+PF,Taurean Prince (45113719) (LOCKED),Taurean Prince,45113719,PF/F/UTIL,3000,Final,DET,4.8,,
+SF/PF,Kyle Anderson (45113722) (LOCKED),Kyle Anderson,45113722,SF/PF/F/UTIL,3000,Final,TOR,6.1,,
+PG/SF,Caris LeVert (45113726) (LOCKED),Caris LeVert,45113726,PG/SF/F/G/UTIL,3000,Final,MIL,6.3,,
+C,Tacko Fall (45113755) (LOCKED),Tacko Fall,45113755,C/UTIL,3000,Final,PHI,3.5,,
+PG/SF,Terance Mann (45113757) (LOCKED),Terance Mann,45113757,PG/SF/F/G/UTIL,3000,Final,BKN,4.8,,
+C,Jay Huff (45113779) (LOCKED),Jay Huff,45113779,C/UTIL,3000,Final,IND,13.2,,
+C,Jericho Sims (45113794) (LOCKED),Jericho Sims,45113794,C/UTIL,3000,Final,MIL,3.6,,
+C,Pete Nance (45113812) (LOCKED),Pete Nance,45113812,C/UTIL,3000,Final,MIL,7.7,,
+PG,Cormac Ryan (45113833) (LOCKED),Cormac Ryan,45113833,PG/G/UTIL,3000,Final,MIL,0,,
+PG/SG,Malachi Smith (45113843) (LOCKED),Malachi Smith,45113843,PG/SG/G/UTIL,3000,Final,TOR,2.2,,
+C,Tolu Smith (45113847) (LOCKED),Tolu Smith,45113847,C/UTIL,3000,Final,DET,3.9,,
+SF,Kevin McCullar Jr. (45113853) (LOCKED),Kevin McCullar Jr.,45113853,SF/F/UTIL,3000,Final,TOR,0,,
+PG/SG,Ben Sheppard (45113860) (LOCKED),Ben Sheppard,45113860,PG/SG/G/UTIL,3000,Final,IND,4.8,,
+SF,Kobe Brown (45113864) (LOCKED),Kobe Brown,45113864,SF/F/UTIL,3000,Final,IND,6.9,,
+SG/SF,Chaz Lanier (45113904) (LOCKED),Chaz Lanier,45113904,SG/SF/F/G/UTIL,3000,Final,DET,5.1,,
+C,Grant Nelson (45113909) (LOCKED),Grant Nelson,45113909,C/UTIL,3000,Final,BKN,10.2,,
+PG/SG,Caleb Love (45113915) (LOCKED),Caleb Love,45113915,PG/SG/G/UTIL,3000,Final,PHI,2.6,,
+PG,Kam Jones (45113926) (LOCKED),Kam Jones,45113926,PG/G/UTIL,3000,Final,MIL,0,,
+PF/C,Josh Minott (45113929) (LOCKED),Josh Minott,45113929,PF/C/F/UTIL,3000,Final,BKN,6.1,,
+C,Nate Bittle (45113933) (LOCKED),Nate Bittle,45113933,C/UTIL,3000,Final,TOR,0,,
+C,Ariel Hukporti (45113937) (LOCKED),Ariel Hukporti,45113937,C/UTIL,3000,Final,PHI,0,,
+C,Ousmane Dieng (45113943) (LOCKED),Ousmane Dieng,45113943,C/UTIL,3000,Final,MIL,7.6,,
+PG/SG,Jaden Bradley (45113945) (LOCKED),Jaden Bradley,45113945,PG/SG/G/UTIL,3000,Final,TOR,4.3,,
+PF/C,Isaac Jones (45113956) (LOCKED),Isaac Jones,45113956,PF/C/F/UTIL,3000,Final,DET,2.4,,
+PF,Tyler Bilodeau (45113968) (LOCKED),Tyler Bilodeau,45113968,PF/F/UTIL,3000,Final,BKN,0,,
+PF,Joshua Jefferson (45113971) (LOCKED),Joshua Jefferson,45113971,PF/F/UTIL,3000,Final,BKN,0,,
+C,Ugonna Onyenso (45113974) (LOCKED),Ugonna Onyenso,45113974,C/UTIL,3000,Final,DET,0,,
+C,Bogoljub Markovic (45113987) (LOCKED),Bogoljub Markovic,45113987,C/UTIL,3000,Final,MIL,2.4,,
+SG/SF,Rayan Rupert (45113989) (LOCKED),Rayan Rupert,45113989,SG/SF/F/G/UTIL,3000,Final,PHI,3.1,,
+SF/PF,Justin Edwards (45114004) (LOCKED),Justin Edwards,45114004,SF/PF/F/UTIL,3000,Final,PHI,2.6,,
+PF/C,Chaney Johnson (45114012) (LOCKED),Chaney Johnson,45114012,PF/C/F/UTIL,3000,Final,BKN,10.3,,
+SG,Johnny Furphy (45114016) (LOCKED),Johnny Furphy,45114016,SG/G/UTIL,3000,Final,IND,0,,
+PG/SG,Labaron Philon Jr. (45114023) (LOCKED),Labaron Philon Jr.,45114023,PG/SG/G/UTIL,3000,Final,PHI,4.8,,
+SG,Drake Powell (45114039) (LOCKED),Drake Powell,45114039,SG/G/UTIL,3000,Final,BKN,4.6,,
+PG,Ben Saraf (45114046) (LOCKED),Ben Saraf,45114046,PG/G/UTIL,3000,Final,BKN,7.1,,
+PG,Ebuka Okorie (45114053) (LOCKED),Ebuka Okorie,45114053,PG/G/UTIL,3000,Final,DET,3.8,,

@@ -1,0 +1,1132 @@
+{
+ "date": "2026-11-27",
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "source": "NBA.com Today's Lineups (confirmed/expected); otherwise Sigma projection",
+ "feed_ok_at": "2026-11-28T05:11:44.786778+00:00",
+ "teams": [
+  {
+   "team": "ATL",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Jalen Johnson",
+     "position": "PF",
+     "proj": 46.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Dyson Daniels",
+     "position": "SG/SF",
+     "proj": 34.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Nickeil Alexander-Walker",
+     "position": "PG/SG",
+     "proj": 34.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Onyeka Okongwu",
+     "position": "C",
+     "proj": 33.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Kingston Flemings",
+     "position": "PG",
+     "proj": 19.9,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "CJ McCollum",
+    "Jock Landale",
+    "Asa Newell",
+    "Mouhamed Gueye",
+    "Henri Veesaar"
+   ],
+   "questionable": [],
+   "referees": [
+    "Mitchell Ervin",
+    "Karl Lane",
+    "Che Flores"
+   ]
+  },
+  {
+   "team": "BKN",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Julius Randle",
+     "position": "PF",
+     "proj": 38.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Michael Porter Jr.",
+     "position": "SG/SF",
+     "proj": 36.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Day'Ron Sharpe",
+     "position": "C",
+     "proj": 32.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Mikel Brown Jr.",
+     "position": "PG/SG",
+     "proj": 22.4,
+     "unexpected": "starting"
+    },
+    {
+     "name": "Danny Wolf",
+     "position": "SF/PF",
+     "proj": 21.4,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Nolan Traore",
+    "Moritz Wagner"
+   ],
+   "questionable": [],
+   "referees": [
+    "James Capers",
+    "Tre Maddox",
+    "Scott Twardoski"
+   ],
+   "benched": [
+    "Egor Demin"
+   ]
+  },
+  {
+   "team": "BOS",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Jayson Tatum",
+     "position": "SF/PF",
+     "proj": 49.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Paul George",
+     "position": "PF",
+     "proj": 37.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Derrick White",
+     "position": "PG/SG",
+     "proj": 27.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Neemias Queta",
+     "position": "C",
+     "proj": 25.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Hugo Gonzalez",
+     "position": "SG",
+     "proj": 10.1,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Mitchell Robinson"
+   ],
+   "questionable": [],
+   "referees": [
+    "Mitchell Ervin",
+    "Karl Lane",
+    "Che Flores"
+   ]
+  },
+  {
+   "team": "DAL",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Cooper Flagg",
+     "position": "PG/SF",
+     "proj": 45.0,
+     "unexpected": ""
+    },
+    {
+     "name": "PJ Washington",
+     "position": "PF/C",
+     "proj": 27.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Daniel Gafford",
+     "position": "C",
+     "proj": 24.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Caleb Martin",
+     "position": "SG/SF",
+     "proj": 17.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Zaccharie Risacher",
+     "position": "SF",
+     "proj": 19.3,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Kyrie Irving",
+    "Sergio de Larrea",
+    "Dereck Lively II",
+    "Tobi Lawal",
+    "Tarik Biberovic"
+   ],
+   "questionable": [],
+   "referees": [
+    "Kevin Scott",
+    "John Butler",
+    "Leon Wood"
+   ]
+  },
+  {
+   "team": "DEN",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Nikola Jokic",
+     "position": "C",
+     "proj": 62.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Jamal Murray",
+     "position": "PG",
+     "proj": 45.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Christian Braun",
+     "position": "SG/SF",
+     "proj": 24.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Aaron Gordon",
+     "position": "PF/C",
+     "proj": 23.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Cameron Johnson",
+     "position": "SG/SF",
+     "proj": 20.3,
+     "unexpected": ""
+    }
+   ],
+   "out": [],
+   "questionable": [],
+   "referees": [
+    "Bill Kennedy",
+    "Ray Acosta",
+    "CJ Washington"
+   ]
+  },
+  {
+   "team": "DET",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Ausar Thompson",
+     "position": "PF",
+     "proj": 35.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Daniss Jenkins",
+     "position": "PG/SG",
+     "proj": 32.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Kevin Huerter",
+     "position": "SG/SF",
+     "proj": 25.2,
+     "unexpected": ""
+    },
+    {
+     "name": "John Collins",
+     "position": "PF/C",
+     "proj": 21.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Javonte Green",
+     "position": "PF",
+     "proj": 18.2,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Cade Cunningham",
+    "Jalen Duren",
+    "Duncan Robinson",
+    "Ebuka Okorie",
+    "Taurean Prince"
+   ],
+   "questionable": [],
+   "referees": [
+    "Marc Davis",
+    "Eric Dalen",
+    "Rodney Mott"
+   ]
+  },
+  {
+   "team": "GSW",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Yaxel Lendeborg",
+     "position": "SF/PF",
+     "proj": 32.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Brandin Podziemski",
+     "position": "PG/SG",
+     "proj": 29.5,
+     "unexpected": ""
+    },
+    {
+     "name": "De'Anthony Melton",
+     "position": "PG/SG",
+     "proj": 23.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Draymond Green",
+     "position": "PF/C",
+     "proj": 22.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Charles Bassey",
+     "position": "C",
+     "proj": 28.8,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Stephen Curry",
+    "Jimmy Butler",
+    "Gui Santos",
+    "Kristaps Porzingis",
+    "Moses Moody"
+   ],
+   "questionable": [],
+   "referees": [
+    "James Williams",
+    "Justin Van Duyne",
+    "Derrick Collins"
+   ]
+  },
+  {
+   "team": "IND",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Pascal Siakam",
+     "position": "PF",
+     "proj": 37.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Andrew Nembhard",
+     "position": "PG/SG",
+     "proj": 32.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Ivica Zubac",
+     "position": "C",
+     "proj": 27.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Aaron Nesmith",
+     "position": "SF",
+     "proj": 17.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Kelly Oubre Jr.",
+     "position": "SG",
+     "proj": 21.7,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Tyrese Haliburton",
+    "T.J. McConnell",
+    "Ben Sheppard"
+   ],
+   "questionable": [],
+   "referees": [
+    "Ben Taylor",
+    "Robert Hussey",
+    "Jenna Reneau"
+   ],
+   "benched": [
+    "Johnny Furphy"
+   ]
+  },
+  {
+   "team": "LAC",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Darius Garland",
+     "position": "PG",
+     "proj": 36.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Brandon Ingram",
+     "position": "SG",
+     "proj": 30.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Brook Lopez",
+     "position": "C",
+     "proj": 23.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Rui Hachimura",
+     "position": "PF",
+     "proj": 24.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Derrick Jones Jr.",
+     "position": "SF",
+     "proj": 15.8,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Bradley Beal",
+    "Yanic Konan Niederhauser",
+    "Jordan Miller"
+   ],
+   "questionable": [],
+   "referees": [
+    "Curtis Blair",
+    "Sha'Rae Mitchell",
+    "Jenna Schroeder"
+   ],
+   "benched": [
+    "Kris Dunn"
+   ]
+  },
+  {
+   "team": "LAL",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Luka Doncic",
+     "position": "PG",
+     "proj": 58.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Austin Reaves",
+     "position": "PG/SG",
+     "proj": 30.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Walker Kessler",
+     "position": "C",
+     "proj": 35.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Jake LaRavia",
+     "position": "SF/PF",
+     "proj": 15.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Matisse Thybulle",
+     "position": "SF/PF",
+     "proj": 17.1,
+     "unexpected": ""
+    }
+   ],
+   "out": [],
+   "questionable": [],
+   "referees": [
+    "John Goble",
+    "Andy Nagy",
+    "Aaron Smith"
+   ],
+   "benched": [
+    "Quentin Grimes"
+   ]
+  },
+  {
+   "team": "MEM",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Ty Jerome",
+     "position": "PG/SG",
+     "proj": 43.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Cedric Coward",
+     "position": "SG",
+     "proj": 35.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Zach Edey",
+     "position": "C",
+     "proj": 29.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Jaylen Wells",
+     "position": "SF",
+     "proj": 18.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Kris Murray",
+     "position": "PF",
+     "proj": 14.8,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Cameron Boozer",
+    "Scotty Pippen Jr.",
+    "Jerami Grant",
+    "Isaiah Stewart",
+    "Richie Saunders"
+   ],
+   "questionable": [],
+   "referees": [
+    "Ed Malloy",
+    "Natalie Sago",
+    "Brandon Schwab"
+   ]
+  },
+  {
+   "team": "MIA",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Giannis Antetokounmpo",
+     "position": "PF",
+     "proj": 59.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Bam Adebayo",
+     "position": "C",
+     "proj": 46.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Davion Mitchell",
+     "position": "PG",
+     "proj": 33.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Klay Thompson",
+     "position": "SG/SF",
+     "proj": 21.7,
+     "unexpected": ""
+    },
+    {
+     "name": "Pelle Larsson",
+     "position": "SG/SF",
+     "proj": 21.1,
+     "unexpected": ""
+    }
+   ],
+   "out": [],
+   "questionable": [],
+   "referees": [
+    "Scott Foster",
+    "Jacyn Goble",
+    "Nate Cearley"
+   ]
+  },
+  {
+   "team": "MIL",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Tyler Herro",
+     "position": "PG/SG",
+     "proj": 37.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Jaime Jaquez Jr.",
+     "position": "SG/SF",
+     "proj": 23.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Myles Turner",
+     "position": "C",
+     "proj": 21.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Kyle Kuzma",
+     "position": "SF/PF",
+     "proj": 21.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Ryan Rollins",
+     "position": "PG/SG",
+     "proj": 25.4,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Kasparas Jakucionis"
+   ],
+   "questionable": [],
+   "referees": [
+    "Marc Davis",
+    "Eric Dalen",
+    "Rodney Mott"
+   ],
+   "benched": [
+    "Brayden Burries",
+    "Pete Nance"
+   ]
+  },
+  {
+   "team": "MIN",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Jaden McDaniels",
+     "position": "SF/PF",
+     "proj": 39.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Ayo Dosunmu",
+     "position": "PG/SG",
+     "proj": 37.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Jonathan Kuminga",
+     "position": "SF/PF",
+     "proj": 30.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Rudy Gobert",
+     "position": "C",
+     "proj": 30.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Terrence Shannon Jr.",
+     "position": "SG/SF",
+     "proj": 27.5,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Anthony Edwards",
+    "LaMelo Ball",
+    "Jaylen Clark",
+    "Donte DiVincenzo"
+   ],
+   "questionable": [],
+   "referees": [
+    "Ed Malloy",
+    "Natalie Sago",
+    "Brandon Schwab"
+   ]
+  },
+  {
+   "team": "NOP",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Jeremiah Fears",
+     "position": "PG",
+     "proj": 34.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Zion Williamson",
+     "position": "PF",
+     "proj": 35.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Trey Murphy III",
+     "position": "SG/SF",
+     "proj": 32.3,
+     "unexpected": ""
+    },
+    {
+     "name": "Yves Missi",
+     "position": "C",
+     "proj": 19.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Herbert Jones",
+     "position": "SG/SF",
+     "proj": 13.8,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Dejounte Murray",
+    "Bennedict Mathurin"
+   ],
+   "questionable": [
+    "Julian Reese"
+   ],
+   "referees": [
+    "Curtis Blair",
+    "Sha'Rae Mitchell",
+    "Jenna Schroeder"
+   ],
+   "benched": [
+    "Saddiq Bey"
+   ]
+  },
+  {
+   "team": "NYK",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Karl-Anthony Towns",
+     "position": "PF/C",
+     "proj": 57.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Jalen Brunson",
+     "position": "PG",
+     "proj": 47.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Josh Hart",
+     "position": "SG/SF",
+     "proj": 33.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Landry Shamet",
+     "position": "SF/PF",
+     "proj": 19.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Mikal Bridges",
+     "position": "SF",
+     "proj": 24.3,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "OG Anunoby",
+    "Andre Drummond",
+    "Miles McBride",
+    "Jordan Clarkson"
+   ],
+   "questionable": [],
+   "referees": [
+    "Scott Foster",
+    "Jacyn Goble",
+    "Nate Cearley"
+   ]
+  },
+  {
+   "team": "PHI",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Joel Embiid",
+     "position": "C",
+     "proj": 47.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Tyrese Maxey",
+     "position": "PG",
+     "proj": 43.0,
+     "unexpected": ""
+    },
+    {
+     "name": "LeBron James",
+     "position": "PF",
+     "proj": 45.0,
+     "unexpected": ""
+    },
+    {
+     "name": "VJ Edgecombe",
+     "position": "PG/SG",
+     "proj": 35.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Dominick Barlow",
+     "position": "PF/C",
+     "proj": 15.0,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "Jaylen Brown",
+    "Dean Wade",
+    "Ariel Hukporti"
+   ],
+   "questionable": [],
+   "referees": [
+    "Ben Taylor",
+    "Robert Hussey",
+    "Jenna Reneau"
+   ]
+  },
+  {
+   "team": "PHX",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Devin Booker",
+     "position": "PG/SG",
+     "proj": 42.1,
+     "unexpected": ""
+    },
+    {
+     "name": "Miles Bridges",
+     "position": "PF",
+     "proj": 29.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Dillon Brooks",
+     "position": "SF/PF",
+     "proj": 26.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Jalen Green",
+     "position": "SG/SF",
+     "proj": 28.9,
+     "unexpected": ""
+    },
+    {
+     "name": "Oso Ighodaro",
+     "position": "C",
+     "proj": 20.1,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Mark Williams"
+   ],
+   "questionable": [],
+   "referees": [
+    "Kevin Scott",
+    "John Butler",
+    "Leon Wood"
+   ]
+  },
+  {
+   "team": "POR",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Deni Avdija",
+     "position": "SF/PF",
+     "proj": 51.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Donovan Clingan",
+     "position": "C",
+     "proj": 41.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Jrue Holiday",
+     "position": "PG/SF",
+     "proj": 39.8,
+     "unexpected": "starting"
+    },
+    {
+     "name": "Toumani Camara",
+     "position": "SF",
+     "proj": 21.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Sidy Cissoko",
+     "position": "SG",
+     "proj": 19.4,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Damian Lillard",
+    "Ja Morant",
+    "Vit Krejci",
+    "Chris Youngblood",
+    "Shaedon Sharpe"
+   ],
+   "questionable": [],
+   "referees": [
+    "James Williams",
+    "Justin Van Duyne",
+    "Derrick Collins"
+   ]
+  },
+  {
+   "team": "SAS",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Victor Wembanyama",
+     "position": "C",
+     "proj": 67.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Stephon Castle",
+     "position": "SG",
+     "proj": 39.7,
+     "unexpected": ""
+    },
+    {
+     "name": "De'Aaron Fox",
+     "position": "PG",
+     "proj": 29.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Devin Vassell",
+     "position": "SF",
+     "proj": 25.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Julian Champagnie",
+     "position": "PF",
+     "proj": 22.5,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Tobias Harris",
+    "Jayden Quaintance"
+   ],
+   "questionable": [],
+   "referees": [
+    "John Goble",
+    "Andy Nagy",
+    "Aaron Smith"
+   ],
+   "benched": [
+    "Dylan Harper"
+   ]
+  },
+  {
+   "team": "TOR",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Scottie Barnes",
+     "position": "PG/SF",
+     "proj": 48.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Immanuel Quickley",
+     "position": "PG",
+     "proj": 37.4,
+     "unexpected": ""
+    },
+    {
+     "name": "Ja'Kobe Walter",
+     "position": "SG/SF",
+     "proj": 0.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Jakob Poeltl",
+     "position": "C",
+     "proj": 27.5,
+     "unexpected": ""
+    },
+    {
+     "name": "Allen Graves",
+     "position": "SF/PF",
+     "proj": 23.2,
+     "unexpected": "starting"
+    }
+   ],
+   "out": [
+    "RJ Barrett",
+    "Kawhi Leonard",
+    "Ja'Kobe Walter",
+    "Nate Bittle"
+   ],
+   "questionable": [],
+   "referees": [
+    "James Capers",
+    "Tre Maddox",
+    "Scott Twardoski"
+   ],
+   "benched": [
+    "Collin Murray-Boyles"
+   ]
+  },
+  {
+   "team": "UTA",
+   "opp": "",
+   "home": false,
+   "start_utc": null,
+   "status": "confirmed",
+   "starters": [
+    {
+     "name": "Keyonte George",
+     "position": "PG",
+     "proj": 37.2,
+     "unexpected": ""
+    },
+    {
+     "name": "Darryn Peterson",
+     "position": "PG/SG",
+     "proj": 30.8,
+     "unexpected": ""
+    },
+    {
+     "name": "Ace Bailey",
+     "position": "PF",
+     "proj": 27.0,
+     "unexpected": ""
+    },
+    {
+     "name": "Jusuf Nurkic",
+     "position": "C",
+     "proj": 29.6,
+     "unexpected": ""
+    },
+    {
+     "name": "Josh Green",
+     "position": "SF",
+     "proj": 10.5,
+     "unexpected": ""
+    }
+   ],
+   "out": [
+    "Lauri Markkanen",
+    "Jaren Jackson Jr.",
+    "Mo Bamba"
+   ],
+   "questionable": [],
+   "referees": [
+    "Bill Kennedy",
+    "Ray Acosta",
+    "CJ Washington"
+   ],
+   "benched": [
+    "Jaxson Hayes"
+   ]
+  }
+ ]
+}

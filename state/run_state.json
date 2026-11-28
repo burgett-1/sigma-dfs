@@ -1,0 +1,2446 @@
+{
+ "backfilled": 2025,
+ "backfill_v": 2,
+ "dk_groups": {
+  "2026-11-27": [
+   {
+    "draft_group_id": 157354,
+    "name": "Night",
+    "start_utc": "2026-11-28T02:30:00+00:00",
+    "game_count": 4,
+    "featured": true,
+    "kind": "classic",
+    "contest_type": 70
+   },
+   {
+    "draft_group_id": 157356,
+    "name": "LAL @ SAS",
+    "start_utc": "2026-11-28T02:30:00+00:00",
+    "game_count": 1,
+    "featured": true,
+    "kind": "showdown",
+    "contest_type": 81
+   },
+   {
+    "draft_group_id": 157353,
+    "name": "DAL @ PHX",
+    "start_utc": "2026-11-28T02:00:00+00:00",
+    "game_count": 1,
+    "featured": false,
+    "kind": "showdown",
+    "contest_type": 81
+   },
+   {
+    "draft_group_id": 157352,
+    "name": "Turbo",
+    "start_utc": "2026-11-28T01:00:00+00:00",
+    "game_count": 2,
+    "featured": false,
+    "kind": "classic",
+    "contest_type": 70
+   },
+   {
+    "draft_group_id": 157351,
+    "name": "Turbo",
+    "start_utc": "2026-11-28T00:30:00+00:00",
+    "game_count": 2,
+    "featured": false,
+    "kind": "classic",
+    "contest_type": 70
+   },
+   {
+    "draft_group_id": 156303,
+    "name": "Main",
+    "start_utc": "2026-11-28T00:00:00+00:00",
+    "game_count": 1,
+    "featured": true,
+    "kind": "classic",
+    "contest_type": 70
+   },
+   {
+    "draft_group_id": 157350,
+    "name": "MIA @ NYK",
+    "start_utc": "2026-11-28T00:00:00+00:00",
+    "game_count": 1,
+    "featured": false,
+    "kind": "showdown",
+    "contest_type": 81
+   }
+  ]
+ },
+ "live": {
+  "E401909326": {
+   "progress": 0.0,
+   "state": "pre",
+   "fp": {}
+  },
+  "E401909327": {
+   "progress": 0.0,
+   "state": "pre",
+   "fp": {}
+  },
+  "E401909328": {
+   "progress": 0.0,
+   "state": "pre",
+   "fp": {}
+  },
+  "E401909329": {
+   "progress": 0.0,
+   "state": "pre",
+   "fp": {}
+  },
+  "E401909330": {
+   "progress": 0.0,
+   "state": "pre",
+   "fp": {
+    "onyeka okongwu|ATL": 0.0,
+    "jalen johnson|ATL": 0.0,
+    "nickeil alexanderwalker|ATL": 0.0,
+    "dyson daniels|ATL": 0.0,
+    "kingston flemings|ATL": 0.0,
+    "dorian finneysmith|ATL": 0.0,
+    "corey kispert|ATL": 0.0,
+    "zuby ejiofor|ATL": 0.0,
+    "jock landale|ATL": 0.0,
+    "luguentz dort|ATL": 0.0,
+    "aaron wiggins|ATL": 0.0,
+    "rayj dennis|ATL": 0.0,
+    "paul george|BOS": 0.0,
+    "jayson tatum|BOS": 0.0,
+    "neemias queta|BOS": 0.0,
+    "derrick white|BOS": 0.0,
+    "hugo gonzalez|BOS": 0.0,
+    "sam hauser|BOS": 0.0,
+    "chris cenac|BOS": 0.0,
+    "luka garza|BOS": 0.0,
+    "mike conley|BOS": 0.0,
+    "payton pritchard|BOS": 0.0,
+    "ron harper|BOS": 0.0,
+    "baylor scheierman|BOS": 0.0,
+    "jordan walsh|BOS": 0.0
+   }
+  }
+ },
+ "live_day": "2026-11-27",
+ "published_at": "2026-11-28T05:03:07.930048+00:00",
+ "history_at": "2026-11-28T05:03:07.930048+00:00",
+ "injury_sources": {
+  "nba_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-28_12_00AM.pdf",
+  "nba_rows": [
+   {
+    "name": "Paolo 05:00(ET) ORL@WAS OrlandoMagic Banchero",
+    "team": "",
+    "status": "OUT",
+    "reason": "Sprain",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Anthony Black",
+    "team": "",
+    "status": "QUESTIONABLE",
+    "reason": "Injury/Illness-Backsoreness",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Colin Castleton",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way Injury/Illness-LeftKneeInjury",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jonathan Isaac",
+    "team": "",
+    "status": "OUT",
+    "reason": "Management Injury/Illness-LeftAnkleinjury",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Izaiyah Nelson",
+    "team": "",
+    "status": "OUT",
+    "reason": "recovery Injury/Illness-RightPartiallytorn",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Noah Penda",
+    "team": "",
+    "status": "OUT",
+    "reason": "hamstring ReturntoCompetition",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Kevin PorterJr.",
+    "team": "",
+    "status": "OUT",
+    "reason": "Reconditioning",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Reece WashingtonWizards Beekman",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Justin Champagnie",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-RightFootSurgery",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Felix Okpara",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Tristan Vukcevic",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftHipImpingement Injury/Illness-LeftACLRepair/",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jamir Watkins",
+    "team": "",
+    "status": "OUT",
+    "reason": "Surgery 06:00(ET) BKN@CHA BrooklynNets NOTYETSUBMITTED",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Michael CharlotteHornets Ajayi",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way Page1of4",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Grayson Allen",
+    "team": "",
+    "status": "QUESTIONABLE",
+    "reason": "ConcussionProtocol",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Kylan Boswell",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "PJ Hall",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way Injury/Illness-LeftHipSoreness/",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Ryan Kalkbrenner",
+    "team": "",
+    "status": "PROBABLE",
+    "reason": "Tightness",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Kon Knueppel",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftHamstringStrain",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Dennis Schroder",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftHamstringStrain 08:00(ET) IND@CHI IndianaPacers NOTYETSUBMITTED",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Tobe ChicagoBulls Awaka",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Noa Essengue",
+    "team": "",
+    "status": "PROBABLE",
+    "reason": "Injury/Illness-RightThumbSprain",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Norman Powell",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-RightHamstringStrain",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jaylin Sellers",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jalen Smith",
+    "team": "",
+    "status": "PROBABLE",
+    "reason": "Injury/Illness-GastrointestinalIllness",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Dailyn Swain",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-OnAssignment Injury/Illness-RightMetacarpal",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Caleb Wilson",
+    "team": "",
+    "status": "OUT",
+    "reason": "Fracture Injury/Illness-RightKnee/Injury",
+    "matchup": "",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Chet OklahomaCityThunder Holmgren",
+    "team": "",
+    "status": "OUT",
+    "reason": "Recovery",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Aday Mara",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-RightShinContusion",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Thomas Sorber",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-RightKneeSurgery",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Nikola Topic",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftHipStrain Page2of4",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Cason Wallace",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftShoulderSurgery",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jalen Williams",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LeftAnkleSurgery",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Jaylin Williams",
+    "team": "",
+    "status": "OUT",
+    "reason": "Injury/Illness-LowBackSpasms MilwaukeeBucks NOTYETSUBMITTED 08:30(ET) PHI@HOU Philadelphia76ers NOTYETSUBMITTED Injury/Illness-RightPatellofemoral",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Steven HoustonRockets Adams",
+    "team": "",
+    "status": "QUESTIONABLE",
+    "reason": "Pain",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Quadir Copeland",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   },
+   {
+    "name": "Julian Phillips",
+    "team": "",
+    "status": "OUT",
+    "reason": "GLeague-Two-Way 03:30(ET) MIA@CLE MiamiHeat NOTYETSUBMITTED ClevelandCavaliers NOTYETSUBMITTED 04:00(ET) BOS@SAS BostonCeltics NOTYETSUBMITTED SanAntonioSpurs NOTYETSUBMITTED LosAngelesLakers NOTYETSUBMITTED MemphisGrizzlies NOTYETSUBMITTED 05:00(ET) PHX@UTA PhoenixSuns NOTYETSUBMITTED UtahJazz NOTYETSUBMITTED 06:00(ET) ATL@NYK AtlantaHawks NOTYETSUBMITTED NewYorkKnicks NOTYETSUBMITTED Page3of4 DenverNuggets NOTYETSUBMITTED TorontoRaptors NOTYETSUBMITTED NewOrleansPelicans NOTYETSUBMITTED PortlandTrailBlazers NOTYETSUBMITTED OrlandoMagic NOTYETSUBMITTED DetroitPistons NOTYETSUBMITTED 08:30(ET) LAC@GSW LAClippers NOTYETSUBMITTED GoldenStateWarriors NOTYETSUBMITTED 09:00(ET) MIN@SAC MinnesotaTimberwolves NOTYETSUBMITTED SacramentoKings NOTYETSUBMITTED Page4of4",
+    "matchup": "OKC@MIL",
+    "game_date": "11/28/2026",
+    "game_time": "",
+    "source": "NBA"
+   }
+  ],
+  "nba_fetched": "2026-11-28T05:11:44.786778+00:00",
+  "espn_rows": [
+   {
+    "name": "Jock Landale",
+    "team": "ATL",
+    "status": "OUT",
+    "reason": "Landale (hip) is out for Friday's game against the Celtics.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Asa Newell",
+    "team": "ATL",
+    "status": "OUT",
+    "reason": "Newell underwent surgery Tuesday for a plantar plate tear in his left great toe, and he will be re-evaluated in approximately four months, Brad Rowland of the Locked On Podcast Network reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "CJ McCollum",
+    "team": "ATL",
+    "status": "OUT",
+    "reason": "McCollum (calf) will miss at least four weeks, per Brad Rowland of the Locked On Podcast Network.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Mouhamed Gueye",
+    "team": "ATL",
+    "status": "OUT",
+    "reason": "Gueye (foot) is ready to begin on-court activities and will be re-evaluated in four weeks, Brad Rowland of the Locked On Podcast Network reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Henri Veesaar",
+    "team": "ATL",
+    "status": "OUT",
+    "reason": "Veesaar was diagnosed with a torn right ACL and is expected to miss the 2026-27 season, the Hawks announced Monday.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Mitchell Robinson",
+    "team": "BOS",
+    "status": "OUT",
+    "reason": "Robinson has been ruled out Marc D'Amico of the Celtics' official sitefor Friday's game.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Moritz Wagner",
+    "team": "BKN",
+    "status": "OUT",
+    "reason": "Wagner (knee) won't be available for Friday's game against Toronto.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Nolan Traore",
+    "team": "BKN",
+    "status": "OUT",
+    "reason": "Traore will be re-evaluated in approximately 8-10 weeks due to a right hamstring strain, Michael Scotto of HoopsHype.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Grayson Allen",
+    "team": "CHA",
+    "status": "OUT",
+    "reason": "Allen (concussion) is questionable for Saturday's game against the Nets.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ryan Kalkbrenner",
+    "team": "CHA",
+    "status": "PROBABLE",
+    "reason": "Kalkbrenner (hip) is probable for Saturday's matchup with Brooklyn.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Dennis Schroder",
+    "team": "CHA",
+    "status": "OUT",
+    "reason": "Schroder (hamstring) is out for Wednesday's game the Bulls.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kon Knueppel",
+    "team": "CHA",
+    "status": "OUT",
+    "reason": "Knueppel (hamstring) was diagnosed with a left hamstring strain Sunday and will be re-evaluated in four weeks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Norman Powell",
+    "team": "CHI",
+    "status": "OUT",
+    "reason": "Powell (hamstring) is out for Saturday's game against the Pacers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Noa Essengue",
+    "team": "CHI",
+    "status": "PROBABLE",
+    "reason": "Essengue (thumb) is probable to play Saturday against the Pacers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jalen Smith",
+    "team": "CHI",
+    "status": "PROBABLE",
+    "reason": "Smith (illness) is listed as probable for Saturday's game against Indiana.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Caleb Wilson",
+    "team": "CHI",
+    "status": "OUT",
+    "reason": "Wilson (hand) is expected to miss four to six weeks, Shams Charania of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Nae'Qwan Tomlin",
+    "team": "CLE",
+    "status": "OUT",
+    "reason": "Tomlin (back) will remain on the inactive list for Wednesday's game against the Grizzlies.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Evan Mobley",
+    "team": "CLE",
+    "status": "OUT",
+    "reason": "Mobley will receive treatment and participate in rehab after the team confirmed a diagnosis of a right great toe sprain, and he'll be re-evaluated in the next 7-to-10 days.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kyrie Irving",
+    "team": "DAL",
+    "status": "OUT",
+    "reason": "Irving (knee) has been ruled out for Friday's game against the Suns, Noah Weber of TheSmokingCuban.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Tobi Lawal",
+    "team": "DAL",
+    "status": "OUT",
+    "reason": "Lawal (groin) is out for Friday's game against the Suns.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Sergio de Larrea",
+    "team": "DAL",
+    "status": "OUT",
+    "reason": "De Larrea (knee) is out for Friday's game against the Suns.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Dereck Lively II",
+    "team": "DAL",
+    "status": "OUT",
+    "reason": "Lively (foot) is out for Friday's game against the Suns.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Tarik Biberovic",
+    "team": "DAL",
+    "status": "OUT",
+    "reason": "Biberovic (heel) is out for Friday's game against the Suns.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Duncan Robinson",
+    "team": "DET",
+    "status": "OUT",
+    "reason": "Robinson (quadriceps) is out for Friday's game against the Bucks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Cade Cunningham",
+    "team": "DET",
+    "status": "OUT",
+    "reason": "Cunningham (knee) is out for Friday's game against the Bucks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jalen Duren",
+    "team": "DET",
+    "status": "OUT",
+    "reason": "Detroit recalled Duren (hamstring) from the G League's Motor City Cruise on Wednesday.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ebuka Okorie",
+    "team": "DET",
+    "status": "OUT",
+    "reason": "The Pistons announced Tuesday that Okorie (oblique) will miss at least two weeks, per Eric Vincent of ClutchPoints.com.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Taurean Prince",
+    "team": "DET",
+    "status": "OUT",
+    "reason": "Prince underwent arthroscopic right knee surgery Nov. 18 and will be re-evaluated in four weeks, Eric Vincent of ClutchPoints.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Gui Santos",
+    "team": "GSW",
+    "status": "OUT",
+    "reason": "Santos exited Friday's game against the Trail Blazers with a knee injury in the second half and won't return.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Stephen Curry",
+    "team": "GSW",
+    "status": "OUT",
+    "reason": "Curry (abdomen/oblique) has been ruled out for each of the Warriors' next three games, Anthony Slater of ESPN.com reports",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kristaps Porzingis",
+    "team": "GSW",
+    "status": "OUT",
+    "reason": "Porzingis announced on his social media that he's stepping away from basketball.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Moses Moody",
+    "team": "GSW",
+    "status": "OUT",
+    "reason": "Moody (knee) is progressing toward a potential return between December and January after rupturing his left patellar tendon in March, Anthony Slater of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jimmy Butler III",
+    "team": "GSW",
+    "status": "OUT",
+    "reason": "Butler (knee) could return sometime between January and February as he continues recovering from a torn right ACL, Anthony Slater of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Steven Adams",
+    "team": "HOU",
+    "status": "QUESTIONABLE",
+    "reason": "Adams (knee) is questionable for Saturday's game against the 76ers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "T.J. McConnell",
+    "team": "IND",
+    "status": "OUT",
+    "reason": "McConnell (hamstring) has been ruled out for Friday's game against the 76ers, Alex Golden of SI.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Tyrese Haliburton",
+    "team": "IND",
+    "status": "OUT",
+    "reason": "Haliburton (hamstring) has been ruled out per Scott Agness of FieldhouseFiles.com for Friday's game against the 76ers. The guard participated in practice activities earlier this week as he continues working toward his return.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ben Sheppard",
+    "team": "IND",
+    "status": "OUT",
+    "reason": "Head coach Rick Carlise confirmed Sheppard will miss \"months\" after undergoing surgery to repair a torn meniscus in his left knee, Tony East of Forbes.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Yanic Konan Niederhauser",
+    "team": "LAC",
+    "status": "OUT",
+    "reason": "Niederhauser suffered a right toe injury during Friday's game against the Pelicans and won't return, Joey Linn of SI.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Bradley Beal",
+    "team": "LAC",
+    "status": "OUT",
+    "reason": "Beal (knee) will not be ready for the start of the regular season, NBA writer Justin Russo reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jordan Miller",
+    "team": "LAC",
+    "status": "OUT",
+    "reason": "Miller underwent surgery Wednesday to repair a torn left rotator cuff and will be re-evaluated in six months, per Law Murray of The Athletic.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Isaiah Stewart",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Stewart (hip) is out for Friday's game against the Timberwolves, Jon Krawczynski of The Athletic reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Scotty Pippen Jr.",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Pippen (back) is out for Wednesday's game against the Clippers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Cameron Boozer",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Boozer (ankle) will be re-evaluated in four weeks, Brett Siegel of ClutchPoints.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jerami Grant",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Grant was diagnosed with a grade 1 left calf strain and will be re-evaluated in two weeks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "GG Jackson",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Jackson underwent a procedure Wednesday to repair a broken fifth metatarsal in his left foot. He is expected to recover fully and will be re-evaluated in approximately three months.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Richie Saunders",
+    "team": "MEM",
+    "status": "OUT",
+    "reason": "Saunders signed a two-way contract with the Grizzlies on Saturday, Shams Charania of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kasparas Jakucionis",
+    "team": "MIL",
+    "status": "OUT",
+    "reason": "Jakucionis (ankle) won't play Friday's game against the Pistons.",
+    "source": "ESPN"
+   },
+   {
+    "name": "LaMelo Ball",
+    "team": "MIN",
+    "status": "OUT",
+    "reason": "Ball (ankle) has been ruled out for Friday's game against the Grizzlies. The guard was previously questionable after spraining his left ankle during Wednesday's win over Oklahoma City.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Donte DiVincenzo",
+    "team": "MIN",
+    "status": "OUT",
+    "reason": "DiVincenzo (Achilles) has been cleared for team basketball activities and is targeting a return to game action in January, Jon Krawczynski of The Athletic reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jaylen Clark",
+    "team": "MIN",
+    "status": "OUT",
+    "reason": "Clark (hamstring) has been ruled out for the next two weeks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Anthony Edwards",
+    "team": "MIN",
+    "status": "OUT",
+    "reason": "Edwards underwent a successful arthroscopic procedure on his right knee Thursday, the Timberwolves announced.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Bennedict Mathurin",
+    "team": "NOP",
+    "status": "OUT",
+    "reason": "Mathurin (foot) is out for Friday's game against the Clippers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Julian Reese",
+    "team": "NOP",
+    "status": "QUESTIONABLE",
+    "reason": "The Pelicans transferred Reese from the G League's Laketown Squadron, and he will be available for New Orleans' game against the Warriors on Monday.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Dejounte Murray",
+    "team": "NOP",
+    "status": "OUT",
+    "reason": "Murray (ankle) is out for Friday's game against Memphis.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Miles McBride",
+    "team": "NYK",
+    "status": "OUT",
+    "reason": "McBride (groin) is out for Friday's game against the Heat.",
+    "source": "ESPN"
+   },
+   {
+    "name": "OG Anunoby",
+    "team": "NYK",
+    "status": "OUT",
+    "reason": "Anunoby (calf) has been ruled out for Friday's game against the Heat. The forward was previously listed as doubtful and will miss his third consecutive contest due to a left calf strain.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jordan Clarkson",
+    "team": "NYK",
+    "status": "OUT",
+    "reason": "Clarkson (foot) is out for Friday's game against the Heat.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Andre Drummond",
+    "team": "NYK",
+    "status": "OUT",
+    "reason": "Drummond (concussion) has been ruled out for Friday's game against the Heat.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Nikola Topic",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Topic (hip) is out for Saturday's game against the Bucks, Brandon Rahbar of DailyThunder.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Aday Mara",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Mara (leg) is out for Saturday's game versus the Bucks, per Clemente Almanza of USA Today.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jaylin Williams",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Williams (back) is listed as out for Wednesday's game against Minnesota.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jalen Williams",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Williams (ankle) has been ruled out for Monday's game against the Pacers, according to the NBA's official injury report.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Thomas Sorber",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Sorber underwent an arthroscopic knee procedure Tuesday to address inflammation at the patellofemoral joint in his right knee, and he's expected to return to on-court activities in 6-8 weeks, Steve McGehee of News 9 Oklahoma City reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Cason Wallace",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Wallace underwent surgery Friday to repair a torn labrum in his left shoulder and will be re-evaluated before the end of the regular season, Clemente Almanza of USA Today reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Chet Holmgren",
+    "team": "OKC",
+    "status": "OUT",
+    "reason": "Holmgren underwent a biological treatment Friday to address a small patellar tendon tear and will miss at least 8-10 weeks, Nick Crain of Slam reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Colin Castleton",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Castleton totaled five points (2-4 FG, 1-1 3Pt) and four rebounds in seven minutes during Tuesday's 132-116 preseason win over the Cavaliers.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kevin Porter Jr.",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Porter won't play Saturday against the Wizards as he's still in the process of getting up to speed on his conditioning.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Anthony Black",
+    "team": "ORL",
+    "status": "QUESTIONABLE",
+    "reason": "Black (back) is questionable for Saturday's game against the Wizards.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jonathan Isaac",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Isaac (knee) is out for Sunday's game against the Wizards.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Izaiyah Nelson",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Head coach Sean Sweeney said Wednesday that Nelson (ankle) has been doing \"some on-court stuff,\" though Sweeney added that the work has been \"minimal,\" Jason Beede of the Orlando Sentinel reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Noah Penda",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Penda (hamstring) is making progress but remains without a timetable to return to game action, Jason Beede of the Orlando Sentinel reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Paolo Banchero",
+    "team": "ORL",
+    "status": "OUT",
+    "reason": "Banchero is expected to be sidelined for the next four-to-six weeks due to a right high-ankle sprain, Shams Charania of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Dean Wade",
+    "team": "PHI",
+    "status": "OUT",
+    "reason": "Wade (hamstring) is out for Friday's game against the Pacers, Austin Krell of Vertical 76 reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jaylen Brown",
+    "team": "PHI",
+    "status": "OUT",
+    "reason": "Brown (hamstring) underwent an MRI that showed no signs of a new injury or re-aggravation, but he didn't travel with the team for the road trip, so he will miss the team's next two games, Kris Rhim of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ariel Hukporti",
+    "team": "PHI",
+    "status": "OUT",
+    "reason": "Hukporti has sustained a season-ending ruptured right Achilles tendon, per Shams Charania of ESPN.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Mark Williams",
+    "team": "PHX",
+    "status": "OUT",
+    "reason": "Williams underwent surgery Thursday to repair a torn labrum in his left shoulder and will miss an extended period of time, Shams Charania of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Damian Lillard",
+    "team": "POR",
+    "status": "OUT",
+    "reason": "Lillard (calf) has been ruled out for Friday's game against the Warriors. The veteran guard is dealing with right calf tightness and soreness.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Chris Youngblood",
+    "team": "POR",
+    "status": "OUT",
+    "reason": "Youngblood (heel) is out for Friday's game against the Warriors.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Vit Krejci",
+    "team": "POR",
+    "status": "OUT",
+    "reason": "Krejci underwent surgery on his fractured left ankle Wednesday and will be re-evaluated in eight weeks, Brett Siegel of ClutchPoints.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ja Morant",
+    "team": "POR",
+    "status": "OUT",
+    "reason": "Head coach Micah Nori said Morant met with a doctor in Los Angeles, who gave him a positive outlook on his recovery from the hamstring injury. While Nori declined to update Morant's timetable, he added Morant \"may not be out for as long as we thought,\" Trail Blazers Insider Sean Highkin reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Shaedon Sharpe",
+    "team": "POR",
+    "status": "OUT",
+    "reason": "Sharpe suffered a torn meniscus in his knee and is expected to miss six months, per Shams Charania of ESPN.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Zach LaVine",
+    "team": "SAC",
+    "status": "QUESTIONABLE",
+    "reason": "LaVine (knee) is listed as out for Wednesday's game versus the Warriors.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Maxime Raynaud",
+    "team": "SAC",
+    "status": "OUT",
+    "reason": "Raynaud (knee) was recalled from the G League's Stockton Kings on Wednesday, Marc J. Spears of ESPN.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ben Simmons",
+    "team": "SAC",
+    "status": "OUT",
+    "reason": "Simmons underwent successful surgery Tuesday to repair a torn right Achilles tendon, James Ham of ESPN 1320 Sacramento reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Tobias Harris",
+    "team": "SAS",
+    "status": "OUT",
+    "reason": "Harris (calf) is likely to be sidelined until early December, per Jeff Garcia of KENS 5 San Antonio.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jayden Quaintance",
+    "team": "SAS",
+    "status": "OUT",
+    "reason": "Quaintance has been around the team but has not yet been cleared for basketball activities, Matt Guzman of SI.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Ja'Kobe Walter",
+    "team": "TOR",
+    "status": "OUT",
+    "reason": "Walter won't return to Friday's game against Brooklyn due to a right quad contusion, Josh Lewenberg of TSN.ca reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Kawhi Leonard",
+    "team": "TOR",
+    "status": "OUT",
+    "reason": "Leonard has begun individual on-court workouts following treatment to address swelling in his left knee, and he will be re-evaluated in one week, Marc J. Spears of ESPN.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Nate Bittle",
+    "team": "TOR",
+    "status": "OUT",
+    "reason": "Bittle (foot) has been ruled out for Monday's game against the Bucks, Blake Murphy of Sportsnet.ca reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "RJ Barrett",
+    "team": "TOR",
+    "status": "OUT",
+    "reason": "Barrett has been diagnosed with a right hamstring strain and will be re-evaluated in two weeks, Brett Siegel of ClutchPoints.com reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Mo Bamba",
+    "team": "UTA",
+    "status": "OUT",
+    "reason": "Bamba (illness) has been ruled out for Friday's game against the Nuggets.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Lauri Markkanen",
+    "team": "UTA",
+    "status": "OUT",
+    "reason": "Markkanen has been diagnosed with a non-displaced fracture in his right hand and will be sidelined for at least one month, Shams Charania of ESPN reports.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jaren Jackson Jr.",
+    "team": "UTA",
+    "status": "OUT",
+    "reason": "Jackson has been diagnosed with a torn MCL in his right knee and will be sidelined for 6-to-8 weeks, per Shams Charania of ESPN.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Tristan Vukcevic",
+    "team": "WAS",
+    "status": "OUT",
+    "reason": "Vukcevic (hip) has been ruled out for Tuesday's game against Boston.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Reece Beekman",
+    "team": "WAS",
+    "status": "OUT",
+    "reason": "The Wizards announced Monday that Beekman sustained a right acromioclavicular joint injury and will be re-evaluated in approximately three weeks.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Justin Champagnie",
+    "team": "WAS",
+    "status": "OUT",
+    "reason": "Champagnie (foot) is expected to miss several months, per Josh Robbins of The Athletic.",
+    "source": "ESPN"
+   },
+   {
+    "name": "Jamir Watkins",
+    "team": "WAS",
+    "status": "OUT",
+    "reason": "The Wizards announced Thursday that Watkins has undergone surgery for a torn ACL.",
+    "source": "ESPN"
+   }
+  ],
+  "espn_fetched": "2026-11-28T05:11:44.786778+00:00"
+ },
+ "odds_at": "2026-11-28T05:03:07.930048+00:00",
+ "odds": {
+  "2026-11-27": {
+   "PHX": {
+    "total": 224.5,
+    "spread": -4.5,
+    "implied": 114.5,
+    "opp": "DAL"
+   },
+   "DAL": {
+    "total": 224.5,
+    "spread": 4.5,
+    "implied": 110.0,
+    "opp": "PHX"
+   },
+   "SAS": {
+    "total": 226.5,
+    "spread": -6.5,
+    "implied": 116.5,
+    "opp": "LAL"
+   },
+   "LAL": {
+    "total": 226.5,
+    "spread": 6.5,
+    "implied": 110.0,
+    "opp": "SAS"
+   },
+   "UTA": {
+    "total": 232.5,
+    "spread": 9.5,
+    "implied": 111.5,
+    "opp": "DEN"
+   },
+   "DEN": {
+    "total": 232.5,
+    "spread": -9.5,
+    "implied": 121.0,
+    "opp": "UTA"
+   },
+   "LAC": {
+    "total": 230.5,
+    "spread": -2.5,
+    "implied": 116.5,
+    "opp": "NOP"
+   },
+   "NOP": {
+    "total": 230.5,
+    "spread": 2.5,
+    "implied": 114.0,
+    "opp": "LAC"
+   },
+   "POR": {
+    "total": 216.5,
+    "spread": -8.5,
+    "implied": 112.5,
+    "opp": "GSW"
+   },
+   "GSW": {
+    "total": 216.5,
+    "spread": 8.5,
+    "implied": 104.0,
+    "opp": "POR"
+   }
+  }
+ },
+ "lineups_ok_at": "2026-11-28T05:11:44.786778+00:00",
+ "nba_lineups": {
+  "2026-11-27": {
+   "NYK": {
+    "status": "confirmed",
+    "starters": [
+     "Jalen Brunson",
+     "Mikal Bridges",
+     "Landry Shamet",
+     "Josh Hart",
+     "Karl-Anthony Towns"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600064",
+    "source": "NBA.com"
+   },
+   "MIA": {
+    "status": "confirmed",
+    "starters": [
+     "Davion Mitchell",
+     "Giannis Antetokounmpo",
+     "Klay Thompson",
+     "Pelle Larsson",
+     "Bam Adebayo"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600064",
+    "source": "NBA.com"
+   },
+   "DET": {
+    "status": "confirmed",
+    "starters": [
+     "Javonte Green",
+     "Kevin Huerter",
+     "Daniss Jenkins",
+     "Ausar Thompson",
+     "John Collins"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600065",
+    "source": "NBA.com"
+   },
+   "MIL": {
+    "status": "confirmed",
+    "starters": [
+     "Tyler Herro",
+     "Kyle Kuzma",
+     "Ryan Rollins",
+     "Jaime Jaquez Jr.",
+     "Myles Turner"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600065",
+    "source": "NBA.com"
+   },
+   "IND": {
+    "status": "confirmed",
+    "starters": [
+     "Kelly Oubre Jr.",
+     "Aaron Nesmith",
+     "Andrew Nembhard",
+     "Pascal Siakam",
+     "Ivica Zubac"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600066",
+    "source": "NBA.com"
+   },
+   "PHI": {
+    "status": "confirmed",
+    "starters": [
+     "VJ Edgecombe",
+     "Dominick Barlow",
+     "Tyrese Maxey",
+     "LeBron James",
+     "Joel Embiid"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600066",
+    "source": "NBA.com"
+   },
+   "TOR": {
+    "status": "confirmed",
+    "starters": [
+     "Ja'Kobe Walter",
+     "Scottie Barnes",
+     "Immanuel Quickley",
+     "Allen Graves",
+     "Jakob Poeltl"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600067",
+    "source": "NBA.com"
+   },
+   "BKN": {
+    "status": "confirmed",
+    "starters": [
+     "Danny Wolf",
+     "Michael Porter Jr.",
+     "Mikel Brown Jr.",
+     "Julius Randle",
+     "Day'Ron Sharpe"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600067",
+    "source": "NBA.com"
+   },
+   "BOS": {
+    "status": "confirmed",
+    "starters": [
+     "Hugo Gonz\u00e1lez",
+     "Paul George",
+     "Derrick White",
+     "Jayson Tatum",
+     "Neemias Queta"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600068",
+    "source": "NBA.com"
+   },
+   "ATL": {
+    "status": "confirmed",
+    "starters": [
+     "Nickeil Alexander-Walker",
+     "Dyson Daniels",
+     "Kingston Flemings",
+     "Jalen Johnson",
+     "Onyeka Okongwu"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600068",
+    "source": "NBA.com"
+   },
+   "MIN": {
+    "status": "confirmed",
+    "starters": [
+     "Terrence Shannon Jr",
+     "Jaden McDaniels",
+     "Ayo Dosunmu",
+     "Jonathan Kuminga",
+     "Rudy Gobert"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600069",
+    "source": "NBA.com"
+   },
+   "MEM": {
+    "status": "confirmed",
+    "starters": [
+     "Cedric Coward",
+     "Jaylen Wells",
+     "Ty Jerome",
+     "Kris Murray",
+     "Zach Edey"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600069",
+    "source": "NBA.com"
+   },
+   "PHX": {
+    "status": "confirmed",
+    "starters": [
+     "Jalen Green",
+     "Dillon Brooks",
+     "Devin Booker",
+     "Miles Bridges",
+     "Oso Ighodaro"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600070",
+    "source": "NBA.com"
+   },
+   "DAL": {
+    "status": "confirmed",
+    "starters": [
+     "Caleb Martin",
+     "Zaccharie Risacher",
+     "Cooper Flagg",
+     "P.J. Washington",
+     "Daniel Gafford"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600070",
+    "source": "NBA.com"
+   },
+   "SAS": {
+    "status": "confirmed",
+    "starters": [
+     "Stephon Castle",
+     "Devin Vassell",
+     "De'Aaron Fox",
+     "Julian Champagnie",
+     "Victor Wembanyama"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600071",
+    "source": "NBA.com"
+   },
+   "LAL": {
+    "status": "confirmed",
+    "starters": [
+     "Austin Reaves",
+     "Matisse Thybulle",
+     "Luka Don\u010di\u0107",
+     "Jake LaRavia",
+     "Walker Kessler"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600071",
+    "source": "NBA.com"
+   },
+   "UTA": {
+    "status": "confirmed",
+    "starters": [
+     "Darryn Peterson",
+     "Josh Green",
+     "Keyonte George",
+     "Ace Bailey",
+     "Jusuf Nurki\u0107"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600072",
+    "source": "NBA.com"
+   },
+   "DEN": {
+    "status": "confirmed",
+    "starters": [
+     "Christian Braun",
+     "Cameron Johnson",
+     "Jamal Murray",
+     "Aaron Gordon",
+     "Nikola Joki\u0107"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600072",
+    "source": "NBA.com"
+   },
+   "LAC": {
+    "status": "confirmed",
+    "starters": [
+     "Derrick Jones Jr.",
+     "Brandon Ingram",
+     "Darius Garland",
+     "Rui Hachimura",
+     "Brook Lopez"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600073",
+    "source": "NBA.com"
+   },
+   "NOP": {
+    "status": "confirmed",
+    "starters": [
+     "Herbert Jones",
+     "Trey Murphy III",
+     "Jeremiah Fears",
+     "Zion Williamson",
+     "Yves Missi"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600073",
+    "source": "NBA.com"
+   },
+   "POR": {
+    "status": "confirmed",
+    "starters": [
+     "Deni Avdija",
+     "Toumani Camara",
+     "Jrue Holiday",
+     "Sidy Cissoko",
+     "Donovan Clingan"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600074",
+    "source": "NBA.com"
+   },
+   "GSW": {
+    "status": "confirmed",
+    "starters": [
+     "Brandin Podziemski",
+     "Yaxel Lendeborg",
+     "De'Anthony Melton",
+     "Draymond Green",
+     "Charles Bassey"
+    ],
+    "positions": [
+     "SG",
+     "SF",
+     "PG",
+     "PF",
+     "C"
+    ],
+    "game_id": "0022600074",
+    "source": "NBA.com"
+   }
+  }
+ },
+ "refs_at": "2026-11-27T14:44:19.708805+00:00",
+ "refs": {
+  "2026-11-27": {
+   "MIA": [
+    "Scott Foster",
+    "Jacyn Goble",
+    "Nate Cearley"
+   ],
+   "NYK": [
+    "Scott Foster",
+    "Jacyn Goble",
+    "Nate Cearley"
+   ],
+   "MIL": [
+    "Marc Davis",
+    "Eric Dalen",
+    "Rodney Mott"
+   ],
+   "DET": [
+    "Marc Davis",
+    "Eric Dalen",
+    "Rodney Mott"
+   ],
+   "PHI": [
+    "Ben Taylor",
+    "Robert Hussey",
+    "Jenna Reneau"
+   ],
+   "IND": [
+    "Ben Taylor",
+    "Robert Hussey",
+    "Jenna Reneau"
+   ],
+   "BKN": [
+    "James Capers",
+    "Tre Maddox",
+    "Scott Twardoski"
+   ],
+   "TOR": [
+    "James Capers",
+    "Tre Maddox",
+    "Scott Twardoski"
+   ],
+   "ATL": [
+    "Mitchell Ervin",
+    "Karl Lane",
+    "Che Flores"
+   ],
+   "BOS": [
+    "Mitchell Ervin",
+    "Karl Lane",
+    "Che Flores"
+   ],
+   "MEM": [
+    "Ed Malloy",
+    "Natalie Sago",
+    "Brandon Schwab"
+   ],
+   "MIN": [
+    "Ed Malloy",
+    "Natalie Sago",
+    "Brandon Schwab"
+   ],
+   "DAL": [
+    "Kevin Scott",
+    "John Butler",
+    "Leon Wood"
+   ],
+   "PHX": [
+    "Kevin Scott",
+    "John Butler",
+    "Leon Wood"
+   ],
+   "LAL": [
+    "John Goble",
+    "Andy Nagy",
+    "Aaron Smith"
+   ],
+   "SAS": [
+    "John Goble",
+    "Andy Nagy",
+    "Aaron Smith"
+   ],
+   "DEN": [
+    "Bill Kennedy",
+    "Ray Acosta",
+    "CJ Washington"
+   ],
+   "UTA": [
+    "Bill Kennedy",
+    "Ray Acosta",
+    "CJ Washington"
+   ],
+   "NOP": [
+    "Curtis Blair",
+    "Sha'Rae Mitchell",
+    "Jenna Schroeder"
+   ],
+   "LAC": [
+    "Curtis Blair",
+    "Sha'Rae Mitchell",
+    "Jenna Schroeder"
+   ],
+   "GSW": [
+    "James Williams",
+    "Justin Van Duyne",
+    "Derrick Collins"
+   ],
+   "POR": [
+    "James Williams",
+    "Justin Van Duyne",
+    "Derrick Collins"
+   ],
+   "CAPITAL CITY": [
+    "Intae Hwang",
+    "Ken Jones",
+    "Ajay Gonnelli"
+   ],
+   "WESTCHESTER": [
+    "Intae Hwang",
+    "Ken Jones",
+    "Ajay Gonnelli"
+   ],
+   "MAINE": [
+    "Italo Araujo",
+    "Ian McClenny",
+    "Carlos Peralta Ortega"
+   ],
+   "LONG ISLAND": [
+    "Italo Araujo",
+    "Ian McClenny",
+    "Carlos Peralta Ortega"
+   ],
+   "RAPTORS 905": [
+    "JP Primm",
+    "Cameron Gelinas",
+    "Kaz Beverley"
+   ],
+   "DELAWARE": [
+    "JP Primm",
+    "Cameron Gelinas",
+    "Kaz Beverley"
+   ],
+   "WINDY CITY": [
+    "Kenneth Gardner",
+    "Jason Alabanza",
+    "Javed Trotman"
+   ],
+   "MOTOR CITY": [
+    "Kenneth Gardner",
+    "Jason Alabanza",
+    "Javed Trotman"
+   ],
+   "COLLEGE PARK": [
+    "Julian Scott",
+    "Rachael Wood",
+    "Emily Murphy"
+   ],
+   "GREENSBORO": [
+    "Julian Scott",
+    "Rachael Wood",
+    "Emily Murphy"
+   ],
+   "WISCONSIN": [
+    "Pat O'Connell",
+    "Evan Singletary",
+    "Jacob Budnik"
+   ],
+   "SIOUX FALLS": [
+    "Pat O'Connell",
+    "Evan Singletary",
+    "Jacob Budnik"
+   ],
+   "OSCEOLA": [
+    "Hortencia Sanchez-Carrizales",
+    "Quincy Smith",
+    "Brett Perry"
+   ],
+   "TEXAS": [
+    "Hortencia Sanchez-Carrizales",
+    "Quincy Smith",
+    "Brett Perry"
+   ],
+   "VALLEY": [
+    "Cameron Garber",
+    "RJ Johnson",
+    "Joe Prince"
+   ],
+   "SANTA CRUZ": [
+    "Cameron Garber",
+    "RJ Johnson",
+    "Joe Prince"
+   ]
+  }
+ },
+ "sims": {
+  "156751": {
+   "hash": "cdfb8b8835c1f3c1",
+   "phase": "exact",
+   "at": "2026-11-17T00:42:50.509794+00:00"
+  },
+  "156750": {
+   "hash": "350e764867eaa4ed",
+   "phase": "exact",
+   "at": "2026-11-17T00:44:18.801481+00:00"
+  },
+  "156753": {
+   "hash": "51c3a511d0005075",
+   "phase": "exact",
+   "at": "2026-11-17T00:35:53.214022+00:00"
+  },
+  "156850": {
+   "hash": "f4ceb0790774352c",
+   "phase": "exact",
+   "at": "2026-11-18T00:43:52.679920+00:00"
+  },
+  "156831": {
+   "hash": "4f08e8c07d5ce7d1",
+   "phase": "exact",
+   "at": "2026-11-18T23:49:02.896771+00:00"
+  },
+  "156300": {
+   "hash": "c79a731192b16ac8",
+   "phase": "exact",
+   "at": "2026-11-20T23:45:38.853981+00:00"
+  },
+  "157174": {
+   "hash": "efbe9b8707b3d863",
+   "phase": "exact",
+   "at": "2026-11-22T00:20:27.169679+00:00"
+  },
+  "157216": {
+   "hash": "eacf8b331f854834",
+   "phase": "exact",
+   "at": "2026-11-23T23:55:32.091606+00:00"
+  },
+  "156302": {
+   "hash": "66ba78827d85ad86",
+   "phase": "exact",
+   "at": "2026-11-25T23:54:45.613106+00:00"
+  }
+ },
+ "content": "449769d60c41289d[[\"ATL\", {\"status\": \"confirmed\", \"starters\": [\"Nickeil Alexander-Walker\", \"Dyson Daniels\", \"Kingston Flemings\", \"Jalen Johnson\", \"Onyeka Okongwu\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600068\", \"source\": \"NBA.com\"}], [\"BKN\", {\"status\": \"confirmed\", \"starters\": [\"Danny Wolf\", \"Michael Porter Jr.\", \"Mikel Brown Jr.\", \"Julius Randle\", \"Day'Ron Sharpe\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600067\", \"source\": \"NBA.com\"}], [\"BOS\", {\"status\": \"confirmed\", \"starters\": [\"Hugo Gonz\\u00e1lez\", \"Paul George\", \"Derrick White\", \"Jayson Tatum\", \"Neemias Queta\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600068\", \"source\": \"NBA.com\"}], [\"DAL\", {\"status\": \"confirmed\", \"starters\": [\"Caleb Martin\", \"Zaccharie Risacher\", \"Cooper Flagg\", \"P.J. Washington\", \"Daniel Gafford\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600070\", \"source\": \"NBA.com\"}], [\"DEN\", {\"status\": \"confirmed\", \"starters\": [\"Christian Braun\", \"Cameron Johnson\", \"Jamal Murray\", \"Aaron Gordon\", \"Nikola Joki\\u0107\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600072\", \"source\": \"NBA.com\"}], [\"DET\", {\"status\": \"confirmed\", \"starters\": [\"Javonte Green\", \"Kevin Huerter\", \"Daniss Jenkins\", \"Ausar Thompson\", \"John Collins\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600065\", \"source\": \"NBA.com\"}], [\"GSW\", {\"status\": \"confirmed\", \"starters\": [\"Brandin Podziemski\", \"Yaxel Lendeborg\", \"De'Anthony Melton\", \"Draymond Green\", \"Charles Bassey\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600074\", \"source\": \"NBA.com\"}], [\"IND\", {\"status\": \"confirmed\", \"starters\": [\"Kelly Oubre Jr.\", \"Aaron Nesmith\", \"Andrew Nembhard\", \"Pascal Siakam\", \"Ivica Zubac\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600066\", \"source\": \"NBA.com\"}], [\"LAC\", {\"status\": \"confirmed\", \"starters\": [\"Derrick Jones Jr.\", \"Brandon Ingram\", \"Darius Garland\", \"Rui Hachimura\", \"Brook Lopez\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600073\", \"source\": \"NBA.com\"}], [\"LAL\", {\"status\": \"confirmed\", \"starters\": [\"Austin Reaves\", \"Matisse Thybulle\", \"Luka Don\\u010di\\u0107\", \"Jake LaRavia\", \"Walker Kessler\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600071\", \"source\": \"NBA.com\"}], [\"MEM\", {\"status\": \"confirmed\", \"starters\": [\"Cedric Coward\", \"Jaylen Wells\", \"Ty Jerome\", \"Kris Murray\", \"Zach Edey\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600069\", \"source\": \"NBA.com\"}], [\"MIA\", {\"status\": \"confirmed\", \"starters\": [\"Davion Mitchell\", \"Giannis Antetokounmpo\", \"Klay Thompson\", \"Pelle Larsson\", \"Bam Adebayo\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600064\", \"source\": \"NBA.com\"}], [\"MIL\", {\"status\": \"confirmed\", \"starters\": [\"Tyler Herro\", \"Kyle Kuzma\", \"Ryan Rollins\", \"Jaime Jaquez Jr.\", \"Myles Turner\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600065\", \"source\": \"NBA.com\"}], [\"MIN\", {\"status\": \"confirmed\", \"starters\": [\"Terrence Shannon Jr\", \"Jaden McDaniels\", \"Ayo Dosunmu\", \"Jonathan Kuminga\", \"Rudy Gobert\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600069\", \"source\": \"NBA.com\"}], [\"NOP\", {\"status\": \"confirmed\", \"starters\": [\"Herbert Jones\", \"Trey Murphy III\", \"Jeremiah Fears\", \"Zion Williamson\", \"Yves Missi\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600073\", \"source\": \"NBA.com\"}], [\"NYK\", {\"status\": \"confirmed\", \"starters\": [\"Jalen Brunson\", \"Mikal Bridges\", \"Landry Shamet\", \"Josh Hart\", \"Karl-Anthony Towns\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600064\", \"source\": \"NBA.com\"}], [\"PHI\", {\"status\": \"confirmed\", \"starters\": [\"VJ Edgecombe\", \"Dominick Barlow\", \"Tyrese Maxey\", \"LeBron James\", \"Joel Embiid\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600066\", \"source\": \"NBA.com\"}], [\"PHX\", {\"status\": \"confirmed\", \"starters\": [\"Jalen Green\", \"Dillon Brooks\", \"Devin Booker\", \"Miles Bridges\", \"Oso Ighodaro\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600070\", \"source\": \"NBA.com\"}], [\"POR\", {\"status\": \"confirmed\", \"starters\": [\"Deni Avdija\", \"Toumani Camara\", \"Jrue Holiday\", \"Sidy Cissoko\", \"Donovan Clingan\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600074\", \"source\": \"NBA.com\"}], [\"SAS\", {\"status\": \"confirmed\", \"starters\": [\"Stephon Castle\", \"Devin Vassell\", \"De'Aaron Fox\", \"Julian Champagnie\", \"Victor Wembanyama\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600071\", \"source\": \"NBA.com\"}], [\"TOR\", {\"status\": \"confirmed\", \"starters\": [\"Ja'Kobe Walter\", \"Scottie Barnes\", \"Immanuel Quickley\", \"Allen Graves\", \"Jakob Poeltl\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600067\", \"source\": \"NBA.com\"}], [\"UTA\", {\"status\": \"confirmed\", \"starters\": [\"Darryn Peterson\", \"Josh Green\", \"Keyonte George\", \"Ace Bailey\", \"Jusuf Nurki\\u0107\"], \"positions\": [\"SG\", \"SF\", \"PG\", \"PF\", \"C\"], \"game_id\": \"0022600072\", \"source\": \"NBA.com\"}]]",
+ "last_run": "2026-11-28T05:11:44.786778+00:00",
+ "live_at": "2026-11-28T01:10:34.656074+00:00",
+ "markets": {
+  "day": "2026-11-28"
+ },
+ "final_run_for": "2026-11-27",
+ "base_status": {
+  "shai gilgeousalexander|OKC": "",
+  "karlanthony towns|NYK": "",
+  "alperen sengun|HOU": "",
+  "anthony edwards|MIN": "OUT",
+  "jalen brunson|NYK": "",
+  "donovan mitchell|CLE": "",
+  "ty jerome|MEM": "",
+  "lamelo ball|MIN": "OUT",
+  "cameron boozer|MEM": "OUT",
+  "devin booker|PHX": "",
+  "naz reid|CHA": "",
+  "tyler herro|MIL": "",
+  "james harden|CLE": "",
+  "josh giddey|CHI": "",
+  "kevin durant|HOU": "",
+  "jaden mcdaniels|MIN": "",
+  "darius garland|LAC": "",
+  "julius randle|BKN": "",
+  "cedric coward|MEM": "",
+  "brandon miller|CHA": "",
+  "evan mobley|CLE": "OUT",
+  "michael porter|BKN": "",
+  "ayo dosunmu|MIN": "",
+  "amen thompson|HOU": "",
+  "ajay mitchell|OKC": "",
+  "kon knueppel|CHA": "OUT",
+  "isaiah hartenstein|OKC": "",
+  "jarrett allen|CLE": "",
+  "norman powell|CHI": "OUT",
+  "jabari smith|HOU": "",
+  "jared mccain|OKC": "",
+  "caleb wilson|CHI": "OUT",
+  "cam spencer|MEM": "",
+  "miles bridges|PHX": "",
+  "og anunoby|NYK": "OUT",
+  "chet holmgren|OKC": "OUT",
+  "matas buzelis|CHI": "",
+  "grayson allen|CHA": "OUT",
+  "jonathan kuminga|MIN": "",
+  "aday mara|OKC": "OUT",
+  "jalen smith|CHI": "OUT",
+  "fred vanvleet|HOU": "",
+  "rudy gobert|MIN": "",
+  "moussa diabate|CHA": "",
+  "brandon ingram|LAC": "",
+  "coby white|CHA": "",
+  "jaime jaquez|MIL": "",
+  "brayden burries|MIL": "",
+  "dayron sharpe|BKN": "",
+  "josh hart|NYK": "",
+  "brook lopez|LAC": "",
+  "peyton watson|CLE": "",
+  "myles turner|MIL": "",
+  "jalen green|PHX": "",
+  "rui hachimura|LAC": "",
+  "kenrich williams|OKC": "",
+  "kyle kuzma|MIL": "",
+  "dillon brooks|PHX": "",
+  "zach edey|MEM": "",
+  "ryan rollins|MIL": "",
+  "dennis schroder|CHA": "OUT",
+  "kelel ware|MIL": "",
+  "tyrese proctor|CLE": "",
+  "collin gillespie|PHX": "",
+  "buddy hield|CHI": "",
+  "tari eason|HOU": "",
+  "mikal bridges|NYK": "",
+  "alex caruso|OKC": "",
+  "tre jones|CHI": "",
+  "landry shamet|NYK": "",
+  "mikel brown|BKN": "",
+  "javon small|MEM": "",
+  "nic claxton|CHI": "",
+  "terrence shannon|MIN": "",
+  "nolan traore|BKN": "OUT",
+  "max strus|LAC": "",
+  "scotty pippen|MEM": "OUT",
+  "oso ighodaro|PHX": "",
+  "derrick jones|LAC": "",
+  "reed sheppard|HOU": "",
+  "kris murray|MEM": "",
+  "jordan goodwin|PHX": "",
+  "danny wolf|BKN": "",
+  "egor demin|BKN": "",
+  "jaylin williams|OKC": "OUT",
+  "mario hezonja|CLE": "",
+  "isaac okoro|CHI": "",
+  "jaylon tyson|CLE": "",
+  "mark williams|PHX": "OUT",
+  "bennett stirtz|OKC": "",
+  "jaylen wells|MEM": "",
+  "andre drummond|NYK": "OUT",
+  "kris dunn|LAC": "",
+  "meleek thomas|CLE": "",
+  "taylor hendricks|MEM": "",
+  "joan beringer|MIN": "",
+  "sion james|CHA": "",
+  "keaton wagler|LAC": "",
+  "isaiah stewart|MEM": "OUT",
+  "bones hyland|MIN": "",
+  "moritz wagner|BKN": "OUT",
+  "nate ament|MIL": "",
+  "jerami grant|MEM": "OUT",
+  "zach collins|CHI": "",
+  "bradley beal|LAC": "OUT",
+  "sam merrill|CLE": "",
+  "micah peavy|OKC": "",
+  "oliviermaxence prosper|MEM": "",
+  "khaman maluach|PHX": "",
+  "noah clowney|BKN": "",
+  "christian anderson|CHA": "",
+  "marcus smart|HOU": "",
+  "kasparas jakucionis|MIL": "OUT",
+  "ryan kalkbrenner|CHA": "OUT",
+  "thomas bryant|CLE": "",
+  "patrick williams|CHI": "",
+  "clint capela|HOU": "",
+  "grant williams|CHA": "",
+  "royce oneale|CHA": "",
+  "tyler kolek|NYK": "",
+  "jordan hawkins|CHI": "",
+  "trey lyles|MIN": "",
+  "nique clifford|OKC": "",
+  "jaylin sellers|CHI": "",
+  "steven adams|HOU": "",
+  "isaiah jackson|LAC": "",
+  "jose alvarado|NYK": "",
+  "josh dix|OKC": "",
+  "gary trent|MIL": "",
+  "aj green|MIL": "",
+  "kobe sanders|LAC": "",
+  "luke kennard|PHX": "",
+  "craig porter|CLE": "",
+  "noa essengue|CHI": "",
+  "jaylen clark|MIN": "OUT",
+  "pacome dadiet|NYK": "",
+  "ryan dunn|PHX": "",
+  "tidjane salaun|CHA": "",
+  "brooks barnhizer|OKC": "",
+  "yanic konan niederhauser|LAC": "OUT",
+  "bogdan bogdanovic|HOU": "",
+  "miles mcbride|NYK": "OUT",
+  "gradey dick|LAC": "",
+  "keon ellis|BKN": "",
+  "baba miller|LAC": "",
+  "chaney johnson|BKN": "",
+  "jordan clarkson|NYK": "OUT",
+  "gregory jackson|MEM": "",
+  "quinten post|MEM": "",
+  "leonard miller|CHI": "",
+  "jericho sims|MIL": "",
+  "isaiah crawford|HOU": "",
+  "bruce thornton|HOU": "",
+  "oscar tshiebwe|HOU": "",
+  "cody williams|MIN": "",
+  "josh minott|BKN": "",
+  "ousmane dieng|MIL": "",
+  "liam mcneeley|CHA": "",
+  "jaesean tate|HOU": "",
+  "koa peat|PHX": "",
+  "cam christie|LAC": "",
+  "terance mann|BKN": "",
+  "jahmai mashack|MEM": "",
+  "isaiah evans|MIN": "",
+  "james wiseman|NYK": "",
+  "mohamed diawara|NYK": "",
+  "norchad omier|CLE": "",
+  "jamaree bouyea|PHX": "",
+  "hannes steinbach|CHA": "",
+  "karim lopez|MEM": "",
+  "jalen pickett|LAC": "",
+  "nick martinelli|LAC": "",
+  "duop reath|PHX": "",
+  "drake powell|BKN": "",
+  "rasheer fleming|PHX": "",
+  "tobe awaka|CHI": "",
+  "dalton knecht|NYK": "",
+  "caris levert|MIL": "",
+  "bogoljub markovic|MIL": "",
+  "dailyn swain|CHI": "",
+  "zyon pullin|MIN": "",
+  "pat spencer|PHX": "",
+  "nikola topic|OKC": "OUT",
+  "jalen williams|OKC": "OUT",
+  "cason wallace|OKC": "OUT",
+  "pj hall|CHA": "",
+  "jaden akins|NYK": "",
+  "pete nance|MIL": "",
+  "blake wesley|LAC": "",
+  "johni broome|MIN": "",
+  "rocco zikarsky|MIN": "",
+  "joshua jefferson|BKN": "",
+  "ben saraf|BKN": "",
+  "grant nelson|BKN": "",
+  "cormac ryan|MIL": "",
+  "kam jones|MIL": "",
+  "kylan boswell|CHA": "",
+  "michael ajayi|CHA": "",
+  "thomas sorber|OKC": "OUT",
+  "tyler nickel|NYK": "",
+  "richie saunders|MEM": "OUT",
+  "quadir copeland|HOU": "",
+  "julian phillips|HOU": "",
+  "orlando robinson|CHI": "",
+  "donte divincenzo|MIN": "OUT",
+  "naeqwan tomlin|CLE": "OUT",
+  "khalifa diop|CLE": "",
+  "ernest udeh|CLE": "",
+  "zack austin|CLE": "",
+  "jordan miller|LAC": "OUT",
+  "tyler bilodeau|BKN": "",
+  "drew timme|PHX": "",
+  "victor wembanyama|SAS": "",
+  "darius acuff|SAC": "",
+  "deni avdija|POR": "",
+  "domantas sabonis|SAC": "",
+  "yaxel lendeborg|GSW": "",
+  "stephen curry|GSW": "OUT",
+  "stephon castle|SAS": "",
+  "dylan harper|SAS": "",
+  "damian lillard|POR": "OUT",
+  "donovan clingan|POR": "",
+  "brandin podziemski|GSW": "",
+  "deaaron fox|SAS": "",
+  "zach lavine|SAC": "OUT",
+  "deandre hunter|SAC": "",
+  "jrue holiday|POR": "",
+  "ja morant|POR": "OUT",
+  "jimmy butler|GSW": "OUT",
+  "devin vassell|SAS": "",
+  "keegan murray|SAC": "",
+  "toumani camara|POR": "",
+  "maxime raynaud|SAC": "OUT",
+  "deanthony melton|GSW": "",
+  "julian champagnie|SAS": "",
+  "keldon johnson|SAS": "",
+  "draymond green|GSW": "",
+  "charles bassey|GSW": "",
+  "precious achiuwa|SAC": "",
+  "tobias harris|SAS": "OUT",
+  "brandon williams|GSW": "",
+  "scoot henderson|POR": "",
+  "gui santos|GSW": "OUT",
+  "harrison barnes|SAS": "",
+  "luke kornet|SAS": "",
+  "robert williams|POR": "",
+  "sidy cissoko|POR": "",
+  "malik monk|SAC": "",
+  "dylan cardwell|SAC": "",
+  "will richard|GSW": "",
+  "lj cryer|GSW": "",
+  "jakobi gillespie|SAS": "",
+  "jayson kent|POR": "",
+  "tarris reed|SAS": "",
+  "emanuel sharp|SAC": "",
+  "al horford|GSW": "",
+  "carter bryant|SAS": "",
+  "leaky black|SAC": "",
+  "jordan mclaughlin|SAS": "",
+  "georges niang|GSW": "",
+  "gary payton|GSW": "",
+  "john tonje|POR": "",
+  "yang hansen|POR": "",
+  "micah potter|POR": "",
+  "branden carlson|POR": "",
+  "chris youngblood|POR": "OUT",
+  "vit krejci|POR": "OUT",
+  "shaedon sharpe|POR": "OUT",
+  "malevy leons|GSW": "",
+  "graham ike|GSW": "",
+  "kristaps porzingis|GSW": "OUT",
+  "moses moody|GSW": "OUT",
+  "david jonesgarcia|SAS": "",
+  "maliq brown|SAS": "",
+  "jayden quaintance|SAS": "OUT",
+  "mason plumlee|SAC": "",
+  "alex karaban|SAC": "",
+  "jonathan mogbo|SAC": "",
+  "sean pedulla|SAC": "",
+  "daeqwon plowden|SAC": "",
+  "gabe vincent|SAC": "",
+  "ben simmons|SAC": "OUT",
+  "giannis antetokounmpo|MIA": "",
+  "joel embiid|PHI": "",
+  "tyrese maxey|PHI": "",
+  "jaylen brown|PHI": "OUT",
+  "bam adebayo|MIA": "",
+  "lebron james|PHI": "",
+  "davion mitchell|MIA": "",
+  "vj edgecombe|PHI": "",
+  "pelle larsson|MIA": "",
+  "klay thompson|MIA": "",
+  "bobby portis|MIA": "",
+  "anfernee simons|PHI": "",
+  "andrew wiggins|MIA": "",
+  "kentavious caldwellpope|PHI": "",
+  "jabari walker|PHI": "",
+  "ryan conwell|MIA": "",
+  "dean wade|PHI": "OUT",
+  "nikola jovic|MIA": "",
+  "dominick barlow|PHI": "",
+  "myron gardner|MIA": "",
+  "adem bona|PHI": "",
+  "tacko fall|PHI": "",
+  "simone fontecchio|MIA": "",
+  "tim hardaway|MIA": "",
+  "justin edwards|PHI": "",
+  "caleb love|PHI": "",
+  "vladislav goldin|MIA": "",
+  "dru smith|MIA": "",
+  "tre donaldson|MIA": "",
+  "nick richards|MIA": "",
+  "labaron philon|PHI": "",
+  "rayan rupert|PHI": "",
+  "keshad johnson|MIA": "",
+  "ariel hukporti|PHI": "OUT",
+  "jayson tatum|BOS": "",
+  "cooper flagg|DAL": "",
+  "cade cunningham|DET": "OUT",
+  "jalen johnson|ATL": "",
+  "scottie barnes|TOR": "",
+  "tyrese haliburton|IND": "OUT",
+  "rj barrett|TOR": "OUT",
+  "kyrie irving|DAL": "OUT",
+  "paul george|BOS": "",
+  "pascal siakam|IND": "",
+  "kawhi leonard|TOR": "OUT",
+  "immanuel quickley|TOR": "",
+  "dyson daniels|ATL": "",
+  "ausar thompson|DET": "",
+  "nickeil alexanderwalker|ATL": "",
+  "onyeka okongwu|ATL": "",
+  "andrew nembhard|IND": "",
+  "daniss jenkins|DET": "",
+  "derrick white|BOS": "",
+  "jalen duren|DET": "OUT",
+  "ivica zubac|IND": "",
+  "collin murrayboyles|TOR": "",
+  "jakobe walter|TOR": "OUT",
+  "payton pritchard|BOS": "",
+  "kevin huerter|DET": "",
+  "paul reed|DET": "",
+  "jakob poeltl|TOR": "",
+  "cj mccollum|ATL": "OUT",
+  "neemias queta|BOS": "",
+  "pj washington|DAL": "",
+  "aaron wiggins|ATL": "",
+  "john collins|DET": "",
+  "jamal shead|TOR": "",
+  "aaron nesmith|IND": "",
+  "daniel gafford|DAL": "",
+  "kelly oubre|IND": "",
+  "duncan robinson|DET": "OUT",
+  "naji marshall|DAL": "",
+  "kingston flemings|ATL": "",
+  "isaiah joe|DET": "",
+  "allen graves|TOR": "",
+  "caleb martin|DAL": "",
+  "obi toppin|IND": "",
+  "quenton jackson|IND": "",
+  "tj mcconnell|IND": "OUT",
+  "zaccharie risacher|DAL": "",
+  "javonte green|DET": "",
+  "jamison battle|TOR": "",
+  "luguentz dort|ATL": "",
+  "sergio de larrea|DAL": "OUT",
+  "sam hauser|BOS": "",
+  "walter clayton|DAL": "",
+  "jalen slawson|IND": "",
+  "jock landale|ATL": "OUT",
+  "mitchell robinson|BOS": "OUT",
+  "dereck lively|DAL": "OUT",
+  "baylor scheierman|BOS": "",
+  "morez johnson|DAL": "",
+  "jarace walker|IND": "",
+  "santi aldama|DAL": "",
+  "luka garza|BOS": "",
+  "ronald holland|DET": "",
+  "trayce jacksondavis|TOR": "",
+  "braden smith|IND": "",
+  "hugo gonzalez|BOS": "",
+  "alijah martin|TOR": "",
+  "ej harkless|DET": "",
+  "corey kispert|ATL": "",
+  "jordan walsh|BOS": "",
+  "max christie|DAL": "",
+  "zuby ejiofor|ATL": "",
+  "larry nance|IND": "",
+  "mike conley|BOS": "",
+  "jay huff|IND": "",
+  "marcus sasser|DAL": "",
+  "moussa cisse|DAL": "",
+  "kyle anderson|TOR": "",
+  "ron harper|BOS": "",
+  "tolu smith|DET": "",
+  "kobe brown|IND": "",
+  "jaden bradley|TOR": "",
+  "chris cenac|BOS": "",
+  "chaz lanier|DET": "",
+  "tobi lawal|DAL": "OUT",
+  "jett howard|DAL": "",
+  "isaac jones|DET": "",
+  "ebuka okorie|DET": "OUT",
+  "dorian finneysmith|ATL": "",
+  "asa newell|ATL": "OUT",
+  "malachi smith|TOR": "",
+  "rayj dennis|ATL": "",
+  "taurean prince|DET": "OUT",
+  "devin carter|BOS": "",
+  "ben sheppard|IND": "OUT",
+  "dillon mitchell|BOS": "",
+  "jalen wilson|ATL": "",
+  "ugonna onyenso|DET": "",
+  "johnny furphy|IND": "",
+  "kevin mccullar|TOR": "",
+  "nate bittle|TOR": "OUT",
+  "amari williams|BOS": "",
+  "rafael castro|ATL": "",
+  "mouhamed gueye|ATL": "OUT",
+  "henri veesaar|ATL": "OUT",
+  "tarik biberovic|DAL": "OUT",
+  "luka doncic|LAL": "",
+  "nikola jokic|DEN": "",
+  "jamal murray|DEN": "",
+  "keyonte george|UTA": "",
+  "austin reaves|LAL": "",
+  "darryn peterson|UTA": "",
+  "jeremiah fears|NOP": "",
+  "walker kessler|LAL": "",
+  "lauri markkanen|UTA": "OUT",
+  "zion williamson|NOP": "",
+  "ace bailey|UTA": "",
+  "trey murphy|NOP": "",
+  "quentin grimes|LAL": "",
+  "jaren jackson|UTA": "OUT",
+  "dejounte murray|NOP": "OUT",
+  "saddiq bey|NOP": "",
+  "jusuf nurkic|UTA": "",
+  "christian braun|DEN": "",
+  "mo bamba|UTA": "OUT",
+  "yves missi|NOP": "",
+  "aaron gordon|DEN": "",
+  "derik queen|NOP": "",
+  "brice sensabaugh|UTA": "",
+  "jaxson hayes|UTA": "",
+  "cameron johnson|DEN": "",
+  "sandro mamukelashvili|LAL": "",
+  "jake laravia|LAL": "",
+  "jordan poole|NOP": "",
+  "collin sexton|LAL": "",
+  "matisse thybulle|LAL": "",
+  "ziaire williams|LAL": "",
+  "herbert jones|NOP": "",
+  "isaiah collier|UTA": "",
+  "demar derozan|DEN": "",
+  "svi mykhailiuk|UTA": "",
+  "josh green|UTA": "",
+  "bennedict mathurin|NOP": "OUT",
+  "bryce mcgowens|NOP": "",
+  "josh okogie|UTA": "",
+  "spencer jones|DEN": "",
+  "karlo matkovic|NOP": "",
+  "kyle filipowski|UTA": "",
+  "trevon brazile|DEN": "",
+  "trendon watford|NOP": "",
+  "marvin bagley|DEN": "",
+  "jarred vanderbilt|LAL": "",
+  "jaron pierre|NOP": "",
+  "tyus jones|DEN": "",
+  "tony bradley|UTA": "",
+  "jaden hardy|LAL": "",
+  "cameron carr|LAL": "",
+  "bryce hopkins|DEN": "",
+  "bronny james|LAL": "",
+  "kevon looney|LAL": "",
+  "aj johnson|NOP": "",
+  "adou thiero|LAL": "",
+  "julian reese|NOP": "QUESTIONABLE",
+  "daron holmes|DEN": "",
+  "alpha diallo|DEN": "",
+  "deandre jordan|NOP": "",
+  "carson cooper|LAL": "",
+  "zeke nnaji|DEN": "",
+  "ryan nembhard|DEN": "",
+  "chris manon|LAL": "",
+  "cam whitmore|DEN": "",
+  "malik dia|NOP": "",
+  "jonas aidoo|UTA": "",
+  "harrison ingram|UTA": "",
+  "kobe bufkin|UTA": "",
+  "arthur kaluma|LAL": "",
+  "julian strawther|DEN": ""
+ },
+ "base_changed_at": {
+  "josh hart|NYK": "2026-11-25T23:29:30.318946+00:00",
+  "joel embiid|PHI": "2026-11-28T00:19:42.434504+00:00",
+  "giannis antetokounmpo|MIA": "2026-11-27T22:49:15.680227+00:00",
+  "zach lavine|SAC": "2026-11-25T23:29:30.318946+00:00",
+  "jalen brunson|NYK": "2026-11-25T23:29:30.318946+00:00",
+  "karlanthony towns|NYK": "2026-11-27T23:27:18.011122+00:00",
+  "jalen smith|CHI": "2026-11-25T23:29:30.318946+00:00",
+  "sion james|CHA": "2026-11-25T23:29:30.318946+00:00",
+  "jaylen brown|PHI": "2026-11-25T23:36:17.974268+00:00",
+  "lamelo ball|MIN": "2026-11-27T18:51:11.227396+00:00",
+  "andre drummond|NYK": "2026-11-27T15:40:35.653982+00:00",
+  "zach edey|MEM": "2026-11-28T01:54:37.838734+00:00",
+  "andrew wiggins|MIA": "2026-11-27T17:00:47.180293+00:00",
+  "moritz wagner|BKN": "2026-11-27T13:01:56.706628+00:00",
+  "isaiah stewart|MEM": "2026-11-28T00:19:42.434504+00:00",
+  "miles mcbride|NYK": "2026-11-27T18:26:18.664866+00:00",
+  "victor wembanyama|SAS": "2026-11-27T13:01:56.706628+00:00",
+  "yaxel lendeborg|GSW": "2026-11-27T13:01:56.706628+00:00",
+  "brandon williams|GSW": "2026-11-27T13:01:56.706628+00:00",
+  "mo bamba|UTA": "2026-11-28T01:54:37.838734+00:00",
+  "kasparas jakucionis|MIL": "2026-11-27T17:56:12.477904+00:00",
+  "larry nance|IND": "2026-11-28T00:02:43.031016+00:00",
+  "damian lillard|POR": "2026-11-27T18:48:34.283706+00:00",
+  "kyrie irving|DAL": "2026-11-28T00:42:40.755823+00:00",
+  "austin reaves|LAL": "2026-11-27T19:25:51.292109+00:00",
+  "tj mcconnell|IND": "2026-11-27T23:01:18.984691+00:00",
+  "alijah martin|TOR": "2026-11-27T23:12:33.153539+00:00",
+  "kelly oubre|IND": "2026-11-27T23:15:49.978501+00:00",
+  "dean wade|PHI": "2026-11-28T00:02:43.031016+00:00",
+  "jusuf nurkic|UTA": "2026-11-28T01:54:37.838734+00:00",
+  "jaxson hayes|UTA": "2026-11-28T01:54:37.838734+00:00",
+  "trendon watford|NOP": "2026-11-28T01:54:37.838734+00:00",
+  "dylan harper|SAS": "2026-11-28T03:05:55.506296+00:00",
+  "deaaron fox|SAS": "2026-11-28T03:05:55.506296+00:00",
+  "jakobe walter|TOR": "2026-11-28T03:05:55.506296+00:00",
+  "gui santos|GSW": "2026-11-28T04:22:30.636871+00:00",
+  "yanic konan niederhauser|LAC": "2026-11-28T04:32:29.401978+00:00"
+ },
+ "speed_logged": []
+}

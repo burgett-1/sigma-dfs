@@ -1,0 +1,40 @@
+{
+ "slate_id": 157181,
+ "updated_at": "2026-11-22T07:16:15.248980+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Sam Hauser",
+   "team": "BOS",
+   "salary": 4400,
+   "proj": 24.6,
+   "own": 51.4,
+   "headline": "Sam Hauser is starting (1 starts in his last 10)",
+   "detail": "Projected 29 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Payton Pritchard",
+   "team": "BOS",
+   "salary": 7200,
+   "proj": 34.5,
+   "own": 62.7,
+   "headline": "Payton Pritchard is starting (0 starts in his last 10)",
+   "detail": "Projected 32 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

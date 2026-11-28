@@ -1,0 +1,178 @@
+{
+ "slate_id": 157350,
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Josh Hart",
+   "team": "NYK",
+   "salary": 7600,
+   "proj": 33.1,
+   "own": 35.7,
+   "headline": "Josh Hart without OG Anunoby",
+   "detail": "Averaged 38.7 DK pts in 19 games without them (vs 28.9 with). Hit 6x tonight's salary (46+ pts) in 6 of 19.",
+   "evidence": {
+    "games_without": 19,
+    "avg_without": 38.7,
+    "z": 3.48,
+    "avg_with": 28.9,
+    "hits_6x": 6,
+    "last_without": "2026-11-25"
+   },
+   "strength": 3.476,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Mikal Bridges",
+   "team": "NYK",
+   "salary": 6000,
+   "proj": 24.3,
+   "own": 20.7,
+   "headline": "Mikal Bridges without OG Anunoby",
+   "detail": "Averaged 32.5 DK pts in 19 games without them (vs 26.0 with). Hit 6x tonight's salary (36+ pts) in 7 of 19.",
+   "evidence": {
+    "games_without": 19,
+    "avg_without": 32.5,
+    "z": 2.66,
+    "avg_with": 26.0,
+    "hits_6x": 7,
+    "last_without": "2026-11-25"
+   },
+   "strength": 2.659,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Vladislav Goldin",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.9,
+   "headline": "Vladislav Goldin fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.9
+   },
+   "strength": 1.942,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Dru Smith",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 1.0,
+   "headline": "Dru Smith fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 1.0
+   },
+   "strength": 1.94,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Keshad Johnson",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 1.0,
+   "headline": "Keshad Johnson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 1.0
+   },
+   "strength": 1.933,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Dalton Knecht",
+   "team": "NYK",
+   "salary": 1000,
+   "proj": 0.3,
+   "own": 1.1,
+   "headline": "Dalton Knecht fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 1.1
+   },
+   "strength": 1.839,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Pacome Dadiet",
+   "team": "NYK",
+   "salary": 2200,
+   "proj": 1.8,
+   "own": 1.5,
+   "headline": "Pacome Dadiet fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 1.5
+   },
+   "strength": 1.796,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Mohamed Diawara",
+   "team": "NYK",
+   "salary": 1400,
+   "proj": 0.2,
+   "own": 1.0,
+   "headline": "Mohamed Diawara fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value with a rotation teammate out appeared in 12% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 12.26,
+    "own": 1.0
+   },
+   "strength": 1.402,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tyler Kolek",
+   "team": "NYK",
+   "salary": 4000,
+   "proj": 10.3,
+   "own": 4.9,
+   "headline": "Tyler Kolek fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 5%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 4.9
+   },
+   "strength": 1.364,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tre Donaldson",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 1.0,
+   "headline": "Tre Donaldson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 1.0
+   },
+   "strength": 1.223,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

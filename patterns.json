@@ -1,0 +1,331 @@
+{
+ "version": 2,
+ "nights": 8,
+ "slates_analysed": 9,
+ "lineups_analysed": 180,
+ "date_range": [
+  "2026-11-16",
+  "2026-11-25"
+ ],
+ "structure": {
+  "salary_used_median": 49700,
+  "salary_used_p5": 44685,
+  "pct_using_49k_plus": 80.6,
+  "avg_studs_9k_plus": 0.73,
+  "avg_mid_5k_9k": 4.89,
+  "avg_value_under_5k": 2.38,
+  "avg_punts_3_5k_or_less": 0.74,
+  "pct_3plus_from_one_team": 44.4,
+  "pct_4plus_from_one_game": 45.0,
+  "pct_with_bring_back": 99.4,
+  "avg_games_used": 3.88
+ },
+ "why_players_hit": {
+  "teammate_out_pct": 21.0,
+  "surprise_start_pct": 4.5,
+  "minutes_spike_pct": 39.4,
+  "overtime_pct": 3.7,
+  "blowout_game_pct": 22.0,
+  "high_total_game_pct": 35.5,
+  "median_points_vs_projection": 1.56,
+  "pct_outside_top20_projected_value": 57.0
+ },
+ "rules": {
+  "min_salary": 45000,
+  "max_per_team": 4,
+  "max_per_game": 5
+ },
+ "buckets": {
+  "small": {
+   "label": "1-3 games",
+   "slates": 4,
+   "lineups_analysed": 80,
+   "structure": {
+    "salary_used_median": 49400,
+    "salary_used_p5": 43695,
+    "pct_using_49k_plus": 66.2,
+    "avg_studs_9k_plus": 0.69,
+    "avg_mid_5k_9k": 4.78,
+    "avg_value_under_5k": 2.54,
+    "avg_punts_3_5k_or_less": 0.69,
+    "pct_3plus_from_one_team": 87.5,
+    "pct_4plus_from_one_game": 95.0,
+    "pct_with_bring_back": 100.0,
+    "avg_games_used": 2.45
+   },
+   "why_players_hit": {
+    "teammate_out_pct": 15.2,
+    "surprise_start_pct": 4.5,
+    "minutes_spike_pct": 43.8,
+    "overtime_pct": 10.9,
+    "blowout_game_pct": 27.2,
+    "high_total_game_pct": 49.5,
+    "median_points_vs_projection": 1.46,
+    "pct_outside_top20_projected_value": 38.9
+   },
+   "rules": {
+    "min_salary": 45000,
+    "max_per_team": 4,
+    "max_per_game": 6
+   }
+  },
+  "medium": {
+   "label": "4-6 games",
+   "slates": 3,
+   "lineups_analysed": 60,
+   "structure": {
+    "salary_used_median": 49700,
+    "salary_used_p5": 48790,
+    "pct_using_49k_plus": 91.7,
+    "avg_studs_9k_plus": 0.65,
+    "avg_mid_5k_9k": 5.47,
+    "avg_value_under_5k": 1.88,
+    "avg_punts_3_5k_or_less": 0.6,
+    "pct_3plus_from_one_team": 33.3,
+    "pct_4plus_from_one_game": 20.0,
+    "pct_with_bring_back": 98.3,
+    "avg_games_used": 4.37
+   },
+   "why_players_hit": {
+    "teammate_out_pct": 28.7,
+    "surprise_start_pct": 6.0,
+    "minutes_spike_pct": 45.2,
+    "overtime_pct": 8.8,
+    "blowout_game_pct": 25.2,
+    "high_total_game_pct": 35.6,
+    "median_points_vs_projection": 1.65,
+    "pct_outside_top20_projected_value": 57.3
+   },
+   "rules": {
+    "min_salary": 48700,
+    "max_per_team": 3,
+    "max_per_game": 4
+   }
+  },
+  "large": {
+   "label": "7-15 games",
+   "slates": 2,
+   "lineups_analysed": 40,
+   "structure": {
+    "salary_used_median": 49800,
+    "salary_used_p5": 48695,
+    "pct_using_49k_plus": 87.5,
+    "avg_studs_9k_plus": 0.7,
+    "avg_mid_5k_9k": 4.7,
+    "avg_value_under_5k": 2.6,
+    "avg_punts_3_5k_or_less": 1.15,
+    "pct_3plus_from_one_team": 2.5,
+    "pct_4plus_from_one_game": 10.0,
+    "pct_with_bring_back": 100.0,
+    "avg_games_used": 5.08
+   },
+   "why_players_hit": {
+    "teammate_out_pct": 24.4,
+    "surprise_start_pct": 4.1,
+    "minutes_spike_pct": 34.4,
+    "overtime_pct": 1.6,
+    "blowout_game_pct": 23.8,
+    "high_total_game_pct": 39.7,
+    "median_points_vs_projection": 1.56,
+    "pct_outside_top20_projected_value": 84.7
+   },
+   "rules": {
+    "min_salary": 48600,
+    "max_per_team": 3,
+    "max_per_game": 4
+   }
+  }
+ },
+ "exposure_model": {
+  "small": {
+   "table": {
+    "1-3|0": {
+     "exp": 18.87,
+     "n": 11
+    },
+    "1-3|1": {
+     "exp": 14.95,
+     "n": 1
+    },
+    "4-6|0": {
+     "exp": 20.44,
+     "n": 12
+    },
+    "4-6|1": {
+     "exp": 14.95,
+     "n": 0
+    },
+    "7-10|0": {
+     "exp": 20.65,
+     "n": 14
+    },
+    "7-10|1": {
+     "exp": 14.17,
+     "n": 2
+    },
+    "11-15|0": {
+     "exp": 18.56,
+     "n": 16
+    },
+    "11-15|1": {
+     "exp": 18.64,
+     "n": 4
+    },
+    "16-25|0": {
+     "exp": 10.81,
+     "n": 30
+    },
+    "16-25|1": {
+     "exp": 15.84,
+     "n": 10
+    },
+    "26-40|0": {
+     "exp": 16.48,
+     "n": 50
+    },
+    "26-40|1": {
+     "exp": 12.26,
+     "n": 7
+    },
+    "41+|0": {
+     "exp": 5.95,
+     "n": 53
+    },
+    "41+|1": {
+     "exp": 15.84,
+     "n": 4
+    }
+   },
+   "players": 214,
+   "slates": 4
+  },
+  "medium": {
+   "table": {
+    "1-3|0": {
+     "exp": 6.56,
+     "n": 6
+    },
+    "1-3|1": {
+     "exp": 12.15,
+     "n": 3
+    },
+    "4-6|0": {
+     "exp": 9.89,
+     "n": 7
+    },
+    "4-6|1": {
+     "exp": 7.38,
+     "n": 2
+    },
+    "7-10|0": {
+     "exp": 10.65,
+     "n": 10
+    },
+    "7-10|1": {
+     "exp": 10.03,
+     "n": 2
+    },
+    "11-15|0": {
+     "exp": 6.96,
+     "n": 14
+    },
+    "11-15|1": {
+     "exp": 10.52,
+     "n": 1
+    },
+    "16-25|0": {
+     "exp": 8.55,
+     "n": 28
+    },
+    "16-25|1": {
+     "exp": 9.88,
+     "n": 2
+    },
+    "26-40|0": {
+     "exp": 9.69,
+     "n": 32
+    },
+    "26-40|1": {
+     "exp": 11.3,
+     "n": 13
+    },
+    "41+|0": {
+     "exp": 5.09,
+     "n": 153
+    },
+    "41+|1": {
+     "exp": 4.13,
+     "n": 32
+    }
+   },
+   "players": 305,
+   "slates": 3
+  },
+  "large": {
+   "table": {
+    "1-3|0": {
+     "exp": 3.65,
+     "n": 6
+    },
+    "1-3|1": {
+     "exp": 4.38,
+     "n": 0
+    },
+    "4-6|0": {
+     "exp": 4.35,
+     "n": 6
+    },
+    "4-6|1": {
+     "exp": 4.38,
+     "n": 0
+    },
+    "7-10|0": {
+     "exp": 5.96,
+     "n": 8
+    },
+    "7-10|1": {
+     "exp": 4.38,
+     "n": 0
+    },
+    "11-15|0": {
+     "exp": 3.29,
+     "n": 10
+    },
+    "11-15|1": {
+     "exp": 4.38,
+     "n": 0
+    },
+    "16-25|0": {
+     "exp": 5.79,
+     "n": 16
+    },
+    "16-25|1": {
+     "exp": 3.87,
+     "n": 4
+    },
+    "26-40|0": {
+     "exp": 2.85,
+     "n": 25
+    },
+    "26-40|1": {
+     "exp": 7.76,
+     "n": 5
+    },
+    "41+|0": {
+     "exp": 3.87,
+     "n": 244
+    },
+    "41+|1": {
+     "exp": 5.37,
+     "n": 41
+    }
+   },
+   "players": 365,
+   "slates": 2
+  }
+ },
+ "real_contests": {
+  "count": 0,
+  "contests": []
+ }
+}

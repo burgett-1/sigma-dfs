@@ -1,0 +1,144 @@
+{
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "date": "2026-11-27",
+ "slates": [
+  {
+   "id": 157354,
+   "name": "Night",
+   "main": true
+  },
+  {
+   "id": 156303,
+   "name": "Main",
+   "main": false
+  },
+  {
+   "id": 157351,
+   "name": "Turbo",
+   "main": false
+  },
+  {
+   "id": 157352,
+   "name": "Turbo",
+   "main": false
+  },
+  {
+   "id": 157356,
+   "name": "LAL @ SAS",
+   "main": false
+  },
+  {
+   "id": 157350,
+   "name": "MIA @ NYK",
+   "main": false
+  },
+  {
+   "id": 157353,
+   "name": "DAL @ PHX",
+   "main": false
+  }
+ ],
+ "players": 386,
+ "frozen_players": 0,
+ "next_lock_utc": null,
+ "injury_report_url": "https://ak-static.cms.nba.com/referee/injury/Injury-Report_2026-11-28_12_00AM.pdf",
+ "injury_report_fetched": "2026-11-28T05:11:44.786778+00:00",
+ "espn_injuries_fetched": "2026-11-28T05:11:44.786778+00:00",
+ "lineups_feed_ok_at": "2026-11-28T05:11:44.786778+00:00",
+ "teams_confirmed": [
+  "ATL",
+  "BKN",
+  "BOS",
+  "DAL",
+  "DEN",
+  "DET",
+  "GSW",
+  "IND",
+  "LAC",
+  "LAL",
+  "MEM",
+  "MIA",
+  "MIL",
+  "MIN",
+  "NOP",
+  "NYK",
+  "PHI",
+  "PHX",
+  "POR",
+  "SAS",
+  "TOR",
+  "UTA"
+ ],
+ "referee_crews": 19,
+ "odds_games": 5,
+ "history_games": 1595,
+ "factors": {
+  "used": true,
+  "backtest": {
+   "test_games": 5717,
+   "mae_baseline": 7.966,
+   "mae_with_factors": 7.944
+  },
+  "coef": {
+   "b2b": 0.052484926147300666,
+   "rest3": -0.02823255846025975,
+   "travel": 0.007991048480253084,
+   "tz_east": -0.002930609446269275,
+   "tz_west": -0.009887689000122912,
+   "altitude": -0.022644070488623772,
+   "home": 0.008918949758387914,
+   "ref": 1.969314836345321,
+   "opp_def": 1.571976930992138
+  },
+  "note": null
+ },
+ "correlation": {
+  "team": 0.0459,
+  "opp": 0.0242,
+  "team_games": 3022
+ },
+ "calibration": {
+  "used": true,
+  "date": "2026-11-27",
+  "n": 13051,
+  "note": null
+ },
+ "rules": {
+  "min_salary": 45000,
+  "max_per_team": 4,
+  "max_per_game": 5
+ },
+ "changes_this_run": 0,
+ "lineup_events_this_run": 0,
+ "sims_this_run": [],
+ "sources": {
+  "DraftKings lobby": {
+   "ok": true,
+   "detail": "",
+   "at": "2026-11-28T05:11:46.421913+00:00"
+  },
+  "DraftKings salaries": {
+   "ok": true,
+   "detail": "34 players in group 157350",
+   "at": "2026-11-28T05:11:47.493915+00:00"
+  },
+  "NBA injury report": {
+   "ok": true,
+   "detail": "Injury-Report_2026-11-28_12_00AM.pdf",
+   "at": "2026-11-28T05:11:48.398077+00:00"
+  },
+  "ESPN injuries": {
+   "ok": true,
+   "detail": "97 listed",
+   "at": "2026-11-28T05:11:48.697126+00:00"
+  },
+  "NBA.com starting lineups": {
+   "ok": true,
+   "detail": "22 teams posted",
+   "at": "2026-11-28T05:11:48.903700+00:00"
+  }
+ },
+ "control": {
+  "auth": "hmac-v1"
+ }
+}

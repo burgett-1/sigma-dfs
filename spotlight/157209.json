@@ -1,0 +1,25 @@
+{
+ "slate_id": 157209,
+ "updated_at": "2026-11-23T07:04:29.276772+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Buddy Hield",
+   "team": "CHI",
+   "salary": 4000,
+   "proj": 22.3,
+   "own": 36.2,
+   "headline": "Buddy Hield is starting (0 starts in his last 10)",
+   "detail": "Projected 23 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

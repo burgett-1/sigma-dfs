@@ -1,0 +1,45 @@
+{
+ "slate_id": 157004,
+ "updated_at": "2026-11-19T07:16:36.163365+00:00",
+ "kind": "classic",
+ "games": 2,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Jake LaRavia",
+   "team": "LAL",
+   "salary": 4800,
+   "proj": 11.9,
+   "own": 0.7,
+   "headline": "Jake LaRavia without Austin Reaves",
+   "detail": "Averaged 21.8 DK pts in 38 games without them (vs 16.3 with). Hit 6x tonight's salary (29+ pts) in 10 of 38.",
+   "evidence": {
+    "games_without": 38,
+    "avg_without": 21.8,
+    "z": 2.76,
+    "avg_with": 16.3,
+    "hits_6x": 10,
+    "last_without": "2026-11-17"
+   },
+   "strength": 2.763,
+   "strong": false
+  },
+  {
+   "type": "surprise_start",
+   "player": "Mo Bamba",
+   "team": "UTA",
+   "salary": 5300,
+   "proj": 31.0,
+   "own": 59.3,
+   "headline": "Mo Bamba is starting (2 starts in his last 10)",
+   "detail": "Projected 27 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

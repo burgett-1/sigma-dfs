@@ -1,0 +1,173 @@
+{
+ "slate_id": 157239,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Adem Bona",
+   "team": "PHI",
+   "salary": 2400,
+   "proj": 4.6,
+   "own": 1.5,
+   "headline": "Adem Bona without Joel Embiid, Jaylen Brown",
+   "detail": "Averaged 16.8 DK pts in 42 games without them (vs 7.5 with). Hit 6x tonight's salary (14+ pts) in 26 of 42.",
+   "evidence": {
+    "games_without": 42,
+    "avg_without": 16.8,
+    "z": 5.59,
+    "avg_with": 7.5,
+    "hits_6x": 26,
+    "last_without": "2026-05-06"
+   },
+   "strength": 5.591,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Jabari Walker",
+   "team": "PHI",
+   "salary": 4000,
+   "proj": 20.4,
+   "own": 68.2,
+   "headline": "Jabari Walker is starting (2 starts in his last 10)",
+   "detail": "Projected 22 minutes now. Historically 5.2% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "winning_profile",
+   "player": "Vladislav Goldin",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.2,
+   "headline": "Vladislav Goldin fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.036,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Keshad Johnson",
+   "team": "MIA",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 0.2,
+   "headline": "Keshad Johnson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.2
+   },
+   "strength": 2.034,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Labaron Philon Jr.",
+   "team": "PHI",
+   "salary": 1000,
+   "proj": 1.0,
+   "own": 0.5,
+   "headline": "Labaron Philon Jr. fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.5
+   },
+   "strength": 1.912,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Caleb Love",
+   "team": "PHI",
+   "salary": 1000,
+   "proj": 1.7,
+   "own": 1.1,
+   "headline": "Caleb Love fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 1.1
+   },
+   "strength": 1.84,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Dominick Barlow",
+   "team": "PHI",
+   "salary": 3000,
+   "proj": 6.4,
+   "own": 2.1,
+   "headline": "Dominick Barlow fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 2%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 2.1
+   },
+   "strength": 1.722,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Kentavious Caldwell-Pope",
+   "team": "PHI",
+   "salary": 4400,
+   "proj": 12.9,
+   "own": 6.1,
+   "headline": "Kentavious Caldwell-Pope fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 11\u201315 in projected value with a rotation teammate out appeared in 19% of the winning lineups. His projected ownership: 6%.",
+   "evidence": {
+    "suggested_exposure": 18.64,
+    "own": 6.1
+   },
+   "strength": 1.572,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tacko Fall",
+   "team": "PHI",
+   "salary": 2000,
+   "proj": 0.1,
+   "own": 0.2,
+   "headline": "Tacko Fall fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value with a rotation teammate out appeared in 12% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 12.26,
+    "own": 0.2
+   },
+   "strength": 1.505,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Dean Wade",
+   "team": "PHI",
+   "salary": 3600,
+   "proj": 11.3,
+   "own": 6.7,
+   "headline": "Dean Wade fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 11\u201315 in projected value with a rotation teammate out appeared in 19% of the winning lineups. His projected ownership: 7%.",
+   "evidence": {
+    "suggested_exposure": 18.64,
+    "own": 6.7
+   },
+   "strength": 1.499,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

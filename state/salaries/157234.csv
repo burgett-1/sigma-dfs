@@ -1,0 +1,71 @@
+﻿Position,Name + ID,Name,ID,Roster Position,Salary,Game Info,TeamAbbrev,AvgPointsPerGame,Status,Starting
+C,Nikola Jokic (45069628) (LOCKED),Nikola Jokic,45069628,C/UTIL,11700,In-Progress,DEN,58.6,,Starter
+SF/PF,Jayson Tatum (45069654) (LOCKED),Jayson Tatum,45069654,SF/PF/F/UTIL,9700,Final,BOS,49.2,,Starter
+SF,Cooper Flagg (45069795) (LOCKED),Cooper Flagg,45069795,SF/F/UTIL,9500,In-Progress,DAL,46.6,,Starter
+PF,Anthony Davis (45069613) (LOCKED),Anthony Davis,45069613,PF/F/UTIL,9000,Final,WAS,46.2,,Starter
+PG,Jamal Murray (45069643) (LOCKED),Jamal Murray,45069643,PG/G/UTIL,8800,In-Progress,DEN,46.1,,Starter
+PG/SG,Kyrie Irving (45069609) (LOCKED),Kyrie Irving,45069609,PG/SG/G/UTIL,7900,In-Progress,DAL,37.6,,Starter
+PF,Paul George (45069603) (LOCKED),Paul George,45069603,PF/F/UTIL,7800,Final,BOS,39.1,,Starter
+PG,Trae Young (45069665) (LOCKED),Trae Young,45069665,PG/G/UTIL,7200,Final,WAS,36.8,,Starter
+PG/SG,Derrick White (45069624) (LOCKED),Derrick White,45069624,PG/SG/G/UTIL,6700,Final,BOS,27.4,,Starter
+SF,AJ Dybantsa (45069815) (LOCKED),AJ Dybantsa,45069815,SF/F/UTIL,6600,Final,WAS,33,,Starter
+SG,Kyshawn George (45069788) (LOCKED),Kyshawn George,45069788,SG/G/UTIL,6400,Final,WAS,34,,Starter
+PG,Payton Pritchard (45069658) (LOCKED),Payton Pritchard,45069658,PG/G/UTIL,6000,Final,BOS,25.1,,
+SG/SF,Christian Braun (45069688) (LOCKED),Christian Braun,45069688,SG/SF/F/G/UTIL,5800,In-Progress,DEN,28.6,,Starter
+PF,PJ Washington (45069674) (LOCKED),PJ Washington,45069674,PF/F/UTIL,5600,In-Progress,DAL,28.2,,
+C,Alexandre Sarr (45069780) (LOCKED),Alexandre Sarr,45069780,C/UTIL,5300,Final,WAS,25.8,,Starter
+PF/C,Aaron Gordon (45069620) (LOCKED),Aaron Gordon,45069620,PF/C/F/UTIL,5200,In-Progress,DEN,24.3,,Starter
+C,Neemias Queta (45069686) (LOCKED),Neemias Queta,45069686,C/UTIL,5100,Final,BOS,24.9,,Starter
+SF/PF,Naji Marshall (45069661) (LOCKED),Naji Marshall,45069661,SF/PF/F/UTIL,5000,In-Progress,DAL,22.9,,
+SG/SF,Cameron Johnson (45069638) (LOCKED),Cameron Johnson,45069638,SG/SF/F/G/UTIL,4900,In-Progress,DEN,23.1,,Starter
+C,Daniel Gafford (45069672) (LOCKED),Daniel Gafford,45069672,C/UTIL,4600,In-Progress,DAL,22.7,,Starter
+SG/SF,Caleb Martin (45069633) (LOCKED),Caleb Martin,45069633,SG/SF/F/G/UTIL,4400,In-Progress,DAL,16.7,,Starter
+SF,Zaccharie Risacher (45069782) (LOCKED),Zaccharie Risacher,45069782,SF/F/UTIL,4300,In-Progress,DAL,20.9,,Starter
+SG/SF,DeMar DeRozan (45069598) (LOCKED),DeMar DeRozan,45069598,SG/SF/F/G/UTIL,4200,In-Progress,DEN,16.8,,
+SF/PF,Sam Hauser (45069646) (LOCKED),Sam Hauser,45069646,SF/PF/F/UTIL,4100,Final,BOS,16.2,,Starter
+PG,Walter Clayton Jr. (45069742) (LOCKED),Walter Clayton Jr.,45069742,PG/G/UTIL,4100,In-Progress,DAL,17.8,,
+PF/C,Santi Aldama (45069709) (LOCKED),Santi Aldama,45069709,PF/C/F/UTIL,4000,In-Progress,DAL,11.5,,
+SG/SF,Baylor Scheierman (45069713) (LOCKED),Baylor Scheierman,45069713,SG/SF/F/G/UTIL,4000,Final,BOS,14.4,,
+PG,Sergio de Larrea (45069818) (LOCKED),Sergio de Larrea,45069818,PG/G/UTIL,4000,In-Progress,DAL,9.5,OUT,
+C,Tristan Vukcevic (45069754) (LOCKED),Tristan Vukcevic,45069754,C/UTIL,3900,Final,WAS,0,,
+PF/C,Morez Johnson (45069798) (LOCKED),Morez Johnson,45069798,PF/C/F/UTIL,3900,In-Progress,DAL,15.5,,
+C,Mitchell Robinson (45069679) (LOCKED),Mitchell Robinson,45069679,C/UTIL,3800,Final,BOS,15.7,,
+C,Dereck Lively II (45069764) (LOCKED),Dereck Lively II,45069764,C/UTIL,3800,In-Progress,DAL,0,OUT,
+SF,Bilal Coulibaly (45069785) (LOCKED),Bilal Coulibaly,45069785,SF/F/UTIL,3700,Final,WAS,17.4,,
+SG/SF,Spencer Jones (45069704) (LOCKED),Spencer Jones,45069704,SG/SF/F/G/UTIL,3600,In-Progress,DEN,9.2,,
+SG,Hugo Gonzalez (45069810) (LOCKED),Hugo Gonzalez,45069810,SG/G/UTIL,3600,Final,BOS,9.7,,
+C,Luka Garza (45069668) (LOCKED),Luka Garza,45069668,C/UTIL,3500,Final,BOS,13.4,,
+SG/SF,Tre Johnson (45069805) (LOCKED),Tre Johnson,45069805,SG/SF/F/G/UTIL,3500,Final,WAS,13.1,,
+PF/C,Trevon Brazile (45069736) (LOCKED),Trevon Brazile,45069736,PF/C/F/UTIL,3400,In-Progress,DEN,15,,
+SG,Max Christie (45069745) (LOCKED),Max Christie,45069745,SG/G/UTIL,3400,In-Progress,DAL,12.7,,
+SG/SF,Jordan Walsh (45069759) (LOCKED),Jordan Walsh,45069759,SG/SF/F/G/UTIL,3400,Final,BOS,9.9,,
+PG,Mike Conley (45069595) (LOCKED),Mike Conley,45069595,PG/G/UTIL,3300,Final,BOS,13,,
+PF,Khris Middleton (45069606) (LOCKED),Khris Middleton,45069606,PF/F/UTIL,3300,Final,WAS,9.3,,
+C,Marvin Bagley III (45069677) (LOCKED),Marvin Bagley III,45069677,C/UTIL,3300,In-Progress,DEN,12.3,,
+PG,Tyus Jones (45069630) (LOCKED),Tyus Jones,45069630,PG/G/UTIL,3100,In-Progress,DEN,6.9,,
+PG,Devin Carter (45069748) (LOCKED),Devin Carter,45069748,PG/G/UTIL,3100,Final,BOS,2.5,,
+PF/C,Anthony Gill (45069616) (LOCKED),Anthony Gill,45069616,PF/C/F/UTIL,3000,Final,WAS,2.8,,
+SF/PF,Alpha Diallo (45069650) (LOCKED),Alpha Diallo,45069650,SF/PF/F/UTIL,3000,In-Progress,DEN,2.8,,
+C,Deandre Ayton (45069670) (LOCKED),Deandre Ayton,45069670,C/UTIL,3000,Final,WAS,10,,
+SG/SF,Ron Harper Jr. (45069681) (LOCKED),Ron Harper Jr.,45069681,SG/SF/F/G/UTIL,3000,Final,BOS,4.5,,
+PG/SG,Marcus Sasser (45069693) (LOCKED),Marcus Sasser,45069693,PG/SG/G/UTIL,3000,In-Progress,DAL,9.5,,
+SF/PF,Justin Champagnie (45069697) (LOCKED),Justin Champagnie,45069697,SF/PF/F/UTIL,3000,Final,WAS,21.1,,
+PG,Tre Mann (45069701) (LOCKED),Tre Mann,45069701,PG/G/UTIL,3000,Final,WAS,3.3,,
+C,Zeke Nnaji (45069718) (LOCKED),Zeke Nnaji,45069718,C/UTIL,3000,In-Progress,DEN,4.4,,
+PG,Reece Beekman (45069720) (LOCKED),Reece Beekman,45069720,PG/G/UTIL,3000,Final,WAS,0,,
+C,Moussa Cisse (45069723) (LOCKED),Moussa Cisse,45069723,C/UTIL,3000,In-Progress,DAL,2.6,,
+C,Amari Williams (45069725) (LOCKED),Amari Williams,45069725,C/UTIL,3000,Final,BOS,0,,
+SG,Jamir Watkins (45069727) (LOCKED),Jamir Watkins,45069727,SG/G/UTIL,3000,Final,WAS,0,,
+SG,Julian Strawther (45069730) (LOCKED),Julian Strawther,45069730,SG/G/UTIL,3000,In-Progress,DEN,0,,
+PG,Ryan Nembhard (45069733) (LOCKED),Ryan Nembhard,45069733,PG/G/UTIL,3000,In-Progress,DEN,4.4,,
+C,DaRon Holmes II (45069740) (LOCKED),DaRon Holmes II,45069740,C/UTIL,3000,In-Progress,DEN,2.3,,
+SF,Bryce Hopkins (45069751) (LOCKED),Bryce Hopkins,45069751,SF/F/UTIL,3000,In-Progress,DEN,8,,
+SG,Tarik Biberovic (45069756) (LOCKED),Tarik Biberovic,45069756,SG/G/UTIL,3000,In-Progress,DAL,0,OUT,
+SF,Dillon Mitchell (45069766) (LOCKED),Dillon Mitchell,45069766,SF/F/UTIL,3000,Final,BOS,0,,
+SF,Cam Whitmore (45069769) (LOCKED),Cam Whitmore,45069769,SF/F/UTIL,3000,In-Progress,DEN,6.8,,
+SG,Jett Howard (45069772) (LOCKED),Jett Howard,45069772,SG/G/UTIL,3000,In-Progress,DAL,2.9,,
+PF,Tobi Lawal (45069775) (LOCKED),Tobi Lawal,45069775,PF/F/UTIL,3000,In-Progress,DAL,3.7,OUT,
+C,Felix Okpara (45069778) (LOCKED),Felix Okpara,45069778,C/UTIL,3000,Final,WAS,1.8,,
+PG/SG,Bub Carrington (45069791) (LOCKED),Bub Carrington,45069791,PG/SG/G/UTIL,3000,Final,WAS,10,,
+SG,Will Riley (45069802) (LOCKED),Will Riley,45069802,SG/G/UTIL,3000,Final,WAS,4.5,,
+C,Chris Cenac Jr. (45069813) (LOCKED),Chris Cenac Jr.,45069813,C/UTIL,3000,Final,BOS,6.6,,

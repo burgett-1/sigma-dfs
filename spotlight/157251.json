@@ -1,0 +1,158 @@
+{
+ "slate_id": 157251,
+ "updated_at": "2026-11-26T00:07:05.605615+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Harrison Barnes",
+   "team": "SAS",
+   "salary": 4800,
+   "proj": 1.7,
+   "own": 0.4,
+   "headline": "Harrison Barnes without Dylan Harper",
+   "detail": "Averaged 21.2 DK pts in 16 games without them (vs 13.6 with). Hit 6x tonight's salary (29+ pts) in 3 of 16.",
+   "evidence": {
+    "games_without": 16,
+    "avg_without": 21.2,
+    "z": 3.01,
+    "avg_with": 13.6,
+    "hits_6x": 3,
+    "last_without": "2026-11-23"
+   },
+   "strength": 3.011,
+   "strong": true
+  },
+  {
+   "type": "winning_profile",
+   "player": "Yang Hansen",
+   "team": "POR",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 0.3,
+   "headline": "Yang Hansen fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.3
+   },
+   "strength": 2.02,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tarris Reed Jr.",
+   "team": "SAS",
+   "salary": 3000,
+   "proj": 2.6,
+   "own": 0.7,
+   "headline": "Tarris Reed Jr. fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.7
+   },
+   "strength": 1.896,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Jordan McLaughlin",
+   "team": "SAS",
+   "salary": 2000,
+   "proj": 2.0,
+   "own": 0.7,
+   "headline": "Jordan McLaughlin fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.7
+   },
+   "strength": 1.891,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Carter Bryant",
+   "team": "SAS",
+   "salary": 2400,
+   "proj": 2.9,
+   "own": 0.9,
+   "headline": "Carter Bryant fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.9
+   },
+   "strength": 1.869,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Ja'Kobi Gillespie",
+   "team": "SAS",
+   "salary": 3200,
+   "proj": 4.4,
+   "own": 1.1,
+   "headline": "Ja'Kobi Gillespie fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 1.1
+   },
+   "strength": 1.846,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Luke Kornet",
+   "team": "SAS",
+   "salary": 4400,
+   "proj": 9.7,
+   "own": 2.6,
+   "headline": "Luke Kornet fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 3%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 2.6
+   },
+   "strength": 1.651,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Branden Carlson",
+   "team": "POR",
+   "salary": 1000,
+   "proj": 4.1,
+   "own": 7.9,
+   "headline": "Branden Carlson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 7\u201310 in projected value appeared in 21% of the winning lineups. His projected ownership: 8%.",
+   "evidence": {
+    "suggested_exposure": 20.65,
+    "own": 7.9
+   },
+   "strength": 1.59,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Maliq Brown",
+   "team": "SAS",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 0.3,
+   "headline": "Maliq Brown fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value with a rotation teammate out appeared in 12% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 12.26,
+    "own": 0.3
+   },
+   "strength": 1.491,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

@@ -1,0 +1,114 @@
+{
+ "slate_id": 157353,
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Moussa Cisse",
+   "team": "DAL",
+   "salary": 1000,
+   "proj": 3.7,
+   "own": 7.9,
+   "headline": "Moussa Cisse without Kyrie Irving",
+   "detail": "Averaged 14.5 DK pts in 40 games without them (vs 1.8 with). Hit 6x tonight's salary (6+ pts) in 29 of 40.",
+   "evidence": {
+    "games_without": 40,
+    "avg_without": 14.5,
+    "z": 6.26,
+    "avg_with": 1.8,
+    "hits_6x": 29,
+    "last_without": "2026-11-15"
+   },
+   "strength": 6.257,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Max Christie",
+   "team": "DAL",
+   "salary": 2200,
+   "proj": 4.2,
+   "own": 1.0,
+   "headline": "Max Christie without Kyrie Irving",
+   "detail": "Averaged 21.5 DK pts in 79 games without them (vs 12.1 with). Hit 6x tonight's salary (13+ pts) in 67 of 79.",
+   "evidence": {
+    "games_without": 79,
+    "avg_without": 21.5,
+    "z": 3.35,
+    "avg_with": 12.1,
+    "hits_6x": 67,
+    "last_without": "2026-11-02"
+   },
+   "strength": 3.347,
+   "strong": true
+  },
+  {
+   "type": "winning_profile",
+   "player": "Marcus Sasser",
+   "team": "DAL",
+   "salary": 1000,
+   "proj": 0.6,
+   "own": 0.3,
+   "headline": "Marcus Sasser fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.3
+   },
+   "strength": 1.946,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Koa Peat",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 0.2,
+   "own": 0.2,
+   "headline": "Koa Peat fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.2
+   },
+   "strength": 1.324,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Pat Spencer",
+   "team": "PHX",
+   "salary": 1000,
+   "proj": 1.5,
+   "own": 0.5,
+   "headline": "Pat Spencer fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.5
+   },
+   "strength": 1.286,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Ryan Dunn",
+   "team": "PHX",
+   "salary": 2000,
+   "proj": 4.2,
+   "own": 1.1,
+   "headline": "Ryan Dunn fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 1.1
+   },
+   "strength": 1.212,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

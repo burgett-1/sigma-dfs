@@ -1,0 +1,278 @@
+{
+ "slate_id": 157351,
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "kind": "classic",
+ "games": 2,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Daniss Jenkins",
+   "team": "DET",
+   "salary": 6600,
+   "proj": 32.0,
+   "own": 21.5,
+   "headline": "Daniss Jenkins without Cade Cunningham",
+   "detail": "Averaged 36.0 DK pts in 20 games without them (vs 17.3 with). Hit 6x tonight's salary (40+ pts) in 6 of 20.",
+   "evidence": {
+    "games_without": 20,
+    "avg_without": 36.0,
+    "z": 8.41,
+    "avg_with": 17.3,
+    "hits_6x": 6,
+    "last_without": "2026-11-24"
+   },
+   "strength": 8.406,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Javonte Green",
+   "team": "DET",
+   "salary": 4200,
+   "proj": 18.2,
+   "own": 6.6,
+   "headline": "Javonte Green is starting (1 starts in his last 10)",
+   "detail": "Projected 28 minutes now. Historically 4.5% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Mikel Brown Jr.",
+   "team": "BKN",
+   "salary": 4800,
+   "proj": 22.4,
+   "own": 10.6,
+   "headline": "Mikel Brown Jr. is starting (2 starts in his last 10)",
+   "detail": "Projected 25 minutes now. Historically 4.5% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Allen Graves",
+   "team": "TOR",
+   "salary": 4600,
+   "proj": 23.2,
+   "own": 15.1,
+   "headline": "Allen Graves is starting (2 starts in his last 10)",
+   "detail": "Projected 31 minutes now. Historically 4.5% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Dominick Barlow",
+   "team": "PHI",
+   "salary": 3700,
+   "proj": 15.0,
+   "own": 4.4,
+   "headline": "Dominick Barlow is starting (0 starts in his last 10)",
+   "detail": "Projected 22 minutes now. Historically 4.5% of players in winning lineups were surprise starters.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Paul Reed",
+   "team": "DET",
+   "salary": 5700,
+   "proj": 24.4,
+   "own": 8.9,
+   "headline": "Paul Reed without Cade Cunningham",
+   "detail": "Averaged 27.3 DK pts in 18 games without them (vs 17.9 with). Hit 6x tonight's salary (34+ pts) in 2 of 18.",
+   "evidence": {
+    "games_without": 18,
+    "avg_without": 27.3,
+    "z": 2.85,
+    "avg_with": 17.9,
+    "hits_6x": 2,
+    "last_without": "2026-11-24"
+   },
+   "strength": 2.85,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Collin Murray-Boyles",
+   "team": "TOR",
+   "salary": 5900,
+   "proj": 22.8,
+   "own": 6.1,
+   "headline": "Collin Murray-Boyles without RJ Barrett, Ja'Kobe Walter",
+   "detail": "Averaged 30.0 DK pts in 4 games without them (vs 22.7 with). Hit 6x tonight's salary (35+ pts) in 0 of 4.",
+   "evidence": {
+    "games_without": 4,
+    "avg_without": 30.0,
+    "z": 2.67,
+    "avg_with": 22.7,
+    "hits_6x": 0,
+    "last_without": "2026-01-18"
+   },
+   "strength": 2.665,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Anfernee Simons",
+   "team": "PHI",
+   "salary": 4100,
+   "proj": 14.8,
+   "own": 3.1,
+   "headline": "Anfernee Simons without Jaylen Brown, Dean Wade",
+   "detail": "Averaged 23.2 DK pts in 2 games without them (vs 15.4 with). Hit 6x tonight's salary (25+ pts) in 1 of 2.",
+   "evidence": {
+    "games_without": 2,
+    "avg_without": 23.2,
+    "z": 2.61,
+    "avg_with": 15.4,
+    "hits_6x": 1,
+    "last_without": "2026-11-21"
+   },
+   "strength": 2.613,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tacko Fall",
+   "team": "PHI",
+   "salary": 3000,
+   "proj": 0.1,
+   "own": 0.2,
+   "headline": "Tacko Fall fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.955,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Isaac Jones",
+   "team": "DET",
+   "salary": 3000,
+   "proj": 0.0,
+   "own": 0.2,
+   "headline": "Isaac Jones fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.955,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Kyle Anderson",
+   "team": "TOR",
+   "salary": 3000,
+   "proj": 0.6,
+   "own": 0.2,
+   "headline": "Kyle Anderson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.953,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Joshua Jefferson",
+   "team": "BKN",
+   "salary": 3000,
+   "proj": 0.8,
+   "own": 0.2,
+   "headline": "Joshua Jefferson fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.953,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Labaron Philon Jr.",
+   "team": "PHI",
+   "salary": 3000,
+   "proj": 0.7,
+   "own": 0.2,
+   "headline": "Labaron Philon Jr. fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.953,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Ben Saraf",
+   "team": "BKN",
+   "salary": 3000,
+   "proj": 1.2,
+   "own": 0.2,
+   "headline": "Ben Saraf fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.952,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Caleb Love",
+   "team": "PHI",
+   "salary": 3000,
+   "proj": 1.4,
+   "own": 0.2,
+   "headline": "Caleb Love fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.951,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Josh Minott",
+   "team": "BKN",
+   "salary": 3000,
+   "proj": 1.4,
+   "own": 0.2,
+   "headline": "Josh Minott fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 41+ in projected value with a rotation teammate out appeared in 16% of the winning lineups. His projected ownership: 0%.",
+   "evidence": {
+    "suggested_exposure": 15.84,
+    "own": 0.2
+   },
+   "strength": 1.951,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

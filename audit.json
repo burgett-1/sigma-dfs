@@ -1,0 +1,188 @@
+{
+ "date": "2026-11-27",
+ "calibration_used": true,
+ "nights": 80,
+ "player_games": 13051,
+ "raw_model": {
+  "player_games": 13051,
+  "nights": 80,
+  "dk_points": {
+   "bias": -0.153,
+   "mae": 7.224,
+   "corr": 0.803
+  },
+  "minutes": {
+   "bias": -0.057,
+   "mae": 4.865,
+   "corr": 0.863
+  },
+  "fppm": {
+   "bias": 0.006,
+   "mae": 0.186,
+   "corr": 0.516
+  },
+  "below_floor_pct": 28.1,
+  "above_ceiling_pct": 17.1,
+  "z_mean": -0.112,
+  "z_sd": 2.389,
+  "outcome_ratio_p10": 0.0,
+  "outcome_ratio_p90": 1.715,
+  "boom_calibration": [
+   {
+    "predicted": "0-5%",
+    "n": 11678,
+    "mean_pred": 0.5,
+    "actual": 1.9
+   },
+   {
+    "predicted": "5-15%",
+    "n": 900,
+    "mean_pred": 8.6,
+    "actual": 9.2
+   },
+   {
+    "predicted": "15-30%",
+    "n": 326,
+    "mean_pred": 21.0,
+    "actual": 15.6
+   },
+   {
+    "predicted": "30-50%",
+    "n": 137,
+    "mean_pred": 37.0,
+    "actual": 22.6
+   }
+  ],
+  "bust_calibration": [
+   {
+    "predicted": "15-30%",
+    "n": 101,
+    "mean_pred": 24.6,
+    "actual": 26.7
+   },
+   {
+    "predicted": "30-50%",
+    "n": 741,
+    "mean_pred": 42.2,
+    "actual": 49.4
+   },
+   {
+    "predicted": "50-101%",
+    "n": 12190,
+    "mean_pred": 86.3,
+    "actual": 80.7
+   }
+  ]
+ },
+ "distribution": {
+  "used": true,
+  "feats": [
+   "f_min_share",
+   "f_total",
+   "f_return",
+   "f_bump",
+   "f_min_cv",
+   "f_few_games",
+   "f_cv_player"
+  ],
+  "selection": [
+   {
+    "features": [],
+    "pinball": 1.64672
+   },
+   {
+    "features": [
+     "f_min_share"
+    ],
+    "pinball": 1.64044
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total"
+    ],
+    "pinball": 1.63736
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total",
+     "f_return"
+    ],
+    "pinball": 1.63478
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total",
+     "f_return",
+     "f_bump"
+    ],
+    "pinball": 1.63269
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total",
+     "f_return",
+     "f_bump",
+     "f_min_cv"
+    ],
+    "pinball": 1.63063
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total",
+     "f_return",
+     "f_bump",
+     "f_min_cv",
+     "f_few_games"
+    ],
+    "pinball": 1.63008
+   },
+   {
+    "features": [
+     "f_min_share",
+     "f_total",
+     "f_return",
+     "f_bump",
+     "f_min_cv",
+     "f_few_games",
+     "f_cv_player"
+    ],
+    "pinball": 1.62964
+   }
+  ],
+  "held_out": {
+   "pinball_level_only": 2.1885,
+   "pinball_with_facts": 2.168,
+   "share_below": {
+    "0.01": 0.0103,
+    "0.025": 0.0287,
+    "0.05": 0.0513,
+    "0.1": 0.1022,
+    "0.15": 0.154,
+    "0.2": 0.2007,
+    "0.25": 0.2512,
+    "0.3": 0.3013,
+    "0.35": 0.3534,
+    "0.4": 0.402,
+    "0.45": 0.4538,
+    "0.5": 0.5014,
+    "0.55": 0.55,
+    "0.6": 0.6014,
+    "0.65": 0.6512,
+    "0.7": 0.7004,
+    "0.75": 0.7494,
+    "0.8": 0.7984,
+    "0.85": 0.8491,
+    "0.9": 0.9007,
+    "0.95": 0.9493,
+    "0.975": 0.973,
+    "0.99": 0.9887
+   }
+  },
+  "note": null
+ }
+}

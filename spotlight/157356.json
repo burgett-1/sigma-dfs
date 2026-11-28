@@ -1,0 +1,138 @@
+{
+ "slate_id": 157356,
+ "updated_at": "2026-11-28T05:11:44.786778+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "winning_profile",
+   "player": "Adou Thiero",
+   "team": "LAL",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.7,
+   "headline": "Adou Thiero fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.7
+   },
+   "strength": 1.978,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Maliq Brown",
+   "team": "SAS",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.7,
+   "headline": "Maliq Brown fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.7
+   },
+   "strength": 1.978,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Bronny James",
+   "team": "LAL",
+   "salary": 1000,
+   "proj": 0.0,
+   "own": 0.7,
+   "headline": "Bronny James fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.7
+   },
+   "strength": 1.978,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Chris Manon",
+   "team": "LAL",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 0.7,
+   "headline": "Chris Manon fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.7
+   },
+   "strength": 1.976,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Kevon Looney",
+   "team": "LAL",
+   "salary": 1000,
+   "proj": 0.1,
+   "own": 0.7,
+   "headline": "Kevon Looney fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.7
+   },
+   "strength": 1.975,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Harrison Barnes",
+   "team": "SAS",
+   "salary": 3600,
+   "proj": 1.2,
+   "own": 0.8,
+   "headline": "Harrison Barnes fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.8
+   },
+   "strength": 1.96,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Tarris Reed Jr.",
+   "team": "SAS",
+   "salary": 2000,
+   "proj": 0.8,
+   "own": 0.8,
+   "headline": "Tarris Reed Jr. fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 26\u201340 in projected value appeared in 16% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 16.48,
+    "own": 0.8
+   },
+   "strength": 1.956,
+   "strong": false
+  },
+  {
+   "type": "winning_profile",
+   "player": "Carson Cooper",
+   "team": "LAL",
+   "salary": 1000,
+   "proj": 0.5,
+   "own": 0.9,
+   "headline": "Carson Cooper fits the winning profile, and the field is light on him",
+   "detail": "On small slates (4 in the history), players ranked 16\u201325 in projected value appeared in 11% of the winning lineups. His projected ownership: 1%.",
+   "evidence": {
+    "suggested_exposure": 10.81,
+    "own": 0.9
+   },
+   "strength": 1.245,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 4
+}

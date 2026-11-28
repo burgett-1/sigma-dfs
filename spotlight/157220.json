@@ -1,0 +1,25 @@
+{
+ "slate_id": 157220,
+ "updated_at": "2026-11-24T06:14:25.765473+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "surprise_start",
+   "player": "Jabari Walker",
+   "team": "PHI",
+   "salary": 3200,
+   "proj": 15.3,
+   "own": 23.1,
+   "headline": "Jabari Walker is starting (1 starts in his last 10)",
+   "detail": "Projected 17 minutes now.",
+   "evidence": {
+    "start_rate": 0.1
+   },
+   "strength": 1.5,
+   "strong": true
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

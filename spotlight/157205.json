@@ -1,0 +1,235 @@
+{
+ "slate_id": 157205,
+ "updated_at": "2026-11-23T07:04:29.276772+00:00",
+ "kind": "classic",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Kyle Filipowski",
+   "team": "UTA",
+   "salary": 3800,
+   "proj": 6.7,
+   "own": 0.1,
+   "headline": "Kyle Filipowski without Jaxson Hayes",
+   "detail": "Averaged 26.7 DK pts in 78 games without them (vs 6.1 with). Hit 6x tonight's salary (23+ pts) in 49 of 78.",
+   "evidence": {
+    "games_without": 78,
+    "avg_without": 26.7,
+    "z": 8.57,
+    "avg_with": 6.1,
+    "hits_6x": 49,
+    "last_without": "2026-10-26"
+   },
+   "strength": 8.574,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gui Santos",
+   "team": "GSW",
+   "salary": 4600,
+   "proj": 14.2,
+   "own": 0.5,
+   "headline": "Gui Santos without Stephen Curry",
+   "detail": "Averaged 26.3 DK pts in 41 games without them (vs 11.9 with). Hit 6x tonight's salary (28+ pts) in 20 of 41.",
+   "evidence": {
+    "games_without": 41,
+    "avg_without": 26.3,
+    "z": 6.34,
+    "avg_with": 11.9,
+    "hits_6x": 20,
+    "last_without": "2026-11-19"
+   },
+   "strength": 6.339,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Isaiah Collier",
+   "team": "UTA",
+   "salary": 4300,
+   "proj": 14.4,
+   "own": 0.6,
+   "headline": "Isaiah Collier without Jaxson Hayes",
+   "detail": "Averaged 27.8 DK pts in 60 games without them (vs 15.4 with). Hit 6x tonight's salary (26+ pts) in 33 of 60.",
+   "evidence": {
+    "games_without": 60,
+    "avg_without": 27.8,
+    "z": 4.53,
+    "avg_with": 15.4,
+    "hits_6x": 33,
+    "last_without": "2026-10-26"
+   },
+   "strength": 4.534,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Moussa Cisse",
+   "team": "DAL",
+   "salary": 3000,
+   "proj": 7.8,
+   "own": 0.2,
+   "headline": "Moussa Cisse without PJ Washington",
+   "detail": "Averaged 21.0 DK pts in 17 games without them (vs 7.9 with). Hit 6x tonight's salary (18+ pts) in 10 of 17.",
+   "evidence": {
+    "games_without": 17,
+    "avg_without": 21.0,
+    "z": 3.76,
+    "avg_with": 7.9,
+    "hits_6x": 10,
+    "last_without": "2026-04-12"
+   },
+   "strength": 3.76,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Brice Sensabaugh",
+   "team": "UTA",
+   "salary": 4900,
+   "proj": 24.7,
+   "own": 5.8,
+   "headline": "Brice Sensabaugh without Jaxson Hayes",
+   "detail": "Averaged 24.4 DK pts in 77 games without them (vs 15.7 with). Hit 6x tonight's salary (29+ pts) in 24 of 77.",
+   "evidence": {
+    "games_without": 77,
+    "avg_without": 24.4,
+    "z": 3.63,
+    "avg_with": 15.7,
+    "hits_6x": 24,
+    "last_without": "2026-11-17"
+   },
+   "strength": 3.626,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Gary Payton II",
+   "team": "GSW",
+   "salary": 3200,
+   "proj": 12.6,
+   "own": 0.9,
+   "headline": "Gary Payton II without Stephen Curry",
+   "detail": "Averaged 19.3 DK pts in 41 games without them (vs 12.3 with). Hit 6x tonight's salary (19+ pts) in 24 of 41.",
+   "evidence": {
+    "games_without": 41,
+    "avg_without": 19.3,
+    "z": 3.27,
+    "avg_with": 12.3,
+    "hits_6x": 24,
+    "last_without": "2026-11-19"
+   },
+   "strength": 3.273,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Mikal Bridges",
+   "team": "NYK",
+   "salary": 4700,
+   "proj": 27.6,
+   "own": 15.9,
+   "headline": "Mikal Bridges without OG Anunoby",
+   "detail": "Averaged 33.5 DK pts in 17 games without them (vs 26.0 with). Hit 6x tonight's salary (28+ pts) in 13 of 17.",
+   "evidence": {
+    "games_without": 17,
+    "avg_without": 33.5,
+    "z": 3.01,
+    "avg_with": 26.0,
+    "hits_6x": 13,
+    "last_without": "2026-11-21"
+   },
+   "strength": 3.009,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Zaccharie Risacher",
+   "team": "DAL",
+   "salary": 4600,
+   "proj": 22.9,
+   "own": 4.9,
+   "headline": "Zaccharie Risacher is starting (2 starts in his last 10)",
+   "detail": "Projected 25 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Sam Hauser",
+   "team": "BOS",
+   "salary": 4300,
+   "proj": 22.8,
+   "own": 6.9,
+   "headline": "Sam Hauser is starting (2 starts in his last 10)",
+   "detail": "Projected 27 minutes now.",
+   "evidence": {
+    "start_rate": 0.2
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Buddy Hield",
+   "team": "CHI",
+   "salary": 3800,
+   "proj": 22.3,
+   "own": 11.7,
+   "headline": "Buddy Hield is starting (0 starts in his last 10)",
+   "detail": "Projected 23 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "Josh Hart",
+   "team": "NYK",
+   "salary": 5300,
+   "proj": 33.2,
+   "own": 32.6,
+   "headline": "Josh Hart without OG Anunoby",
+   "detail": "Averaged 37.8 DK pts in 17 games without them (vs 28.9 with). Hit 6x tonight's salary (32+ pts) in 11 of 17.",
+   "evidence": {
+    "games_without": 17,
+    "avg_without": 37.8,
+    "z": 2.94,
+    "avg_with": 28.9,
+    "hits_6x": 11,
+    "last_without": "2026-11-21"
+   },
+   "strength": 2.937,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Derrick White",
+   "team": "BOS",
+   "salary": 7200,
+   "proj": 34.6,
+   "own": 8.9,
+   "headline": "Derrick White without Paul George",
+   "detail": "Averaged 34.3 DK pts in 86 games without them (vs 27.4 with). Hit 6x tonight's salary (43+ pts) in 15 of 86.",
+   "evidence": {
+    "games_without": 86,
+    "avg_without": 34.3,
+    "z": 2.61,
+    "avg_with": 27.4,
+    "hits_6x": 15,
+    "last_without": "2026-11-11"
+   },
+   "strength": 2.612,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

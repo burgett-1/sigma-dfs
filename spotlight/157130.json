@@ -1,0 +1,45 @@
+{
+ "slate_id": 157130,
+ "updated_at": "2026-11-21T07:28:08.422457+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 5400,
+   "proj": 26.8,
+   "own": 21.0,
+   "headline": "Kevin Huerter without Duncan Robinson",
+   "detail": "Averaged 29.4 DK pts in 5 games without them (vs 16.9 with). Hit 6x tonight's salary (32+ pts) in 2 of 5.",
+   "evidence": {
+    "games_without": 5,
+    "avg_without": 29.4,
+    "z": 3.18,
+    "avg_with": 16.9,
+    "hits_6x": 2,
+    "last_without": "2026-11-18"
+   },
+   "strength": 3.178,
+   "strong": true
+  },
+  {
+   "type": "surprise_start",
+   "player": "Allen Graves",
+   "team": "TOR",
+   "salary": 4000,
+   "proj": 22.5,
+   "own": 32.2,
+   "headline": "Allen Graves is starting (0 starts in his last 10)",
+   "detail": "Projected 26 minutes now.",
+   "evidence": {
+    "start_rate": 0.0
+   },
+   "strength": 1.5,
+   "strong": true
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}

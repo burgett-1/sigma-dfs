@@ -1,0 +1,423 @@
+{
+ "date": "2026-11-27",
+ "teams": {
+  "NYK": {
+   "status": "confirmed",
+   "starters": [
+    "Jalen Brunson",
+    "Mikal Bridges",
+    "Landry Shamet",
+    "Josh Hart",
+    "Karl-Anthony Towns"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600064",
+   "source": "NBA.com"
+  },
+  "MIA": {
+   "status": "confirmed",
+   "starters": [
+    "Davion Mitchell",
+    "Giannis Antetokounmpo",
+    "Klay Thompson",
+    "Pelle Larsson",
+    "Bam Adebayo"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600064",
+   "source": "NBA.com"
+  },
+  "DET": {
+   "status": "confirmed",
+   "starters": [
+    "Javonte Green",
+    "Kevin Huerter",
+    "Daniss Jenkins",
+    "Ausar Thompson",
+    "John Collins"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600065",
+   "source": "NBA.com"
+  },
+  "MIL": {
+   "status": "confirmed",
+   "starters": [
+    "Tyler Herro",
+    "Kyle Kuzma",
+    "Ryan Rollins",
+    "Jaime Jaquez Jr.",
+    "Myles Turner"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600065",
+   "source": "NBA.com"
+  },
+  "IND": {
+   "status": "confirmed",
+   "starters": [
+    "Kelly Oubre Jr.",
+    "Aaron Nesmith",
+    "Andrew Nembhard",
+    "Pascal Siakam",
+    "Ivica Zubac"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600066",
+   "source": "NBA.com"
+  },
+  "PHI": {
+   "status": "confirmed",
+   "starters": [
+    "VJ Edgecombe",
+    "Dominick Barlow",
+    "Tyrese Maxey",
+    "LeBron James",
+    "Joel Embiid"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600066",
+   "source": "NBA.com"
+  },
+  "TOR": {
+   "status": "confirmed",
+   "starters": [
+    "Ja'Kobe Walter",
+    "Scottie Barnes",
+    "Immanuel Quickley",
+    "Allen Graves",
+    "Jakob Poeltl"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600067",
+   "source": "NBA.com"
+  },
+  "BKN": {
+   "status": "confirmed",
+   "starters": [
+    "Danny Wolf",
+    "Michael Porter Jr.",
+    "Mikel Brown Jr.",
+    "Julius Randle",
+    "Day'Ron Sharpe"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600067",
+   "source": "NBA.com"
+  },
+  "BOS": {
+   "status": "confirmed",
+   "starters": [
+    "Hugo Gonz\u00e1lez",
+    "Paul George",
+    "Derrick White",
+    "Jayson Tatum",
+    "Neemias Queta"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600068",
+   "source": "NBA.com"
+  },
+  "ATL": {
+   "status": "confirmed",
+   "starters": [
+    "Nickeil Alexander-Walker",
+    "Dyson Daniels",
+    "Kingston Flemings",
+    "Jalen Johnson",
+    "Onyeka Okongwu"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600068",
+   "source": "NBA.com"
+  },
+  "MIN": {
+   "status": "confirmed",
+   "starters": [
+    "Terrence Shannon Jr",
+    "Jaden McDaniels",
+    "Ayo Dosunmu",
+    "Jonathan Kuminga",
+    "Rudy Gobert"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600069",
+   "source": "NBA.com"
+  },
+  "MEM": {
+   "status": "confirmed",
+   "starters": [
+    "Cedric Coward",
+    "Jaylen Wells",
+    "Ty Jerome",
+    "Kris Murray",
+    "Zach Edey"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600069",
+   "source": "NBA.com"
+  },
+  "PHX": {
+   "status": "confirmed",
+   "starters": [
+    "Jalen Green",
+    "Dillon Brooks",
+    "Devin Booker",
+    "Miles Bridges",
+    "Oso Ighodaro"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600070",
+   "source": "NBA.com"
+  },
+  "DAL": {
+   "status": "confirmed",
+   "starters": [
+    "Caleb Martin",
+    "Zaccharie Risacher",
+    "Cooper Flagg",
+    "P.J. Washington",
+    "Daniel Gafford"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600070",
+   "source": "NBA.com"
+  },
+  "SAS": {
+   "status": "confirmed",
+   "starters": [
+    "Stephon Castle",
+    "Devin Vassell",
+    "De'Aaron Fox",
+    "Julian Champagnie",
+    "Victor Wembanyama"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600071",
+   "source": "NBA.com"
+  },
+  "LAL": {
+   "status": "confirmed",
+   "starters": [
+    "Austin Reaves",
+    "Matisse Thybulle",
+    "Luka Don\u010di\u0107",
+    "Jake LaRavia",
+    "Walker Kessler"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600071",
+   "source": "NBA.com"
+  },
+  "UTA": {
+   "status": "confirmed",
+   "starters": [
+    "Darryn Peterson",
+    "Josh Green",
+    "Keyonte George",
+    "Ace Bailey",
+    "Jusuf Nurki\u0107"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600072",
+   "source": "NBA.com"
+  },
+  "DEN": {
+   "status": "confirmed",
+   "starters": [
+    "Christian Braun",
+    "Cameron Johnson",
+    "Jamal Murray",
+    "Aaron Gordon",
+    "Nikola Joki\u0107"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600072",
+   "source": "NBA.com"
+  },
+  "LAC": {
+   "status": "confirmed",
+   "starters": [
+    "Derrick Jones Jr.",
+    "Brandon Ingram",
+    "Darius Garland",
+    "Rui Hachimura",
+    "Brook Lopez"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600073",
+   "source": "NBA.com"
+  },
+  "NOP": {
+   "status": "confirmed",
+   "starters": [
+    "Herbert Jones",
+    "Trey Murphy III",
+    "Jeremiah Fears",
+    "Zion Williamson",
+    "Yves Missi"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600073",
+   "source": "NBA.com"
+  },
+  "POR": {
+   "status": "confirmed",
+   "starters": [
+    "Deni Avdija",
+    "Toumani Camara",
+    "Jrue Holiday",
+    "Sidy Cissoko",
+    "Donovan Clingan"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600074",
+   "source": "NBA.com"
+  },
+  "GSW": {
+   "status": "confirmed",
+   "starters": [
+    "Brandin Podziemski",
+    "Yaxel Lendeborg",
+    "De'Anthony Melton",
+    "Draymond Green",
+    "Charles Bassey"
+   ],
+   "positions": [
+    "SG",
+    "SF",
+    "PG",
+    "PF",
+    "C"
+   ],
+   "game_id": "0022600074",
+   "source": "NBA.com"
+  }
+ }
+}

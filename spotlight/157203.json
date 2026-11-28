@@ -1,0 +1,70 @@
+{
+ "slate_id": 157203,
+ "updated_at": "2026-11-23T07:04:29.276772+00:00",
+ "kind": "showdown",
+ "games": 1,
+ "cards": [
+  {
+   "type": "same_situation",
+   "player": "Kevin Huerter",
+   "team": "DET",
+   "salary": 6400,
+   "proj": 27.2,
+   "own": 15.4,
+   "headline": "Kevin Huerter without Duncan Robinson",
+   "detail": "Averaged 29.7 DK pts in 6 games without them (vs 16.9 with). Hit 6x tonight's salary (38+ pts) in 0 of 6.",
+   "evidence": {
+    "games_without": 6,
+    "avg_without": 29.7,
+    "z": 3.8,
+    "avg_with": 16.9,
+    "hits_6x": 0,
+    "last_without": "2026-11-20"
+   },
+   "strength": 3.803,
+   "strong": true
+  },
+  {
+   "type": "same_situation",
+   "player": "RayJ Dennis",
+   "team": "ATL",
+   "salary": 1600,
+   "proj": 5.9,
+   "own": 3.2,
+   "headline": "RayJ Dennis without CJ McCollum",
+   "detail": "Averaged 17.8 DK pts in 3 games without them (vs 7.9 with). Hit 6x tonight's salary (10+ pts) in 3 of 3.",
+   "evidence": {
+    "games_without": 3,
+    "avg_without": 17.8,
+    "z": 3.39,
+    "avg_with": 7.9,
+    "hits_6x": 3,
+    "last_without": "2026-11-20"
+   },
+   "strength": 3.388,
+   "strong": false
+  },
+  {
+   "type": "same_situation",
+   "player": "Daniss Jenkins",
+   "team": "DET",
+   "salary": 7400,
+   "proj": 34.1,
+   "own": 29.4,
+   "headline": "Daniss Jenkins without Duncan Robinson",
+   "detail": "Averaged 29.5 DK pts in 8 games without them (vs 20.0 with). Hit 6x tonight's salary (44+ pts) in 0 of 8.",
+   "evidence": {
+    "games_without": 8,
+    "avg_without": 29.5,
+    "z": 2.54,
+    "avg_with": 20.0,
+    "hits_6x": 0,
+    "last_without": "2026-11-20"
+   },
+   "strength": 2.539,
+   "strong": false
+  }
+ ],
+ "size_bucket": "small",
+ "history_slates": 0
+}
